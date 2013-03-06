@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+    point="org.eclipse.wst.jsdt.core.inferrenceSupport"
+    name="ExtJS Inference Support"
+    id="net.w3des.extjs.core.inferenceSupport">
+    <inferenceProvider class="net.w3des.extjs.core.ExtInferenceProvider" />
+   </extension>
+   <extension
+    id="net.w3des.extejs.core.validation"
+    name="ExtJS Validation Participant"
+    point="org.eclipse.wst.jsdt.core.validationParticipant"
+   >
+    <validationParticipant
+        class="net.w3des.extjs.core.ExtValidationParticipant"
+        id="net.w3des.extjs.core.validationParticipant"
+        >
+    </validationParticipant>
+   
+   </extension>
+</plugin>
