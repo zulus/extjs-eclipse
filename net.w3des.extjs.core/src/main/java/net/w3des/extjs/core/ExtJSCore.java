@@ -13,6 +13,7 @@ public class ExtJSCore extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.w3des.extjs.core";
+	public static final String FACET_ID = "wst.jsdt.web.lib.extjs";
 
 	// The shared instance
 	private static ExtJSCore plugin;

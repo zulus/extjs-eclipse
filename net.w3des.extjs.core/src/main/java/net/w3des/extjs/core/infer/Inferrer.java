@@ -1,61 +1,42 @@
 package net.w3des.extjs.core.infer;
 
-import java.awt.List;
-
-import javax.lang.model.type.ReferenceType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeVisitor;
-
 import net.w3des.extjs.core.ExtInferenceProvider;
-import net.w3des.extjs.core.ExtJSCore;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
-import org.eclipse.wst.jsdt.core.ast.ICompoundAssignment;
+import org.eclipse.wst.jsdt.core.ast.IConstructorDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
-import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
+import org.eclipse.wst.jsdt.core.ast.ITypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Message;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
-import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CombinedSourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 @SuppressWarnings("restriction")
 public class Inferrer extends ASTVisitor {
 
 	final private CompilationUnitDeclaration unit;
+	@SuppressWarnings("unused")
 	final private InferOptions options;
+	
 	private InferredType newType;
 	
 	public Inferrer(CompilationUnitDeclaration parsedUnit, InferOptions inferOptions) {
@@ -63,7 +44,6 @@ public class Inferrer extends ASTVisitor {
 		unit = parsedUnit;
 	}
 	
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean visit(IFunctionCall functionCall) {
 		MessageSend mess = (MessageSend) functionCall;
@@ -72,7 +52,7 @@ public class Inferrer extends ASTVisitor {
 		}
 		String funcName = String.valueOf(mess.getSelector());
 		if (funcName.equals("define") ) {
-			createClass(mess);
+			define(mess);
 			
 			return true;
 		} else if (funcName.equals("apply")) {
@@ -86,6 +66,12 @@ public class Inferrer extends ASTVisitor {
 		return true;
 	}
 	
+	
+	/**
+	 * @see http://docs.sencha.com/ext-js/4-1/#!/api/Ext-method-create
+	 * @param mess
+	 * TODO Implement this
+	 */
 	private void create(MessageSend mess) {
 		if (mess.getArguments().length > 0 && mess.getArguments()[0] instanceof StringLiteral) {
 			StringLiteral className = (StringLiteral) mess.getArguments()[0];
@@ -105,7 +91,11 @@ public class Inferrer extends ASTVisitor {
 		}
 	}
 
-	private void createClass(MessageSend mess) {
+	/**
+	 * @see http://docs.sencha.com/ext-js/4-1/#!/api/Ext-method-define
+	 * @param mess
+	 */
+	private void define(MessageSend mess) {
 		if (mess.getArguments().length < 1) { //invalid call
 			return;
 		}
@@ -115,11 +105,13 @@ public class Inferrer extends ASTVisitor {
 			newType = unit.addType(name.source(), true, ExtInferenceProvider.ID); 
 			newType.setNameStart(mess.getArguments()[0].sourceStart()+1);
 			newType.isAnonymous = false;
+		} else if(mess.getArguments()[0] instanceof NullLiteral) { 
+			newType = unit.addType(InferredType.FUNCTION_NAME, true, ExtInferenceProvider.ID);
+			newType.isAnonymous = true;
+		    newType.setNameStart(mess.getArguments()[1].sourceStart());
+		    newType.updatePositions(mess.getArguments()[1].sourceStart(), mess.getArguments()[1].sourceEnd());
 		} else {
-			//TODO : create anonymous
 			return;
-			//newType = unit.addType(InferredType.FUNCTION_NAME, true, ExtInferenceProvider.ID);
-			//newType.isAnonymous = true;
 		}
 		
 		newType.sourceStart = mess.sourceStart();
@@ -135,7 +127,7 @@ public class Inferrer extends ASTVisitor {
 			build(mess);
 		} else if (mess.getArguments()[1] instanceof MessageSend) {
 			MessageSend constr = (MessageSend)mess.getArguments()[1];
-			newType.addConstructorMethod("constructor".toCharArray(), 
+			newType.addConstructorMethod(newType.getName(), 
 					((FunctionExpression) constr.receiver).getMethodDeclaration(), 
 					constr.sourceStart);
 		}
@@ -148,6 +140,7 @@ public class Inferrer extends ASTVisitor {
 	 */
 	private void apply(MessageSend mess) {
 		//mess.resolvedType = mess.arguments[0].resolvedType;
+		mess.traverse(new ApplyInfer(newType, unit));
 	}
 	
 	private void require(MessageSend mess) {
@@ -179,7 +172,7 @@ public class Inferrer extends ASTVisitor {
 			// ignore
 			//ExtJSCore.info("Unable to track" + req.toString());
 		} else {
-			ExtJSCore.warn("Invalid import: " + req.toString());
+			//ExtJSCore.warn("Invalid import: " + req.toString());
 		}
 	}
 	
@@ -189,8 +182,6 @@ public class Inferrer extends ASTVisitor {
 		String typeParent = "Ext.Base";
 		boolean singleton = false;
 		boolean hasConstructor = false;
-		int superStart = 0;
-		int superEnd = 0;
 		if (lit.fields != null) {
 			for (ObjectLiteralField field : lit.fields) {
 				if (field == null) {
@@ -198,14 +189,7 @@ public class Inferrer extends ASTVisitor {
 				}
 				if (field.getFieldName().toString().equals("extend") || field.getFieldName().toString().equals("override")) {
 					typeParent = String.valueOf(((StringLiteral) field.getInitializer()).source());
-					
-					if ( unit.findInferredType(typeParent.toCharArray()) == null) {
-						unit.addImport(typeParent.toCharArray(), 0, 1, field.getInitializer().sourceStart());
-					}
-					
-					superStart = field.getInitializer().sourceStart();
-					superEnd = field.getInitializer().sourceEnd();
-					
+					require(field.initializer);
 					continue;
 				}
 				
@@ -214,7 +198,7 @@ public class Inferrer extends ASTVisitor {
 					continue;
 				}
 				
-				if (field.getFieldName().toString().equals("requires")) {
+				if (field.getFieldName().toString().equals("requires") || field.getFieldName().toString().equals("uses")) {
 					require(field.initializer);
 					continue;
 				}
@@ -224,7 +208,7 @@ public class Inferrer extends ASTVisitor {
 					String name = String.valueOf(field.getFieldName().toString());
 					InferredMethod method;
 					if (name.equals("constructor")) {
-						method = newType.addConstructorMethod(newType.getName(), ((FunctionExpression) field.initializer).methodDeclaration, newType.getNameStart());
+						method = newType.addConstructorMethod("constructor".toCharArray(), ((FunctionExpression) field.initializer).methodDeclaration, field.getFieldName().sourceStart());
 						hasConstructor = true;
 					} else {
 						method = newType.addMethod(field.getFieldName().toString().toCharArray(), ((FunctionExpression) field.initializer).methodDeclaration, field.getFieldName().sourceStart());
@@ -243,16 +227,25 @@ public class Inferrer extends ASTVisitor {
 					continue;
 				}
 				
+				if (field.getFieldName().toString().equals("inheritableStatics") && field.initializer instanceof ObjectLiteral) {
+					addStatics((ObjectLiteral) field.initializer);
+					
+					continue;
+				}
+				
 				if (field.getFieldName().toString().equals("alternateClassName")) {
 					aliases(field.getInitializer());
 					
 					continue;
 				}
 				
+				if (field.getFieldName().toString().equals("mixins")) {
+					mixins(field.getInitializer(), field);
+					continue;
+				}
+				
 				// TODO other special EXT elements like configs etc...
-				// TODO parse JSDoc while reading declaration (TypeBinding)
-				InferredAttribute attr = newType.addAttribute(field.getFieldName().toString().toCharArray(), field.initializer, field.getFieldName().sourceStart());
-				attr.getClass();
+				addAttribute(field);
 			}
 		}
 		
@@ -261,7 +254,8 @@ public class Inferrer extends ASTVisitor {
 		} else if(!singleton && !hasConstructor) {
 			newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
 		}
-		if(typeParent != "Ext.Base") { // TODO generating 
+		//TODO do it better
+		if(!newType.getName().toString().equals("Ext.Base") && !newType.getName().toString().equals("Base")) {
 			newType.superClass = unit.findInferredType(typeParent.toCharArray());
 			if (newType.superClass == null) {
 				newType.superClass = new InferredType(typeParent.toCharArray()); //TODO find another method
@@ -271,6 +265,63 @@ public class Inferrer extends ASTVisitor {
 			}
 		}
 		
+	}
+	// TODO parse JSDoc while reading declaration (TypeBinding)  - currently impossible in inferrer engine
+	private void addAttribute(ObjectLiteralField field) {
+		InferredAttribute attr = newType.addAttribute(field.getFieldName().toString().toCharArray(), field.initializer, field.getFieldName().sourceStart());
+		attr.sourceStart = field.sourceStart;
+		attr.sourceEnd = field.sourceEnd;
+		attr.initializationStart = field.initializer.sourceStart;
+		
+		/*if (field.getInitializer()) {
+			
+		}*/
+		attr.getClass();
+	}
+	
+	/**
+	 * Create mixins
+	 * 
+	 * @see http://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-mixins
+	 * @param initializer
+	 */
+	private void mixins(final IExpression mixin, final ObjectLiteralField field) {
+		if (mixin instanceof StringLiteral) {
+			newType.addMixin(((StringLiteral) mixin).source());
+		} else if (mixin instanceof ArrayInitializer) {
+			for (Expression e : ((ArrayInitializer) mixin).expressions) {
+				if (e != null && e instanceof StringLiteral) {
+					newType.addMixin(((StringLiteral) mixin).source());
+				}
+			}
+		} else if (mixin instanceof ObjectLiteral) {
+			InferredAttribute attr = newType.findAttribute("mixins".toCharArray());
+			//TODO type binding
+			if (attr == null) {
+				attr = newType.addAttribute("mixins".toCharArray(), field.initializer, field.getFieldName().sourceStart());
+			}
+			for (IObjectLiteralField f : ((ObjectLiteral) mixin).getFields()) {
+				if (f.getInitializer() instanceof StringLiteral) {
+					newType.addMixin(((StringLiteral) f.getInitializer()).source());
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see http://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-alternateClassName
+	 * @param alias
+	 */
+	private void aliases(IExpression alias) {
+		if (alias instanceof StringLiteral) {
+			aliases((StringLiteral) alias);
+		} else if (alias instanceof ObjectLiteral) {
+			aliases((ObjectLiteral) alias);
+		} else if (alias instanceof ArrayInitializer) {
+			aliases((ArrayInitializer) alias);
+		} else {
+			//ExtJSCore.warn("Invalid alias: " + alias.toString());
+		}
 	}
 	
 	private void aliases(StringLiteral alias) {
@@ -294,18 +345,6 @@ public class Inferrer extends ASTVisitor {
 			if (ex != null) {
 				aliases(ex);
 			}
-		}
-	}
-	
-	private void aliases(IExpression alias) {
-		if (alias instanceof StringLiteral) {
-			aliases((StringLiteral) alias);
-		} else if (alias instanceof ObjectLiteral) {
-			aliases((ObjectLiteral) alias);
-		} else if (alias instanceof ArrayInitializer) {
-			aliases((ArrayInitializer) alias);
-		} else {
-			ExtJSCore.warn("Invalid alias: " + alias.toString());
 		}
 	}
 	
@@ -349,10 +388,61 @@ public class Inferrer extends ASTVisitor {
 	@Override
 	public boolean visit(IAssignment assignment) {
 		if (assignment.toString().equals("Ext.Base = Base")) { //simple hack to register Ext.Base
-			//InferredType alias = unit.findInferredType("Ext".toCharArray());
-			//Assignment ass = (Assignment) assignment;
+			InferredType alias = unit.findInferredType("Base".toCharArray());
+			
+			InferredType type = unit.addType("Ext.Base".toCharArray(), true, ExtInferenceProvider.ID);
+			type.sourceStart = alias.sourceStart;
+			type.sourceEnd = alias.sourceEnd;
+			type.setNameStart(alias.getNameStart());
+			type.addMixin("Base".toCharArray());
 		}
 		
+		if (assignment.toString().endsWith("Ext = Ext || {}")) {
+			assignment.setInferredType(unit.findInferredType("Ext".toCharArray()));
+		}
+
 		return super.visit(assignment); 
 	}
+	
+	@Override
+	public boolean visit(InferredAttribute inferredField) {
+		return super.visit(inferredField);
+	}
+	
+	@Override
+	public boolean visit(ILocalDeclaration localDeclaration) {
+		
+		if (localDeclaration.getInitialization() != null && localDeclaration.getInitialization() instanceof OR_OR_Expression) {
+			final OR_OR_Expression ex = (OR_OR_Expression) localDeclaration.getInitialization();
+			if (ex.getLeft() instanceof SingleNameReference) {
+				final SingleNameReference ref = (SingleNameReference) ex.getLeft();
+				if (unit.findInferredType(ref.token) != null) {
+					localDeclaration.setInferredType(unit.findInferredType(ref.token));
+					
+					return true;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean visit(IAllocationExpression allocationExpression) {
+		// TODO Auto-generated method stub
+		return super.visit(allocationExpression);
+	}
+	
+	@Override
+	public boolean visit(ITypeDeclaration localTypeDeclaration) {
+		// TODO Auto-generated method stub
+		return super.visit(localTypeDeclaration);
+	}
+	
+	@Override
+	public boolean visit(IConstructorDeclaration constructorDeclaration) {
+		// TODO Auto-generated method stub
+		return super.visit(constructorDeclaration);
+	}
+
 }

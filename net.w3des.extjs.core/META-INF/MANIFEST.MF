@@ -2,10 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: net.w3des.extjs Core Plugin
 Bundle-SymbolicName: net.w3des.extjs.core;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 0.0.2.qualifier
 Bundle-Activator: net.w3des.extjs.core.ExtJSCore
-Require-Bundle: org.eclipse.ui,
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;bundle-version="3.105.0",
  org.eclipse.core.runtime,
- org.eclipse.wst.jsdt.core
+ org.eclipse.wst.jsdt.core;bundle-version="1.1.0",
+ org.eclipse.wst.jsdt.web.core;bundle-version="1.0.6",
+ org.eclipse.wst.common.project.facet.core;bundle-version="1.4.0",
+ org.eclipse.core.resources;bundle-version="3.8.100",
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

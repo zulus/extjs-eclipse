@@ -2,7 +2,7 @@
 <feature
       id="net.w3des.extjs.feature"
       label="net.w3des.extjs Feature"
-      version="0.0.1.qualifier">
+      version="0.0.2.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
