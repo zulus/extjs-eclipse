@@ -3,5 +3,4 @@
 # Eclipse ExtJS plugin for JSDT
 This plugin is only prototype at this moment. May be unstable. 
 
-# Funcionality
-Class outline
+Read more on [http://zulus.github.com/extjs-eclipse](Project page)
