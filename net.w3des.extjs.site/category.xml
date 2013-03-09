@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/net.w3des.extjs.feature_0.0.1.qualifier.jar" id="net.w3des.extjs.feature" version="0.0.1.qualifier"/>
+   <feature url="features/net.w3des.extjs.feature_0.0.2.qualifier.jar" id="net.w3des.extjs.feature" version="0.0.2.qualifier"/>
 </site>
