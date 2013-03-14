@@ -2,22 +2,28 @@
 <feature
       id="net.w3des.extjs.feature"
       label="net.w3des.extjs Feature"
-      version="0.0.2.qualifier">
+      version="0.0.3">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://zulus.github.com/extjs-eclipse/">
+      Eclipse ExtJS plugin for JSDT. More on http://zulus.github.com/extjs-eclipse
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright url="http://zulus.github.com/extjs-eclipse/copyright.html">
+      Dawid zulus Pakuła - zulus@w3des.net
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://zulus.github.com/extjs-eclipse/license.html">
+      MIT License description
    </license>
 
    <plugin
          id="net.w3des.extjs.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="net.w3des.extjs.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

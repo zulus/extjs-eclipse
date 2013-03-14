@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.w3des</groupId>
   <artifactId>net.w3des.extjs</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3</version>
   <packaging>pom</packaging>
   <name>net.w3des.extjs :: parent</name>
   <description>net.w3des.extjs parent</description>
@@ -90,6 +90,7 @@
   <modules>
     <module>net.w3des.extjs.core</module>
     <module>net.w3des.extjs.test</module>
+    <module>net.w3des.extjs.ui</module>
     <module>net.w3des.extjs.feature</module>
     <module>net.w3des.extjs.site</module>
   </modules>

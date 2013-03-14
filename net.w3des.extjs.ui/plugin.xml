@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension
+        point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+        <JsGlobalScopeContainerPage
+            name="%ExtJS.page.name"
+            class="net.w3des.extjs.ui.container.wizard.WizardPage"
+            id="net.w3des.extjs.core.container"
+            allowMulti="false">
+        </JsGlobalScopeContainerPage>
+    </extension>
+    <extension
+        id="net.w3des.extjs.ui.container.initializer"
+        point="org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer">
+        <JsGlobalScopeUIInitializer 
+            id="net.w3des.extjs.core.container"
+            class="net.w3des.extjs.ui.container.wizard.Initializer" />
+    </extension>
+    <extension
+        id="net.w3des.net.extjs.ui.help"
+        point="org.eclipse.help.contexts">
+        <contexts file="helpContexts.xml" />
+    </extension>
+</plugin>

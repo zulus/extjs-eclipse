@@ -6,53 +6,20 @@
     <extension
         point="org.eclipse.wst.jsdt.core.inferrenceSupport"
         name="ExtJS Inference Support">
-        <inferenceProvider class="net.w3des.extjs.core.ExtInferenceProvider" />
-    </extension>
-   
+        <inferenceProvider class="net.w3des.extjs.core.infer.InferProvider" />
+    </extension> 
+    
     <extension 
-        point="org.eclipse.wst.common.project.facet.core.facets">
-        
-        <project-facet id="%ExtJS.facet.id">
-            <label>%ExtJS.facet.label</label>
-            <description>%ExtJS.facet.label</description>
-        </project-facet>
-        <project-facet-version facet="%ExtJS.facet.id" version="4.0">
-            <constraint>
-                <requires facet="wst.jsdt.web" version="1.0" />
-            </constraint>
-        </project-facet-version>
-        <project-facet-version facet="%ExtJS.facet.id" version="4.1">
-            <constraint>
-                <requires facet="wst.jsdt.web" version="1.0" />
-            </constraint>
-        </project-facet-version>
-        <action id="net.w3des.extjs.facet.install" facet="%ExtJS.facet.id" version="*" type="INSTALL">
-            <delegate class="net.w3des.extjs.core.facet.Install" />
-        </action>
-        <action id="net.w3des.extjs.facet.uninstall" facet="%ExtJS.facet.id" version="*" type="UNINSTALL">
-            <delegate class="net.w3des.extjs.core.facet.Uninstall" />
-        </action>
-        <action id="net.w3des.extjs.facet.version_change" facet="%ExtJS.facet.id" version="*" type="VERSION_CHANGE">
-            <delegate class="net.w3des.extjs.core.facet.VersionChange" />
-        </action>
+        point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer"
+        id="net.w3des.extjs.core.container.point">
+        <JsGlobalScopeContainerInitializer
+            class="net.w3des.extjs.core.container.ContainerInitializer"
+            id="net.w3des.extjs.core.container" />
     </extension>
-   
-   
-    <extension
-        point="org.eclipse.wst.common.project.facet.ui.images">
-        <image facet="%ExtJS.facet.id" path="icons/ext.png" />
+    <extension 
+        point="org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
+        <JsGlobalScopeVariableInitializer
+            variable="Ext"
+            class="net.w3des.extjs.core.container.VariableInitializer" />
     </extension>
-   
-   <!--extension
-    id="net.w3des.extejs.core.validation"
-    name="ExtJS Validation Participant"
-    point="org.eclipse.wst.jsdt.core.validationParticipant"
-   >
-    <validationParticipant
-        class="net.w3des.extjs.core.ExtValidationParticipant"
-        id="net.w3des.extjs.core.validationParticipant"
-        >
-    </validationParticipant>
-   
-   </extension-->
 </plugin>
