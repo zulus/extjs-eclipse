@@ -270,6 +270,23 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					continue;
 				}
 				
+				if (field.getInitializer() instanceof IFunctionExpression) {
+					InferredMethod method;
+					//TODO return value
+					if (CharOperation.equals(fieldName, attrConstructor)) {
+						method = newType.addConstructorMethod(attrConstructor, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
+						hasConstructor = true;
+					} else {
+						method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
+					}
+
+					if (CharOperation.equals(fieldName, attrConstructor) || CharOperation.equals(fieldName, attrInitComponent)) {
+						method.getFunctionDeclaration().setInferredType(newType);
+					}
+
+					continue;
+				}
+				
 				// TODO other special EXT elements like configs etc...
 				addAttribute(newType, field);
 			}
