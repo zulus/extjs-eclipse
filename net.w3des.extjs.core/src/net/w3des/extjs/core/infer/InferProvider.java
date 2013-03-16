@@ -25,6 +25,7 @@ public class InferProvider implements InferrenceProvider {
 
 	public IInferEngine getInferEngine() {
 		InferEngine eng = new InferEngine();
+		eng.inferenceProvider=this;
 		return eng;
 	}
 
@@ -51,12 +52,12 @@ public class InferProvider implements InferrenceProvider {
 				return InferrenceProvider.NOT_THIS;
 			}
 
-			final IJavaScriptProject scriptProject = JavaScriptCore
-					.create(project);
+			final IJavaScriptProject scriptProject = JavaScriptCore.create(project);
 			if (!scriptProject.exists()) {
 				return InferrenceProvider.NOT_THIS;
 			}
-
+			
+			
 			final IJsGlobalScopeContainer container = JavaScriptCore
 					.getJsGlobalScopeContainer(new Path(Container.ID),
 							scriptProject);
@@ -68,7 +69,7 @@ public class InferProvider implements InferrenceProvider {
 			final IIncludePathEntry[] raw = scriptProject.getRawIncludepath();
 			boolean found = false;
 			for (IIncludePathEntry entry : raw) {
-				if (entry.getPath().equals(new Path(Container.ID))) {
+				if (entry.getPath().segment(0).equals(Container.ID)) {
 					found = true;
 					break;
 				}
@@ -78,7 +79,7 @@ public class InferProvider implements InferrenceProvider {
 				return InferrenceProvider.NOT_THIS;
 			}
 			
-			return InferrenceProvider.MAYBE_THIS;
+			return InferrenceProvider.ONLY_THIS;
 
 		} catch (CoreException e) {
 			ExtJSCore.error(e);

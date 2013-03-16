@@ -11,6 +11,7 @@ final public class ExtJSUIMessages extends NLS {
 	public static String wizardGlobalName;
 	public static String wizardSrcDir;
 	public static String wizardAddDir;
+	public static String wizardBrowseDir;
 	public static String wizardRemoveDir;
 	
 	static {

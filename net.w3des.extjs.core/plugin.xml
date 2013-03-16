@@ -16,10 +16,4 @@
             class="net.w3des.extjs.core.container.ContainerInitializer"
             id="net.w3des.extjs.core.container" />
     </extension>
-    <extension 
-        point="org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
-        <JsGlobalScopeVariableInitializer
-            variable="Ext"
-            class="net.w3des.extjs.core.container.VariableInitializer" />
-    </extension>
 </plugin>

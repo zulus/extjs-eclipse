@@ -1,22 +1,17 @@
 package net.w3des.extjs.core.container;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.w3des.extjs.core.ExtJSCore;
-import net.w3des.extjs.core.ExtJsCoreMessages;
-import net.w3des.extjs.core.infer.InferProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 
@@ -33,24 +28,29 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 	
 	@Override
 	public String getInferenceID() {
-		return null; //allow all
+		return null; 
  	}
 	
+	/**
+	 * TODO configurable by attributes
+	 */
 	@Override
 	public String[] containerSuperTypes() {
 		return new String[] { "Ext" }; //$NON-NLS-1$
 	}
 	
 	@Override
-	public boolean allowAttachJsDoc() {
-		return true;
+	public boolean allowAttachJsDoc() {  //no because ExtJS use JSDuck format, maybe later
+		return false;
 	}
 
 	@Override
 	public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {
-		NullProgressMonitor monitor = new NullProgressMonitor();
-		JavaScriptCore.setIncludepathVariable("Ext", containerPath, monitor);
-		JavaScriptCore.setJsGlobalScopeContainer(containerPath, new IJavaScriptProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, monitor);
+		try {
+			JavaScriptCore.setJsGlobalScopeContainer(containerPath, new IJavaScriptProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, null);
+		} catch (Exception e) {
+			ExtJSCore.error(e);
+		}
 	}
 
 	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaScriptProject project) {
@@ -72,7 +72,7 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 
 	@Override
 	public String getDescription(IPath containerPath, IJavaScriptProject project) {
-		return containerPath.toString();
+		return containerPath.segment(0);
 	}
 
 	@Override
@@ -80,19 +80,24 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 		return null;
 	}
 
-	@Override
-	public Object getComparisonID(IPath containerPath, IJavaScriptProject project) {
-		return Container.ID;
-	}
-	
-	@Override
-	public URI getHostPath(IPath path, IJavaScriptProject project) {
-		return project.getHostPath();
-	}
 
 	@Override
 	public void removeFromProject(IJavaScriptProject project) {
+		
 	}
 	
+	@Override
+	public IStatus getAttributeStatus(IPath containerPath, IJavaScriptProject project, String attributeKey) {
+		return super.getAttributeStatus(containerPath, project, attributeKey);
+	}
+	@Override
+	public IIncludePathEntry[] getIncludepathEntries() {
+		return new IIncludePathEntry[0];
+	}
 	
+	@Override
+	public Object getComparisonID(IPath containerPath,
+			IJavaScriptProject project) {
+		return Container.ID;
+	}
 }
