@@ -135,6 +135,15 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 	
 	@Override
+	public InferredType findDefinedType(char[] className) {
+		try {
+			return super.findDefinedType(className);
+		} catch(Exception e) {
+			return null;
+		}
+	}
+	
+	@Override
 	public boolean visit(IFieldDeclaration fieldDeclaration) {
 		super.visit(fieldDeclaration);
 		
@@ -273,10 +282,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 		
 		if(!CharOperation.equals(newType.getName(), baseName)) {
-			newType.superClass = findDefinedType(typeParent);
-			if (newType.superClass == null) {
-				newType.superClass = addType(typeParent);
-			}
+			newType.superClass = addType(typeParent);
 		}
 		
 		return newType;
