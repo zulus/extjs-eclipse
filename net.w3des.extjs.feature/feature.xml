@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="net.w3des.extjs.feature"
-      label="net.w3des.extjs Feature"
-      version="0.0.3">
+      label="ExtJS Feature"
+      version="0.0.3.qualifier">
 
    <description url="http://zulus.github.com/extjs-eclipse/">
       Eclipse ExtJS plugin for JSDT. More on http://zulus.github.com/extjs-eclipse
    </description>
 
-   <copyright url="http://zulus.github.com/extjs-eclipse/copyright.html">
+   <copyright url="http://zulus.github.com/extjs-eclipse">
       Dawid zulus Pakuła - zulus@w3des.net
    </copyright>
 
-   <license url="http://zulus.github.com/extjs-eclipse/license.html">
-      MIT License description
+   <license url="http://zulus.github.com/extjs-eclipse">
+      MIT License
    </license>
 
    <plugin

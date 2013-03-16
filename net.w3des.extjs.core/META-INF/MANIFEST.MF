@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: net.w3des.extjs Core Plugin
 Bundle-SymbolicName: net.w3des.extjs.core;singleton:=true
-Bundle-Version: 0.0.3
+Bundle-Version: 0.0.3.qualifier
 Bundle-Activator: net.w3des.extjs.core.ExtJSCore
 Bundle-Localization: OSGI-INF/l10n/plugin
 Require-Bundle: org.eclipse.ui;bundle-version="3.105.0",
