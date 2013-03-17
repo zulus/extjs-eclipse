@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 
 /**
  * TODO inferer for JSduck json
@@ -62,7 +61,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	@Override
 	public void doInfer() {
 		super.doInfer();
-		unit.traverse(new JSDuckInfer(unit));
+		//unit.traverse(new JSDuckInfer(unit));
 	}
 
 	@Override
@@ -169,7 +168,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 
 	private InferredType buildType(IFunctionCall fcall) {
-		if (fcall.getArguments().length < 1) { //invalid call
+		if (fcall.getArguments() == null || fcall.getArguments().length < 1) { //invalid call
 			return null;
 		}
 			
@@ -190,17 +189,16 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		
 		newType.isDefinition = true;
 		newType.bits = ASTNode.TYPE_DECLARATION;
-		
+		newType.superClass = addType(baseClass);
 		if (fcall.getArguments().length < 2 ) {
 			return newType;
 		}
-		if (fcall.getArguments()[1] instanceof ObjectLiteral) {
-			buildType(newType, (ObjectLiteral) fcall.getArguments()[1]);
-		} else if (fcall.getArguments()[1] instanceof MessageSend) {
-			MessageSend constr = (MessageSend)fcall.getArguments()[1];
+		if (fcall.getArguments()[1] instanceof IObjectLiteral) {
+			buildType(newType, (IObjectLiteral) fcall.getArguments()[1]);
+		} else if (fcall.getArguments()[1] instanceof IFunctionExpression) {
 			newType.addConstructorMethod(newType.getName(), 
-					((FunctionExpression) constr.receiver).getMethodDeclaration(), 
-					constr.sourceStart);
+					getDefinedFunction(fcall.getArguments()[1]), 
+					newType.getNameStart());
 		}
 		
 		return newType;
@@ -234,10 +232,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				if (getDefinedFunction(field.getInitializer()) != null) {
 					InferredMethod method;
 					if (CharOperation.equals(fieldName, attrConstructor)) {
-						method = newType.addConstructorMethod(attrConstructor, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
+						method = newType.addConstructorMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
 						hasConstructor = true;
 					} else {
-						method = newType.addMethod(attrConstructor, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
+						method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
 					} 
 					
 					if (CharOperation.equals(fieldName, attrConstructor) || CharOperation.equals(fieldName, attrInitComponent)) {
@@ -267,23 +265,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				
 				if (CharOperation.equals(fieldName, attrMixins)) {
 					mixins(newType, field);
-					continue;
-				}
-				
-				if (field.getInitializer() instanceof IFunctionExpression) {
-					InferredMethod method;
-					//TODO return value
-					if (CharOperation.equals(fieldName, attrConstructor)) {
-						method = newType.addConstructorMethod(attrConstructor, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-						hasConstructor = true;
-					} else {
-						method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-					}
-
-					if (CharOperation.equals(fieldName, attrConstructor) || CharOperation.equals(fieldName, attrInitComponent)) {
-						method.getFunctionDeclaration().setInferredType(newType);
-					}
-
 					continue;
 				}
 				
@@ -420,7 +401,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		super.visit(functionCall);
 		if (CharOperation.equals(getName(functionCall.getReceiver()), ext) && 
 				(CharOperation.equals(functionCall.getSelector(), define) 
-						|| CharOperation.equals(functionCall.getSelector(), extend))) {
+						|| CharOperation.equals(functionCall.getSelector(), extend)) && passNumber == 1 ) {
 			buildType(functionCall);
 			
 			return true;

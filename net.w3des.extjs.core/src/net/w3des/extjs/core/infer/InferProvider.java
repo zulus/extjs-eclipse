@@ -79,7 +79,7 @@ public class InferProvider implements InferrenceProvider {
 				return InferrenceProvider.NOT_THIS;
 			}
 			
-			return InferrenceProvider.ONLY_THIS;
+			return InferrenceProvider.MAYBE_THIS;
 
 		} catch (CoreException e) {
 			ExtJSCore.error(e);
