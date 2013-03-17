@@ -30,4 +30,10 @@
         point="org.eclipse.help.contexts">
         <contexts file="helpContexts.xml" />
     </extension>
+    
+    <!--extension 
+        id="net.w3des.extjs.ui.documentationProvider"
+        point="org.eclipse.wst.jsdt.ui.documentationProvider">
+        <documentationProvider class="net.w3des.extjs.ui.jsduck.DocumentationProvider" />
+    </extension-->
 </plugin>

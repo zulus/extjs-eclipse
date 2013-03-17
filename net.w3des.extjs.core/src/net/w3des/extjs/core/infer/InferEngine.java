@@ -1,12 +1,15 @@
 package net.w3des.extjs.core.infer;
 
+import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
+import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.core.ast.INullLiteral;
 import org.eclipse.wst.jsdt.core.ast.IOR_OR_Expression;
@@ -14,6 +17,7 @@ import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
+import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -23,6 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
@@ -53,6 +58,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	private final static char[] attrAlternateClassName = new char[]{'a','l','t','e','r','n','a','t','e','C','l','a','s','s','N','a','m','e'};
 	private final static char[] attrMixins = new char[]{'m','i','x','i','n','s'};
 	private CompilationUnitDeclaration unit;
+	private boolean foundByJsDuck = false;
 	
 	public void initialize() {
 		super.initialize();
@@ -60,8 +66,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 	@Override
 	public void doInfer() {
+		JSDuckInfer jsduck = new JSDuckInfer(unit);
+		foundByJsDuck = jsduck.compile();
+		
 		super.doInfer();
-		//unit.traverse(new JSDuckInfer(unit));
 	}
 
 	@Override
@@ -442,6 +450,40 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		
 		return addType(CharOperation.concat(obName, fName, '.'));
 	}
+	
+	
+	private IFunctionDeclaration getDefinedFunctionByAlias(IExpression[] arguments) {
+		if (arguments == null || arguments.length < 2) {
+			return null;
+		}
+		IAbstractVariableDeclaration var = getVariable(arguments[0]);
+		char[] obName = null;
+		if (var == null) {
+			obName = getName(arguments[0]);
+		} else {
+			obName = var.getName();
+		}
+		
+		char[] fName = getName(arguments[1]);
+		
+		if (fName == null && !(arguments[1] instanceof IStringLiteral)) {
+			var = getVariable(arguments[1]);
+			if (var != null && !(var.getInitialization() instanceof IStringLiteral)) {
+				return null;
+			} else if (var != null) {
+				fName = ((IStringLiteral) var.getInitialization()).source();
+			}
+			
+		} else if (arguments[1] instanceof IStringLiteral) {
+			fName = ((IStringLiteral) arguments[1]).source();
+		}
+		InferredType t = findDefinedType(obName);
+		if (t != null && t.findMethod(fName, null) != null) {
+			return t.findMethod(fName, null).getFunctionDeclaration();
+		}
+		
+		return null;
+	}
 		
 	private char[] getName(IExpression expression) {
 		if (expression instanceof ISingleNameReference)
@@ -467,14 +509,36 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 	@Override
 	public boolean visit(IObjectLiteralField field) {
+		
 		if (field.getInitializer() instanceof IFunctionCall) {
 			IFunctionCall fcall = (IFunctionCall) field.getInitializer();
 			if (CharOperation.equals(fcall.getSelector(), alias)) {
-				MethodDeclaration methodDeclaration = new MethodDeclaration(unit.compilationResult);
-				methodDeclaration.inferredType = getByAlias(fcall.getArguments());
+				IFunctionDeclaration methodDeclaration;
+				if (getDefinedFunctionByAlias(fcall.getArguments()) != null) {
+					methodDeclaration = getDefinedFunctionByAlias(fcall.getArguments());
+				} else {
+					methodDeclaration = new MethodDeclaration(unit.compilationResult);
+				}
+				methodDeclaration.setInferredType(getByAlias(fcall.getArguments()));
 			}
+		}
+		super.visit(field);
+		
+		return true;
+	}
+
+
+	@Override
+	public boolean visit(IJsDoc javadoc) {
+		if (CharOperation.endsWith(unit.getFileName(), "ClassManager.js".toCharArray())) { 
+			return true;
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public boolean visit(IUnaryExpression unaryExpression) {
+		return super.visit(unaryExpression);
 	}
 }
