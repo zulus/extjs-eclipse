@@ -19,26 +19,4 @@ public class JSDuckInfer {
 	public JSDuckInfer(CompilationUnitDeclaration unit) {
 		this.unit = unit;
 	}
-	
-	public boolean compile() {
-		return found;
-		/*
-		if (unit.comments != null  && CharOperation.endsWith(fName, "ClassManager.js".toCharArray())) {
-			CompilationUnit t = (CompilationUnit) unit.compilationResult.compilationUnit;
-			for (int[] range : unit.comments) {
-				if (range[0] > 0) {
-					try {
-						String text = t.getSource();
-						if (text != null) {
-							
-						}
-					} catch (Exception e) {
-						ExtJSCore.error("Error during JSDuck compiler", e);
-					}
-				}
-			}
-		}
-		
-		return found; */
-	}
 }

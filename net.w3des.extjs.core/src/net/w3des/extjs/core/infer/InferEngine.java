@@ -1,5 +1,7 @@
 package net.w3des.extjs.core.infer;
 
+import net.w3des.extjs.core.ExtJSCore;
+
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
@@ -59,6 +61,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	private final static char[] attrMixins = new char[]{'m','i','x','i','n','s'};
 	private CompilationUnitDeclaration unit;
 	private boolean foundByJsDuck = false;
+	private JSDuckInfer jsDuck;
 	
 	public void initialize() {
 		super.initialize();
@@ -66,10 +69,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 	@Override
 	public void doInfer() {
-		JSDuckInfer jsduck = new JSDuckInfer(unit);
-		foundByJsDuck = jsduck.compile();
-		
+		jsDuck = new JSDuckInfer(unit);
 		super.doInfer();
+		jsDuck = null;
 	}
 
 	@Override
@@ -79,8 +81,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 	
 	public void initializeOptions(InferOptions inferOptions) {
-		//inferOptions.useAssignments = true;
-		//inferOptions.useInitMethod = true;
+		super.initializeOptions(inferOptions);
+		inferOptions.useAssignments = true;
+		inferOptions.useInitMethod = true;
 		inferOptions.saveArgumentComments = true;
 		inferOptions.engineClass = this.getClass().getName();
   	}
@@ -239,12 +242,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 				if (getDefinedFunction(field.getInitializer()) != null) {
 					InferredMethod method;
-					if (CharOperation.equals(fieldName, attrConstructor)) {
+					/*if (CharOperation.equals(fieldName, attrConstructor) && !singleton) {
 						method = newType.addConstructorMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
 						hasConstructor = true;
-					} else {
+					} else {*/
 						method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-					} 
+					//} 
 					
 					if (CharOperation.equals(fieldName, attrConstructor) || CharOperation.equals(fieldName, attrInitComponent)) {
 						method.getFunctionDeclaration().setInferredType(newType);
@@ -286,9 +289,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		} else if(!singleton && !hasConstructor) {
 			newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
 		}
-		
-		if(!CharOperation.equals(newType.getName(), baseName)) {
-			newType.superClass = addType(typeParent);
+		if(typeParent != null && !CharOperation.equals(newType.getName(), baseName)) {
+				newType.superClass = addType(typeParent);
+			
 		}
 		
 		return newType;
@@ -386,7 +389,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 	}
 	
+	/**
+	 * Quick fix due JSDT limitation
+	 * @param newType
+	 */
 	private void isSingleton(InferredType newType) {
+		newType.inferenceStyle = "singleton";
 		if (newType.attributes != null && newType.attributes.length > 0) {
 			for (InferredAttribute attr : newType.attributes) {
 				if (attr != null) {
@@ -520,8 +528,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					methodDeclaration = new MethodDeclaration(unit.compilationResult);
 				}
 				methodDeclaration.setInferredType(getByAlias(fcall.getArguments()));
+			} else if (CharOperation.equals(fcall.getSelector(), create) && CharOperation.equals(getName(fcall.getReceiver()), ext) ) {
 			}
 		}
+		
 		super.visit(field);
 		
 		return true;
@@ -533,6 +543,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		if (CharOperation.endsWith(unit.getFileName(), "ClassManager.js".toCharArray())) { 
 			return true;
 		}
+		super.visit(javadoc);
 		
 		return true;
 	}
@@ -541,4 +552,5 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	public boolean visit(IUnaryExpression unaryExpression) {
 		return super.visit(unaryExpression);
 	}
+	
 }
