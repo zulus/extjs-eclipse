@@ -12,6 +12,7 @@ import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
 import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.core.ast.IJsDoc;
+import org.eclipse.wst.jsdt.core.ast.IJsDocReturnStatement;
 import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.core.ast.INullLiteral;
 import org.eclipse.wst.jsdt.core.ast.IOR_OR_Expression;
@@ -21,6 +22,7 @@ import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
 import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -31,8 +33,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
  * TODO inferer for JSduck json
@@ -60,8 +64,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	private final static char[] attrAlternateClassName = new char[]{'a','l','t','e','r','n','a','t','e','C','l','a','s','s','N','a','m','e'};
 	private final static char[] attrMixins = new char[]{'m','i','x','i','n','s'};
 	private CompilationUnitDeclaration unit;
-	private boolean foundByJsDuck = false;
-	private JSDuckInfer jsDuck;
 	
 	public void initialize() {
 		super.initialize();
@@ -69,9 +71,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 	@Override
 	public void doInfer() {
-		jsDuck = new JSDuckInfer(unit);
 		super.doInfer();
-		jsDuck = null;
 	}
 
 	@Override
@@ -242,15 +242,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 				if (getDefinedFunction(field.getInitializer()) != null) {
 					InferredMethod method;
-					/*if (CharOperation.equals(fieldName, attrConstructor) && !singleton) {
-						method = newType.addConstructorMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-						hasConstructor = true;
-					} else {*/
-						method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-					//} 
-					
-					if (CharOperation.equals(fieldName, attrConstructor) || CharOperation.equals(fieldName, attrInitComponent)) {
-						method.getFunctionDeclaration().setInferredType(newType);
+					if (newType.findMethod(fieldName, getDefinedFunction(field.getInitializer())) != null) {
+						continue;
+					}
+					method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
+					if (method.getFunctionDeclaration().getInferredType() == null) {
+						method.getFunctionDeclaration().setInferredType(getReturnType(field.getJsDoc()));
+						method.bits = method.bits | ClassFileConstants.AccPublic;
 					}
 					
 					continue;
@@ -286,15 +284,34 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		
 		if (singleton) { 
 			isSingleton(newType);
-		} else if(!singleton && !hasConstructor) {
+		} 
+		if(!hasConstructor) {
 			newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
 		}
 		if(typeParent != null && !CharOperation.equals(newType.getName(), baseName)) {
-				newType.superClass = addType(typeParent);
+			newType.superClass = addType(typeParent);
 			
 		}
 		
 		return newType;
+	} 
+	
+	/**
+	 * Read jsdoc and return inferred type from "@return"
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	private InferredType getReturnType(IJsDoc doc) {
+		if (doc == null || !(doc instanceof Javadoc)) {
+			return null;
+		}
+		Javadoc jdoc = (Javadoc) doc;
+		if (jdoc.returnType != null && jdoc.returnType.getFullTypeName() != null) {
+			return addType(jdoc.returnType.getFullTypeName());
+		}
+		
+		return null;
 	}
 	
 	private void addAttribute(InferredType newType, IObjectLiteralField field) {
@@ -314,6 +331,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		attr.sourceStart = field.sourceStart();
 		attr.sourceEnd = field.sourceEnd();
 		attr.initializationStart = field.getInitializer().sourceStart();
+		attr.modifiers = ClassFileConstants.AccPublic;
+		
+		//TODO read jsdoc modifiers (private/public/static etc...
 	}
 	
 	private void mixins(InferredType newType, final IObjectLiteralField field) {
@@ -382,9 +402,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			if (field.getInitializer() instanceof IFunctionExpression) {
 				InferredMethod method = newType.addMethod(field.getFieldName().toString().toCharArray(), getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
 				method.isStatic = true;
+				method.bits = method.bits | ClassFileConstants.AccStatic | ClassFileConstants.AccPublic;
+				if (method.getFunctionDeclaration().getInferredType() == null) {
+					method.getFunctionDeclaration().setInferredType(getReturnType(method.getFunctionDeclaration().getJsDoc()));
+				}
 			} else {
 				InferredAttribute attr = newType.addAttribute(field.getFieldName().toString().toCharArray(), field.getInitializer(), field.getFieldName().sourceStart());
 				attr.isStatic = true;
+				attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic | ClassFileConstants.AccPublic;
 			}
 		}
 	}
@@ -395,10 +420,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	 */
 	private void isSingleton(InferredType newType) {
 		newType.inferenceStyle = "singleton";
+		newType.bits = InferredType.IsInferredType;
+		
 		if (newType.attributes != null && newType.attributes.length > 0) {
 			for (InferredAttribute attr : newType.attributes) {
 				if (attr != null) {
 					attr.isStatic = true;
+					attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic;
 				}
 			}
 		}
@@ -406,7 +434,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		if (newType.methods != null && newType.methods.size() > 0) {
 			for(Object item : newType.methods.toArray()) {
 				if (item instanceof InferredMethod) {
-					((InferredMethod) item).isStatic = true;
+					InferredMethod method = (InferredMethod) item;
+					method.isStatic = true;
+					method.bits = method.bits | ClassFileConstants.AccStatic;
 				}
 			}
 		}
@@ -531,7 +561,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			} else if (CharOperation.equals(fcall.getSelector(), create) && CharOperation.equals(getName(fcall.getReceiver()), ext) ) {
 			}
 		}
-		
 		super.visit(field);
 		
 		return true;
@@ -540,17 +569,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 	@Override
 	public boolean visit(IJsDoc javadoc) {
-		if (CharOperation.endsWith(unit.getFileName(), "ClassManager.js".toCharArray())) { 
-			return true;
-		}
 		super.visit(javadoc);
-		
 		return true;
-	}
-	
-	@Override
-	public boolean visit(IUnaryExpression unaryExpression) {
-		return super.visit(unaryExpression);
-	}
-	
+	}	
 }
