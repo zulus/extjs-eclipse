@@ -16,10 +16,10 @@ public class Container implements IJsGlobalScopeContainer {
 	final public static String ID = "net.w3des.extjs.core.container"; //$NON-NLS-1$
 	final private static String SRC = "src"; //$NON-NLS-1$
 	final private static String SRC_SEPARATOR = IPath.SEPARATOR + SRC + IPath.SEPARATOR;
-	final private IPath path;
+	final private IPath path; 
 	
 	public Container(IJavaScriptProject project, IPath path) {
-		this.path = path;
+		this.path = path; 
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class Container implements IJsGlobalScopeContainer {
 
 	@Override
 	public IPath getPath() {
-		return new Path(ID);
+		return path;
 	}
 
 	@Override

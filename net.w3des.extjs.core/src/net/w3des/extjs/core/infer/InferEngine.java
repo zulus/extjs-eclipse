@@ -1,7 +1,5 @@
 package net.w3des.extjs.core.infer;
 
-import net.w3des.extjs.core.ExtJSCore;
-
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
@@ -12,7 +10,6 @@ import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
 import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.core.ast.IJsDoc;
-import org.eclipse.wst.jsdt.core.ast.IJsDocReturnStatement;
 import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.core.ast.INullLiteral;
 import org.eclipse.wst.jsdt.core.ast.IOR_OR_Expression;
@@ -20,9 +17,7 @@ import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
-import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -31,10 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
@@ -227,15 +219,19 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				char[] fieldName = field.getFieldName().toString().toCharArray();
 				if (CharOperation.equals(fieldName, extend) || CharOperation.equals(fieldName, attrOverride)) {
 					typeParent = getArgValue(field.getInitializer());
+					addAttribute(newType, field);
 					continue;
 				}
 				
 				if (CharOperation.equals(fieldName, attrSingleton)) { 
 					singleton = true;
+					addAttribute(newType, field);
 					continue;
 				}
 				
 				if (CharOperation.equals(fieldName, attrRequires) || CharOperation.equals(fieldName, attrUses)) {
+					addImports(newType, field);
+					addAttribute(newType, field);
 					continue;
 				}
 				
@@ -250,6 +246,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 						method.getFunctionDeclaration().setInferredType(getReturnType(field.getJsDoc()));
 						method.bits = method.bits | ClassFileConstants.AccPublic;
 					}
+					/**
+					 * Simple (unsafe hack) with return statement
+					 */
+					MethodDeclaration declaration = (MethodDeclaration) method.getFunctionDeclaration();
+					declaration.javadoc = (Javadoc) field.getJsDoc();
 					
 					continue;
 				}
@@ -262,13 +263,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					if (var != null && getDefinedFunction(var.getInitialization()) instanceof IObjectLiteral) {
 						addStatics(newType, (IObjectLiteral) var.getInitialization());
 					}
-					
 					continue;
 				}
 				
 				if (CharOperation.equals(fieldName, attrAlternateClassName)) {
 					aliases(newType, field.getInitializer());
-					
+					addAttribute(newType, field);
 					continue;
 				}
 				
@@ -285,17 +285,32 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		if (singleton) { 
 			isSingleton(newType);
 		} 
-		if(!hasConstructor) {
+		if(!singleton && !hasConstructor) {
 			newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
 		}
 		if(typeParent != null && !CharOperation.equals(newType.getName(), baseName)) {
 			newType.superClass = addType(typeParent);
-			
 		}
 		
 		return newType;
 	} 
 	
+	/**
+	 * Imports I'm not how JSDT use this
+	 * 
+	 * @param newType
+	 * @param field
+	 */
+	private void addImports(final InferredType newType, IObjectLiteralField field) {
+		field.getInitializer().traverse(new ASTVisitor() {
+			@Override
+			public boolean visit(IStringLiteral stringLiteral) {
+				unit.addImport(stringLiteral.source(), stringLiteral.sourceStart(), stringLiteral.sourceEnd(), stringLiteral.sourceStart());
+				return true;
+			}
+		});
+	}
+
 	/**
 	 * Read jsdoc and return inferred type from "@return"
 	 * 
@@ -314,7 +329,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		return null;
 	}
 	
-	private void addAttribute(InferredType newType, IObjectLiteralField field) {
+	private InferredAttribute addAttribute(InferredType newType, IObjectLiteralField field) {
 		if (field.getInitializer() instanceof IFunctionCall) {
 			IFunctionCall fcall = (IFunctionCall) field.getInitializer();
 			if (CharOperation.equals(fcall.getSelector(), alias)) {
@@ -323,7 +338,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				InferredMethod method = newType.addMethod(field.getFieldName().toString().toCharArray(), methodDeclaration, field.getFieldName().sourceStart());
 				method.sourceStart = field.getInitializer().sourceStart();
 				method.sourceEnd = field.getInitializer().sourceEnd();
-				return;
+				/**
+				 * Simple (unsafe hack) with return statement
+				 */
+				methodDeclaration.javadoc = (Javadoc) field.getJsDoc();
+				
+				return null;
 			}
 		}
 		
@@ -331,9 +351,20 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		attr.sourceStart = field.sourceStart();
 		attr.sourceEnd = field.sourceEnd();
 		attr.initializationStart = field.getInitializer().sourceStart();
-		attr.modifiers = ClassFileConstants.AccPublic;
+		if (field.getJsDoc() != null) {
+			Javadoc doc = (Javadoc) field.getJsDoc();
+			attr.modifiers = doc.modifiers;
+			if ((ClassFileConstants.AccPublic & attr.modifiers) != ClassFileConstants.AccPublic
+					&& (ClassFileConstants.AccProtected & attr.modifiers) != ClassFileConstants.AccProtected
+					&& (ClassFileConstants.AccPrivate & attr.modifiers) != ClassFileConstants.AccPrivate ) {
+				attr.modifiers = ClassFileConstants.AccPublic;
+			}
+			attr.type = getReturnType(doc);
+		} else {
+			attr.modifiers = ClassFileConstants.AccPublic;
+		}
 		
-		//TODO read jsdoc modifiers (private/public/static etc...
+		return attr;
 	}
 	
 	private void mixins(InferredType newType, final IObjectLiteralField field) {
@@ -349,7 +380,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			}
 		} else if (mixin instanceof IObjectLiteral) {
 			InferredAttribute attr = newType.findAttribute(attrMixins);
-			//TODO type infereced
+			//TODO list of mixins
 			if (attr == null) {
 				attr = newType.addAttribute(attrMixins, field.getInitializer(), field.getFieldName().sourceStart());
 			}
@@ -406,10 +437,15 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				if (method.getFunctionDeclaration().getInferredType() == null) {
 					method.getFunctionDeclaration().setInferredType(getReturnType(method.getFunctionDeclaration().getJsDoc()));
 				}
+				/**
+				 * Simple (unsafe hack) with return statement
+				 */
+				MethodDeclaration declaration = (MethodDeclaration) method.getFunctionDeclaration();
+				declaration.javadoc = (Javadoc) field.getJsDoc();
 			} else {
-				InferredAttribute attr = newType.addAttribute(field.getFieldName().toString().toCharArray(), field.getInitializer(), field.getFieldName().sourceStart());
+				InferredAttribute attr = addAttribute(newType, field);
 				attr.isStatic = true;
-				attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic | ClassFileConstants.AccPublic;
+				attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic;
 			}
 		}
 	}

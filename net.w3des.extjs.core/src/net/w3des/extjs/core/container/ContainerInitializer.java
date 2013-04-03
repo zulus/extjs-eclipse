@@ -1,6 +1,5 @@
 package net.w3des.extjs.core.container;
 
-
 import net.w3des.extjs.core.ExtJSCore;
 
 import org.eclipse.core.runtime.CoreException;
@@ -40,7 +39,7 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 	}
 	
 	@Override
-	public boolean allowAttachJsDoc() {  //no because ExtJS use JSDuck format, maybe later
+	public boolean allowAttachJsDoc() {  //no 
 		return false;
 	}
 
@@ -52,22 +51,29 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 			ExtJSCore.error(e);
 		}
 	}
-
+	
+	@Override
 	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaScriptProject project) {
 		Container cont = new Container(project, containerPath);
+		
 		return cont;
 	}
-
+	
+	/**
+	 * No due JSDT limitation
+	 */
 	@Override
-	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath,IJavaScriptProject project) {
-		return true;
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
+		return false;
 	}
 
 	@Override
 	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaScriptProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
-		NullProgressMonitor monitor = new NullProgressMonitor();
-		JavaScriptCore.setIncludepathVariable("Ext", containerPath, monitor);
-		JavaScriptCore.setJsGlobalScopeContainer(containerPath, new IJavaScriptProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, monitor);
+		try {
+			JavaScriptCore.setJsGlobalScopeContainer(containerPath, new IJavaScriptProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, null);
+		} catch (Exception e) {
+			ExtJSCore.error(e);
+		}
 	}
 
 	@Override
@@ -96,8 +102,7 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer impl
 	}
 	
 	@Override
-	public Object getComparisonID(IPath containerPath,
-			IJavaScriptProject project) {
+	public Object getComparisonID(IPath containerPath, IJavaScriptProject project) {
 		return Container.ID;
 	}
 }

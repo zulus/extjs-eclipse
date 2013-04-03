@@ -18,14 +18,6 @@
             class="net.w3des.extjs.ui.container.wizard.Initializer" />
     </extension>
     <extension
-        point="org.eclipse.wst.jsdt.ui.classpathAttributeConfiguration"
-        id="net.w3des.extjs.ui.containerAttributeConfiguration">
-        <classpathAttributeConfiguration 
-            attributeName="names"
-            class="net.w3des.extjs.ui.container.attribute.NamesAttributeConfiguration"
-        />
-    </extension>
-    <extension
         id="net.w3des.net.extjs.ui.help"
         point="org.eclipse.help.contexts">
         <contexts file="helpContexts.xml" />

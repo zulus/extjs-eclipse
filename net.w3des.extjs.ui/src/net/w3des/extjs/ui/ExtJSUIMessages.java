@@ -8,11 +8,7 @@ final public class ExtJSUIMessages extends NLS {
 	public static String wizardPageTitle;
 	public static String wizardPageAdded;
 	public static String wizardPageDescription;
-	public static String wizardGlobalName;
-	public static String wizardSrcDir;
-	public static String wizardAddDir;
-	public static String wizardBrowseDir;
-	public static String wizardRemoveDir;
+	public static String wizardPageAbout;
 	
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, ExtJSUIMessages.class);
