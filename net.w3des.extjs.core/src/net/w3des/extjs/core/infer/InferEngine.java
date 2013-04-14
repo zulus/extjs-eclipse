@@ -411,19 +411,23 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 	
 	private void aliases(InferredType newType, IObjectLiteral alias) {
-		for (IObjectLiteralField field : alias.getFields()) {
-			if (field != null && getArgValue(field.getInitializer()) != null) {
-				aliases(newType, field.getInitializer());
+		if (alias.getFields() != null) {
+			for (IObjectLiteralField field : alias.getFields()) {
+				if (field != null && getArgValue(field.getInitializer()) != null) {
+					aliases(newType, field.getInitializer());
+				}
 			}
 		}
 	}
 	
 	private void aliases(InferredType newType, IArrayInitializer alias) {
 		Expression[] expressions = ((ArrayInitializer) alias).expressions;
-		for (int i = 0; i < expressions.length; i++) {
-			Expression ex = expressions[i];
-			if (ex != null && getArgValue(ex) != null) {
-				aliases(newType, ex);
+		if (expressions != null) {
+			for (int i = 0; i < expressions.length; i++) {
+				Expression ex = expressions[i];
+				if (ex != null && getArgValue(ex) != null) {
+					aliases(newType, ex);
+				}
 			}
 		}
 	}
