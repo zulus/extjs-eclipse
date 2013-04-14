@@ -429,6 +429,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 	
 	private void addStatics(InferredType newType, IObjectLiteral initializer) {
+		if (initializer.getFields() == null) {
+			return;
+		}
 		for (IObjectLiteralField field : initializer.getFields()) {
 			if (field.getInitializer() instanceof IFunctionExpression) {
 				InferredMethod method = newType.addMethod(field.getFieldName().toString().toCharArray(), getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
