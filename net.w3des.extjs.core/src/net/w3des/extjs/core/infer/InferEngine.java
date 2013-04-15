@@ -1,6 +1,9 @@
 package net.w3des.extjs.core.infer;
 
+import net.w3des.extjs.core.ExtJSCore;
+
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
+import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
@@ -17,6 +20,7 @@ import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
+import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -49,7 +53,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	private final static char[] attrRequires = new char[]{'r','e','q','u','i','r','e','s'};
 	private final static char[] attrOverride = new char[]{'o','v','e','r','r','i','d','e'};
 	private final static char[] attrSingleton = new char[]{'s','i','n','g','l','e','t','o','n'};
+	@SuppressWarnings("unused")
 	private final static char[] attrConstructor = new char[]{'c','o','n','s','t','r','u','c','t','o','r'};
+	@SuppressWarnings("unused")
 	private final static char[] attrInitComponent = new char[]{'i','n','i','t','C','o','m','p','o','n','e','n','t'};
 	private final static char[] attrStatics = new char[]{'s','t','a','t','i','c','s'};
 	private final static char[] attrInheritableStatics = new char[]{'i','n','h','e','r','i','t','a','b','l','e','S','t','a','t','i','c','s'};
@@ -104,9 +110,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				
 				return true;
 			} 
-			
-			if (fcall.getReceiver() != null 
-					&& CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
+			if (fcall.getReceiver() == null || fcall.getReceiver().toString() == null) {
+				return true;
+			}
+			if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
 					&& ( CharOperation.equals(fcall.getSelector(), extend) || CharOperation.equals(fcall.getSelector(), define) )
 					&& findDefinedType(localDeclaration.getName()) == null
 					&& fcall.getArguments().length > 0
@@ -118,8 +125,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				type.setNameStart(localDeclaration.sourceStart());
 				type.referenceClass = extended;
 				localDeclaration.setInferredType(type);
-			} else if (fcall.getReceiver() != null
-					&& CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
+			} else if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
 					&& CharOperation.equals(fcall.getSelector(), create)
 					&& findDefinedType(localDeclaration.getName()) == null
 					&& fcall.getArguments().length > 0) {
@@ -608,11 +614,49 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		
 		return true;
 	}
-
-
+	
 	@Override
-	public boolean visit(IJsDoc javadoc) {
-		super.visit(javadoc);
-		return true;
-	}	
+	public void endVisit(IObjectLiteral literal) {
+		
+		if (literal == null || literal.getFields() == null) {
+			try {
+				super.endVisit(literal);
+			} catch(Throwable e) {
+				ExtJSCore.error(e);
+			}
+			
+			return;
+		}
+		IThisReference ref = null;
+		for (IObjectLiteralField field : literal.getFields()) {
+			if (field.getInitializer() instanceof IThisReference && field.getFieldName().toString().equals("scope")) {
+				ref = (IThisReference) field.getInitializer();
+				break;
+			}
+		}
+		try {
+			super.endVisit(literal);
+		} catch(Throwable e) {
+			ExtJSCore.error(e);
+		}
+		if (ref == null) {
+			return;
+		}
+		
+		for (IObjectLiteralField field : literal.getFields()) {
+			if (field.getInitializer() instanceof IFunctionExpression) {
+				IFunctionExpression dec = (IFunctionExpression) field.getInitializer();
+				InferredMethod method = dec.getMethodDeclaration().getInferredMethod();
+				InferredType type = getTypeOf(ref);
+				method.inType = type;
+				
+				method.getClass();
+			} else if (getFunction(field.getInitializer()) != null && getTypeOf(ref) != null) {
+				IAbstractFunctionDeclaration dec = getFunction(field.getInitializer());
+				dec.getInferredMethod().inType = getTypeOf(ref);
+			}
+		}
+		
+		return;
+	}
 }
