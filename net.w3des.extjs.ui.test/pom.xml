@@ -17,7 +17,7 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-surefire-plugin</artifactId>
                 <configuration>
-                    <useUIHarness>true</useUIHarness>
+                    <useUIHarness>false</useUIHarness>
                     <useUIThread>true</useUIThread>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
