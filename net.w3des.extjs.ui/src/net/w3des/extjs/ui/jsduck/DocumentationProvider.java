@@ -42,7 +42,7 @@ public class DocumentationProvider implements IDocumentationReader {
 	@Override
 	public Reader getDocumentation2HTMLReader(Reader contentReader) {
 		
-		return new JSDuck2HTMLReader(contentReader);
+		return new JSDuck2HTMLReader(contentReader); 
 	}
 
 	@Override

@@ -1,0 +1,9 @@
+--TEST--
+Test class definition
+--FILE--
+Ext.define('defineClassBase', function() {});
+Ext.define('defineClass', {
+    extend : 'defineClassBase'
+});
+--EXPECT--
+class defineClass extends defineClassBase

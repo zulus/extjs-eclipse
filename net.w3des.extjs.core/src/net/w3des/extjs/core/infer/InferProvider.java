@@ -1,7 +1,6 @@
 package net.w3des.extjs.core.infer;
 
 import net.w3des.extjs.core.ExtJSCore;
-import net.w3des.extjs.core.container.Container;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -10,9 +9,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
@@ -57,25 +55,12 @@ public class InferProvider implements InferrenceProvider {
 				return InferrenceProvider.NOT_THIS;
 			}
 			
-			
-			final IJsGlobalScopeContainer container = JavaScriptCore
-					.getJsGlobalScopeContainer(new Path(Container.ID),
-							scriptProject);
-
-			if (container == null) {
-				return InferrenceProvider.NOT_THIS;
-			}
-			
-			final IIncludePathEntry[] raw = scriptProject.getRawIncludepath();
-			boolean found = false;
-			for (IIncludePathEntry entry : raw) {
-				if (entry.getPath().segment(0).equals(Container.ID)) {
-					found = true;
-					break;
+			try {
+				if (!FacetedProjectFramework.hasProjectFacet(project, ExtJSCore.FACET_EXT)) {
+					return InferrenceProvider.NOT_THIS;
 				}
-			}
-			
-			if (!found) {
+			} catch (Throwable e) {
+				ExtJSCore.warn(e);
 				return InferrenceProvider.NOT_THIS;
 			}
 			

@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>net.w3des.extjs</artifactId>
 		<groupId>net.w3des</groupId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>net.w3des.extjs.site</artifactId>
 	<packaging>eclipse-repository</packaging>

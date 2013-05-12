@@ -1,0 +1,8 @@
+--TEST--
+Test class definition
+--FILE--
+Ext.define('defineClass', {
+    
+});
+--EXPECT--
+class: defineClass

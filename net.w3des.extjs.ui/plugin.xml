@@ -2,22 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
     <extension
-        point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
-        <JsGlobalScopeContainerPage
-            name="%ExtJS.page.name"
-            class="net.w3des.extjs.ui.container.wizard.WizardPage"
-            id="net.w3des.extjs.core.container"
-            allowMulti="false">
-        </JsGlobalScopeContainerPage>
-    </extension>
-    <extension
-        id="net.w3des.extjs.ui.container.initializer"
-        point="org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer">
-        <JsGlobalScopeUIInitializer 
-            id="net.w3des.extjs.core.container"
-            class="net.w3des.extjs.ui.container.wizard.Initializer" />
-    </extension>
-    <extension
         id="net.w3des.net.extjs.ui.help"
         point="org.eclipse.help.contexts">
         <contexts file="helpContexts.xml" />
@@ -28,4 +12,91 @@
         point="org.eclipse.wst.jsdt.ui.documentationProvider">
         <documentationProvider class="net.w3des.extjs.ui.jsduck.DocumentationProvider" />
     </extension-->
+    
+    <extension
+          point="org.eclipse.wst.common.project.facet.ui.images">
+       <image path="icons/obj16/ext.png" facet="wst.jsdt.extjs.core" />
+       <image path="icons/obj16/ext.png" category="wst.jsdt.extjs.category" />
+       <image  path="icons/obj16/cmd.png" facet="wst.jsdt.extjs.cmd" />
+    </extension>
+    
+    <extension
+         point="org.eclipse.ui.menus">
+        <menuContribution
+              allPopups="false"
+              locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+              <menu
+                    icon="icons/obj16/ext.png"
+                    id="net.w3des.extjs.ui.menu.addExtJSSupport"
+                    label="Add ExtJS Support">
+                <visibleWhen
+                    checkEnabled="false">
+                    <and>
+                        <with variable="selection">
+                            <iterate
+                                ifEmpty="false"
+                                operator="and">
+                                <test
+                                    forcePluginActivation="true"
+                                    property="org.eclipse.core.resources.projectNature"
+                                    value="org.eclipse.wst.jsdt.core.jsNature" />
+                            </iterate>
+                        </with>
+                        <not>
+                            <with variable="selection">
+                                <iterate
+                                    ifEmpty="false"
+                                    operator="and">
+                                    <test 
+                                        forcePluginActivation="true"
+                                        property="org.eclipse.wst.common.project.facet.core.projectFacet"
+                                        value="wst.jsdt.extjs.core" />
+                                </iterate>                            
+                            </with>
+                        </not>
+                    </and>
+                </visibleWhen>
+                <dynamic
+                      class="net.w3des.extjs.ui.menu.AddExtJSSupportMenu"
+                      id="net.w3des.extjs.ui.menu.addExtJSSupport">
+                </dynamic>
+              </menu>
+              <command
+                    commandId="net.w3des.extjs.ui.command.removeExtJSSupport"
+                    icon="icons/obj16/delext.png"
+                    label="Remove ExtJS Support"
+                    style="push">
+                 <visibleWhen
+                       checkEnabled="false">
+                       <with
+                             variable="selection">
+                          <iterate
+                                ifEmpty="false"
+                                operator="and">
+                             <test
+                                   forcePluginActivation="true"
+                                   property="org.eclipse.wst.common.project.facet.core.projectFacet"
+                                   value="wst.jsdt.extjs.core">
+                             </test>
+                          </iterate>
+                       </with>
+                 </visibleWhen>
+              </command>
+        </menuContribution>
+    </extension>
+    <extension
+          point="org.eclipse.ui.commands">
+       <command
+             defaultHandler="net.w3des.extjs.ui.command.AddExtJSSupport"
+             description="Convert into facet project and install required facets"
+             id="net.w3des.extjs.ui.command.addExtJSSupport"
+             name="Add ExtJS Support">
+       </command>
+       <command
+             defaultHandler="net.w3des.extjs.ui.command.RemoveExtJSSupport"
+             description="Remove facets"
+             id="net.w3des.extjs.ui.command.removeExtJSSupport"
+             name="Remove ExtJS support from project">
+       </command>
+    </extension>
 </plugin>

@@ -1,18 +1,20 @@
 package net.w3des.extjs.core;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class ExtJSCore extends AbstractUIPlugin {
+public class ExtJSCore extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "net.w3des.extjs.core"; //$NON-NLS-1$
+	
+	public static final String FACET_EXT = "wst.jsdt.extjs.core"; //$NON-NLS-1$
+	public static final String FACET_CMD = "wst.jsdt.extjs.cmd";  //$NON-NLS-1$
 
 	// The shared instance
 	private static ExtJSCore plugin;
@@ -24,20 +26,12 @@ public class ExtJSCore extends AbstractUIPlugin {
 	public ExtJSCore() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin  = this;
 		started = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		started = false;
@@ -52,18 +46,11 @@ public class ExtJSCore extends AbstractUIPlugin {
 	public static ExtJSCore getDefault() {
 		return plugin;
 	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
 	
+	public boolean isStarted() {
+		return started;
+	}
+
 	public static void error(String message) {
 		plugin.getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, message,null));
 	}

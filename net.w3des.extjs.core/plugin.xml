@@ -10,10 +10,58 @@
     </extension> 
     
     <extension 
-        point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer"
-        id="net.w3des.extjs.core.container.point">
-        <JsGlobalScopeContainerInitializer
-            class="net.w3des.extjs.core.container.ContainerInitializer"
-            id="net.w3des.extjs.core.container" />
+        point="org.eclipse.wst.common.project.facet.core.facets">
+        <category id="wst.jsdt.extjs.category">
+            <label>ExtJS facets</label>
+            <description></description>
+        </category>
+        <project-facet id="wst.jsdt.extjs.core">
+            <label>ExtJS</label>
+            <description>ExtJS core facet</description>
+            <member category="wst.jsdt.extjs.category" />
+        </project-facet>
+        <project-facet-version facet="wst.jsdt.extjs.core" version="4.1">
+          <constraint>
+              <requires facet="wst.jsdt.web" />
+          </constraint>
+        </project-facet-version>
+        <project-facet-version facet="wst.jsdt.extjs.core" version="4.2">
+           <constraint>
+                <requires facet="wst.jsdt.web" version="1.0" />
+           </constraint>
+        </project-facet-version>
+        
+        <project-facet id="wst.jsdt.extjs.cmd">
+            <label>Sencha CMD&#174;</label>
+            <description>Support for Sencha CMD</description>
+            <member category="wst.jsdt.extjs.category" />
+        </project-facet>
+        <project-facet-version facet="wst.jsdt.extjs.cmd" version="3.1">
+            <constraint>
+                <requires facet="wst.jsdt.extjs.core" version="[4.1" />
+            </constraint>
+        </project-facet-version>
+        <action type="INSTALL" facet="wst.jsdt.extjs.cmd">
+            <delegate class="net.w3des.extjs.core.internal.facet.CmdInstall"></delegate>
+        </action>
+        <action type="INSTALL" facet="wst.jsdt.extjs.core">
+            <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
+        </action>
+        <action type="UNINSTALL" facet="wst.jsdt.extjs.core">
+            <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
+        </action>
+        <action type="VERSION_CHANGE" facet="wst.jsdt.extjs.core">
+            <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
+        </action>
+    </extension>
+    <extension point="org.eclipse.wst.common.project.facet.core.presets">
+        <static-preset id="net.w3des.extjs.core.facet.preset">
+            <label>
+                ExtJS Project
+            </label>
+            <facet id="wst.jsdt.web" version="1.0" />
+            <facet id="wst.jsdt.extjs.core" version="4.2" />
+            <facet id="wst.jsdt.extjs.cmd" version="3.1" />
+        </static-preset>
     </extension>
 </plugin>

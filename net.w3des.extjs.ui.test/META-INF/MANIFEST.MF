@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: net.w3des.extjs.ui tests
+Bundle-SymbolicName: net.w3des.extjs.ui.test;singleton:=true
+Bundle-Version: 0.0.4.qualifier
+Bundle-Activator: net.w3des.extjs.ui.test.ExtJSUITest
+Require-Bundle: net.w3des.extjs.core,
+ net.w3des.extjs.core.test,
+ net.w3des.extjs.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.junit4.runtime;bundle-version="1.1.0",
+ org.junit;bundle-version="4.11",
+ org.eclipse.wst.jsdt.core;bundle-version="1.1.0",
+ org.eclipse.wst.jsdt.web.core;bundle-version="1.0.6",
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.common.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: net.w3des.extjs.ui.test

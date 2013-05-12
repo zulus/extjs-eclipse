@@ -2,7 +2,6 @@ package net.w3des.extjs.ui;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -13,8 +12,6 @@ public class ExtJSUI extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String ID = "net.w3des.extjs.ui"; //$NON-NLS-1$
-	public static final String IMG_ICO = "resources/icons/ext.png"; //$NON-NLS-1$
-	public static final String WIZ_IMAGE = "resources/icons/ext_wiz.png"; //$NON-NLS-1$
 
 	// The shared instance
 	private static ExtJSUI plugin;
@@ -53,17 +50,6 @@ public class ExtJSUI extends AbstractUIPlugin {
 	 */
 	public static ExtJSUI getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(ID, path);
 	}
 	
 	public static void error(String message) {
