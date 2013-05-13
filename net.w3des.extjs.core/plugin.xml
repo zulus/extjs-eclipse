@@ -48,7 +48,7 @@
             <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
         </action>
         <action type="UNINSTALL" facet="wst.jsdt.extjs.core">
-            <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
+            <delegate class="net.w3des.extjs.core.internal.facet.CoreUninstall"></delegate>
         </action>
         <action type="VERSION_CHANGE" facet="wst.jsdt.extjs.core">
             <delegate class="net.w3des.extjs.core.internal.facet.CoreInstall"></delegate>
@@ -64,4 +64,28 @@
             <facet id="wst.jsdt.extjs.cmd" version="3.1" />
         </static-preset>
     </extension>
+    <extension
+          id="net.w3des.extjs.core.extjsNature"
+          name="ExtJS Nature"
+          point="org.eclipse.core.resources.natures">
+       <runtime>
+          <run
+                class="net.w3des.extjs.core.ExtJSNature">
+          </run>
+       </runtime>
+       <requires-nature
+             id="org.eclipse.wst.jsdt.core.jsNature">
+       </requires-nature>
+       <content-type
+             id="org.eclipse.wst.jsdt.core.jsSource">
+       </content-type>
+    </extension>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated extjs -->
+      <package
+            uri="http://net.w3des.extjs/1.0"
+            class="net.w3des.extjs.core.model.extjs.ExtJsPackage"
+            genModel="resources/model/extjs.genmodel"/>
+   </extension>
+
 </plugin>

@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
-public class CoreInstall implements IDelegate {
+public class CoreUninstall implements IDelegate {
 
 	@Override
 	public void execute(IProject project, IProjectFacetVersion version, Object config, IProgressMonitor monitor) throws CoreException {
@@ -45,11 +45,12 @@ public class CoreInstall implements IDelegate {
 			}
 		} finally {
 			
-			if (!project.hasNature(ExtJSNature.NATURE_ID)) {
+			if (project.hasNature(ExtJSNature.NATURE_ID)) {
 				IProjectDescription description = project.getDescription();
 				List<String> nature = new LinkedList<String>();
-				nature.add(ExtJSNature.NATURE_ID);
 				nature.addAll(Arrays.asList(description.getNatureIds()));
+				nature.remove(ExtJSNature.NATURE_ID);	
+				
 				description.setNatureIds(nature.toArray(new String[nature.size()]));
 				project.setDescription(description, monitor);
 			}

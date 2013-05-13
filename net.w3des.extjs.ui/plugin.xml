@@ -99,4 +99,30 @@
              name="Remove ExtJS support from project">
        </command>
     </extension>
+    <extension
+          point="org.eclipse.ui.ide.projectNatureImages">
+       <image
+             icon="icons/ovr16/ext.png"
+             id="net.w3des.extjs.ui.extjsNatureImage"
+             natureId="net.w3des.extjs.core.extjsNature">
+       </image>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.extCategory"
+          name="ExtJS"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <proposalCategory
+             icon="icons/obj16/ext.png">
+       </proposalCategory>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.type"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer"
+          name="ExtJS Create Type">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.TypeCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
 </plugin>

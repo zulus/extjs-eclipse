@@ -35,21 +35,22 @@ public class AddExtJSSupport extends AbstractHandler {
 		final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
 
 		Job job = new Job("Install ExtJS Support") {
-			
+
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					final IFacetedProject fproject = ProjectFacetsManager.create(project, true, monitor);
 					final IProjectFacetVersion facet;
 
-					if (event.getParameters().containsKey("version")) {
-						facet = (IProjectFacetVersion) event.getParameters().get("version");
+					if (event.getParameters().containsKey("version")) { //$NON-NLS-1$
+						facet = (IProjectFacetVersion) event.getParameters().get("version"); //$NON-NLS-1$
 					} else {
 						facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getDefaultVersion();
 					}
 
-					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web"))) {
-						fproject.installProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web").getDefaultVersion(), null, monitor);
+					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web"))) { //$NON-NLS-1$
+						fproject.installProjectFacet(ProjectFacetsManager
+								.getProjectFacet("wst.jsdt.web").getDefaultVersion(), null, monitor); //$NON-NLS-1$
 					}
 
 					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT))) {

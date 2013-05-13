@@ -52,6 +52,16 @@ public class SharedImages{
 	}
 	
 	/**
+	 * Constants set for folder 'icons/ovr16'
+	 */
+	public static interface OVR16{
+		/**
+		 * Image constant for icons/ovr16/ext.png
+		 */
+		public static final String EXT = "icons/ovr16/ext.png";
+	}
+	
+	/**
 	 * Constants set for folder 'icons/wizban'
 	 */
 	public static interface WIZBAN{
