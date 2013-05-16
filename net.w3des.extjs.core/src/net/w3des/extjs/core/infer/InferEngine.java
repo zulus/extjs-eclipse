@@ -269,6 +269,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			if (messageSend.getReceiver() != null && messageSend.getSelector() != null
 					&& CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
 					&& CharOperation.equals(messageSend.getSelector(), create)
+					&& messageSend.getArguments() != null
 					&& messageSend.getArguments().length > 0) {
 				char[] name = getArgValue(messageSend.getArguments()[0]);
 				if (name != null) {
