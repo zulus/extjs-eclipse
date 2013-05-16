@@ -52,40 +52,59 @@ public class TypeCompletion implements IJavaCompletionProposalComputer {
 			return Collections.EMPTY_LIST;
 		}
 		String toCompare = "";
+		String realString = "";
 		String found = null;
-		while (currentOffset > 0) {
+		boolean ignore = false;
+		while (currentOffset > 0 && found == null) {
 			char token = content.charAt(--currentOffset);
 			String p = new String(new char[] { token });
 			if (token == ' ' || token == '\t' || token == '\n' || token == '\r') {
 				continue;
 			}
-
-			toCompare = p + toCompare;
-			if (p.equals("'") || p.equals("\"")) {
-				inString = true;
+			
+			if (p.equals(",")) {
+				ignore = true;
 				continue;
 			}
-
-			for (String n : stopBefore) {
-				if (p.equals(n)) {
-					return Collections.EMPTY_LIST;
+			
+			toCompare = p + toCompare;
+			if (!ignore) {
+				realString = p + realString;
+			}
+			
+			if ((p.equals("'") || p.equals("\"")) && !ignore) {
+				inString = true;
+				ignore = true;
+				continue;
+			}
+			
+			if (!ignore) {
+				for (String n : stopBefore) {
+					if (p.equals(n)) {
+						return Collections.EMPTY_LIST;
+					}
 				}
 			}
 
 			for (String n : before) {
-				if (toCompare.startsWith(n)) {
+				if (n.length() > 0 && toCompare.startsWith(n)) {
 					found = n;
-					currentOffset = -1;
 					break;
 				}
 			}
 		}
-
+		
 		if (found == null) {
 			return Collections.EMPTY_LIST;
 		}
-
-		String start = toCompare.substring(found.length() + (inString ? 1 : 0));
+		String start = null;
+		if (ignore) {
+			start = realString.substring(1);
+		} else {
+			start = toCompare.substring(found.length() + (inString ? 1 : 0));
+		}
+		
+	
 
 		List<ICompletionProposal> proposals = new LinkedList<ICompletionProposal>();
 

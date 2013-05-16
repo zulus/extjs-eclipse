@@ -31,6 +31,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
@@ -114,7 +115,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				return true;
 			}
 			if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
-					&& ( CharOperation.equals(fcall.getSelector(), extend) || CharOperation.equals(fcall.getSelector(), define) )
+					&& ( CharOperation.equals(fcall.getSelector(), extend) || CharOperation.equals(fcall.getSelector(), define) || CharOperation.equals(fcall.getSelector(), attrOverride) )
 					&& findDefinedType(localDeclaration.getName()) == null
 					&& fcall.getArguments().length > 0
 					&& getArgValue(fcall.getArguments()[0]) != null ) {
@@ -128,6 +129,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			} else if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
 					&& CharOperation.equals(fcall.getSelector(), create)
 					&& findDefinedType(localDeclaration.getName()) == null
+					
+					
+					
+					&& fcall.getArguments() != null
 					&& fcall.getArguments().length > 0) {
 				if (getArgValue(fcall.getArguments()[0]) != null) {
 					localDeclaration.setInferredType(addType(getArgValue(fcall.getArguments()[0])));
@@ -140,6 +145,49 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	protected boolean handleFunctionCall(IFunctionCall messageSend, LocalDeclaration assignmentExpression) {
+		if (assignmentExpression != null && assignmentExpression.getInitialization() != null && assignmentExpression.getInitialization() instanceof IOR_OR_Expression) {
+			final IOR_OR_Expression ex = (IOR_OR_Expression) assignmentExpression.getInitialization();
+			if (ex.getLeft() instanceof ISingleNameReference) {
+				final ISingleNameReference ref = (ISingleNameReference) ex.getLeft();
+				if (addType(ref.getToken()) != null) {
+					assignmentExpression.setInferredType(addType(ref.getToken()));
+					
+					return true;
+				}
+			}
+			
+			// Set inferred type for alias still not work as expected
+			if ((messageSend.getReceiver() == null || CharOperation.prefixEquals(ext, messageSend.getReceiver().toString().toCharArray(), true) ) && CharOperation.equals(messageSend.getSelector(), alias)) { 
+				assignmentExpression.setInferredType(FunctionType); 
+				return true;
+			} 
+			if (messageSend.getReceiver() == null || messageSend.getReceiver().toString() == null) {
+				return true;
+			}
+			if (CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
+					&& ( CharOperation.equals(messageSend.getSelector(), extend) || CharOperation.equals(messageSend.getSelector(), define) || CharOperation.equals(messageSend.getSelector(), attrOverride) )
+					&& findDefinedType(assignmentExpression.getName()) == null
+					&& messageSend.getArguments().length > 0
+					&& getArgValue(messageSend.getArguments()[0]) != null ) {
+				InferredType type = buildType(messageSend);
+				assignmentExpression.setInferredType(type);
+			} else if (CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
+					&& CharOperation.equals(messageSend.getSelector(), create)
+					&& findDefinedType(assignmentExpression.getName()) == null
+					&& messageSend.getArguments().length > 0) {
+				if (getArgValue(messageSend.getArguments()[0]) != null) {
+					assignmentExpression.setInferredType(addType(getArgValue(messageSend.getArguments()[0])));
+				} else {
+					assignmentExpression.setInferredType(addType(baseClass));
+				}
+			}
+		}
+		
+		return super.handleFunctionCall(messageSend, assignmentExpression);
 	}
 	
 	@Override
@@ -213,10 +261,32 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		return newType;
 	}
 	
+	@Override
+	protected InferredType getTypeOf(IExpression expression) {
+		if (expression instanceof IFunctionCall) {
+			IFunctionCall messageSend = (IFunctionCall) expression;
+			
+			if (messageSend.getReceiver() != null && messageSend.getSelector() != null
+					&& CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
+					&& CharOperation.equals(messageSend.getSelector(), create)
+					&& messageSend.getArguments().length > 0) {
+				char[] name = getArgValue(messageSend.getArguments()[0]);
+				if (name != null) {
+					return addType(name);
+				}
+			}
+		}
+		
+		return super.getTypeOf(expression);
+	}
+	
+	
+	
 	private InferredType buildType(InferredType newType, IObjectLiteral init) {
 		char[] typeParent = baseClass;
 		boolean singleton = false;
 		boolean hasConstructor = false;
+		init.setInferredType(newType);
 		if (init.getFields() != null) {
 			for (IObjectLiteralField field : init.getFields()) {
 				if (field == null) {
@@ -357,6 +427,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		attr.sourceStart = field.sourceStart();
 		attr.sourceEnd = field.sourceEnd();
 		attr.initializationStart = field.getInitializer().sourceStart();
+		
 		if (field.getJsDoc() != null) {
 			Javadoc doc = (Javadoc) field.getJsDoc();
 			attr.modifiers = doc.modifiers;
@@ -365,9 +436,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					&& (ClassFileConstants.AccPrivate & attr.modifiers) != ClassFileConstants.AccPrivate ) {
 				attr.modifiers = ClassFileConstants.AccPublic;
 			}
-			attr.type = getReturnType(doc);
+			if (getReturnType(doc) != null) {
+				attr.type = getReturnType(doc);
+			}
 		} else {
 			attr.modifiers = ClassFileConstants.AccPublic;
+		}
+		if (attr.type == null) {
+			attr.type = getTypeOf(field.getInitializer());
 		}
 		
 		return attr;
@@ -496,7 +572,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		super.visit(functionCall);
 		if (CharOperation.equals(getName(functionCall.getReceiver()), ext) && 
 				(CharOperation.equals(functionCall.getSelector(), define) 
-						|| CharOperation.equals(functionCall.getSelector(), extend)) && passNumber == 1 ) {
+						|| CharOperation.equals(functionCall.getSelector(), extend )
+						|| CharOperation.equals(functionCall.getSelector(), attrOverride)
+						) && passNumber == 1 ) {
 			buildType(functionCall);
 			
 			return true;

@@ -63,8 +63,9 @@ public class InferProvider implements InferrenceProvider {
 				ExtJSCore.warn(e);
 				return InferrenceProvider.NOT_THIS;
 			}
+			//TODO check file 
 			
-			return InferrenceProvider.MAYBE_THIS;
+			return InferrenceProvider.ONLY_THIS;
 
 		} catch (CoreException e) {
 			ExtJSCore.error(e);
