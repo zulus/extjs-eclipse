@@ -240,7 +240,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		} else {
 			return null;
 		}
-		
+		this.inferredGlobal= newType;
 		newType.sourceStart = fcall.sourceStart();
 		newType.sourceEnd = fcall.sourceEnd();
 		
@@ -696,8 +696,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	
 	@Override
 	public void endVisit(IObjectLiteral literal) {
-		
-		if (literal == null || literal.getFields() == null) {
+		// TODO move scope resolver
+		if (literal == null || literal.getFields() == null || passNumber == 2) {
 			try {
 				super.endVisit(literal);
 			} catch(Throwable e) {
