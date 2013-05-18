@@ -1,0 +1,29 @@
+--TEST--
+Test class override
+--FILE--
+Ext.define('ClassOver', {
+    example : 1
+});
+
+Ext.define('ClassSecondOver', {
+    override : 'ClassOver',
+    example2 : true
+});
+
+Ext.define(null, {
+    override : 'ClassOver',
+    exampleMethod : function() {
+        return false;
+    }
+});
+Ext.override(ClassOver, {
+    method4 : function() {
+        return true;
+    }
+});
+--EXPECT--
+class ClassOver
+    variable example Number
+    variable example2 Boolean
+    method exampleMethod
+    method method4

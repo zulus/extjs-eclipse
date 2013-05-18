@@ -245,6 +245,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				newType.setNameStart(messageSend.sourceStart());
 				newType.isAnonymous = false;
 			}
+		} else if (CharOperation.equals(messageSend.getSelector(), attrOverride)) {
+			char[] name = getFieldName(messageSend.getArguments()[0]);
+			newType = addType(name, true);
+			newType.setNameStart(messageSend.getArguments()[0] instanceof IStringLiteral ? messageSend.getArguments()[0]
+					.sourceStart() + 1 : messageSend.getArguments()[0].sourceStart());
+			newType.isAnonymous = false;
+			args = Arrays.copyOfRange(args, 1, args.length);
+
 		} else if (getArgValue(messageSend.getArguments()[0]) != null) {
 			char[] name = getArgValue(messageSend.getArguments()[0]);
 			newType = addType(name, true);
@@ -252,10 +260,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					.sourceStart() + 1 : messageSend.getArguments()[0].sourceStart());
 			newType.isAnonymous = false;
 			args = Arrays.copyOfRange(args, 1, args.length);
+			
+			newType = checkOverride(newType, args);
 
 		} else if (messageSend.getArguments()[0] instanceof INullLiteral) {
 			newType = createAnonymousType(extendedClass, null);
 			args = Arrays.copyOfRange(args, 1, args.length);
+			
+			newType = checkOverride(newType, args);
 		} else {
 			return null;
 		}
@@ -277,6 +289,38 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 
 		return newType;
+	}
+	
+	private InferredType checkOverride(InferredType type, IExpression[] args) {
+		if (args.length >= 1 && args[0] instanceof IObjectLiteral) {
+			IObjectLiteral li = (IObjectLiteral) args[0];
+			if (li.getFields() != null) {
+				char[] found = null;
+				int nameStart = 0;
+				for (IObjectLiteralField field : li.getFields()) {
+					if (field == null) {
+						continue;
+					}
+					
+					if (CharOperation.equals(getFieldName(field.getFieldName()), attrOverride, true)) {
+						found = getArgValue(field.getInitializer());
+						nameStart = field.getFieldName().sourceStart();
+					}
+				}
+				
+				if (found != null) {
+					InferredType newType = addType(found, true);
+					newType.isAnonymous = false;
+					newType.setNameStart(nameStart);
+					
+					type.superClass = newType;
+					
+					return newType;
+				}
+			}
+		}
+		
+		return type;
 	}
 
 	@Override
@@ -314,7 +358,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					continue;
 				}
 				char[] fieldName = getFieldName(field.getFieldName());
-				if (CharOperation.equals(fieldName, extend) || CharOperation.equals(fieldName, attrOverride)) {
+				if (CharOperation.equals(fieldName, extend)) {
 					typeParent = getArgValue(field.getInitializer());
 					addAttribute(newType, field, false);
 					continue;
