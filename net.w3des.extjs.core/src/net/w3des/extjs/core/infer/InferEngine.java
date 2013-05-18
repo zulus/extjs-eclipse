@@ -1,11 +1,14 @@
 package net.w3des.extjs.core.infer;
 
+import java.util.Arrays;
+
 import net.w3des.extjs.core.ExtJSCore;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
+import org.eclipse.wst.jsdt.core.ast.IAssignment;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
@@ -30,44 +33,43 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
- * TODO inferer for JSduck json
  * @author Dawid zulus Pakula <zulus@w3des.net>
  */
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
-	
-	private final static char[] alias = new char[]{'a','l','i','a','s'};
-	private final static char[] ext = new char[]{'E','x','t'};
-	private final static char[] create = new char[]{'c','r','e','a','t','e'};
-	private final static char[] define = new char[]{'d','e','f','i','n','e'};
-	private final static char[] extend = new char[]{'e','x','t','e','n','d'};
-	private final static char[] baseClass = new char[]{'E','x','t','.','B','a','s','e'};
-	private final static char[] baseName = new char[]{'B','a','s','e'};
-	private final static char[] extendedClass = new char[]{'E','x','t','.','B','a','s','e','.','A','n','o'};
-	private final static char[] attrUses = new char[]{'u','s','e','s'};
-	private final static char[] attrRequires = new char[]{'r','e','q','u','i','r','e','s'};
-	private final static char[] attrOverride = new char[]{'o','v','e','r','r','i','d','e'};
-	private final static char[] attrSingleton = new char[]{'s','i','n','g','l','e','t','o','n'};
-	@SuppressWarnings("unused")
-	private final static char[] attrConstructor = new char[]{'c','o','n','s','t','r','u','c','t','o','r'};
-	@SuppressWarnings("unused")
-	private final static char[] attrInitComponent = new char[]{'i','n','i','t','C','o','m','p','o','n','e','n','t'};
-	private final static char[] attrStatics = new char[]{'s','t','a','t','i','c','s'};
-	private final static char[] attrInheritableStatics = new char[]{'i','n','h','e','r','i','t','a','b','l','e','S','t','a','t','i','c','s'};
-	private final static char[] attrAlternateClassName = new char[]{'a','l','t','e','r','n','a','t','e','C','l','a','s','s','N','a','m','e'};
-	private final static char[] attrMixins = new char[]{'m','i','x','i','n','s'};
+
+	private final static char[] alias = new char[] { 'a', 'l', 'i', 'a', 's' };
+	private final static char[] ext = new char[] { 'E', 'x', 't' };
+	private final static char[] create = new char[] { 'c', 'r', 'e', 'a', 't', 'e' };
+	private final static char[] define = new char[] { 'd', 'e', 'f', 'i', 'n', 'e' };
+	private final static char[] extend = new char[] { 'e', 'x', 't', 'e', 'n', 'd' };
+	private final static char[] baseClass = new char[] { 'E', 'x', 't', '.', 'B', 'a', 's', 'e' };
+	private final static char[] baseName = new char[] { 'B', 'a', 's', 'e' };
+	private final static char[] extendedClass = new char[] { 'E', 'x', 't', '.', 'B', 'a', 's', 'e', '.', 'A', 'n', 'o' };
+	private final static char[] attrUses = new char[] { 'u', 's', 'e', 's' };
+	private final static char[] attrRequires = new char[] { 'r', 'e', 'q', 'u', 'i', 'r', 'e', 's' };
+	private final static char[] attrOverride = new char[] { 'o', 'v', 'e', 'r', 'r', 'i', 'd', 'e' };
+	private final static char[] attrSingleton = new char[] { 's', 'i', 'n', 'g', 'l', 'e', 't', 'o', 'n' };
+	private final static char[] attrStatics = new char[] { 's', 't', 'a', 't', 'i', 'c', 's' };
+	private final static char[] attrInheritableStatics = new char[] { 'i', 'n', 'h', 'e', 'r', 'i', 't', 'a', 'b', 'l',
+			'e', 'S', 't', 'a', 't', 'i', 'c', 's' };
+	private final static char[] attrAlternateClassName = new char[] { 'a', 'l', 't', 'e', 'r', 'n', 'a', 't', 'e', 'C',
+			'l', 'a', 's', 's', 'N', 'a', 'm', 'e' };
+	private final static char[] attrMixins = new char[] { 'm', 'i', 'x', 'i', 'n', 's' };
 	private CompilationUnitDeclaration unit;
-	
+
 	public void initialize() {
 		super.initialize();
 	}
-	
+
 	@Override
 	public void doInfer() {
 		super.doInfer();
@@ -78,211 +80,229 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		super.setCompilationUnit(scriptFileDeclaration);
 		unit = scriptFileDeclaration;
 	}
-	
+
 	public void initializeOptions(InferOptions inferOptions) {
 		super.initializeOptions(inferOptions);
-		inferOptions.useAssignments = true;
+		inferOptions.useAssignments = false;
 		inferOptions.useInitMethod = true;
 		inferOptions.saveArgumentComments = true;
 		inferOptions.engineClass = this.getClass().getName();
-  	}
-	
+	}
+
+	/**
+	 * Get field name by expression
+	 * 
+	 * @param expression
+	 * @return
+	 */
+	private char[] getFieldName(IExpression expression) {
+		if (expression instanceof ISingleNameReference) {
+			return ((ISingleNameReference) expression).getToken();
+		} else if (expression instanceof IFieldReference) {
+			return ((IFieldReference) expression).getToken();
+		} else if (expression instanceof IStringLiteral) {
+			return ((IStringLiteral) expression).source();
+		}
+
+		return new char[] {};
+	}
+
 	@Override
 	public boolean visit(ILocalDeclaration localDeclaration) {
 		super.visit(localDeclaration);
-		if (localDeclaration.getInitialization() != null && localDeclaration.getInitialization() instanceof IOR_OR_Expression) {
+		if (localDeclaration.getInitialization() != null
+				&& localDeclaration.getInitialization() instanceof IOR_OR_Expression) {
 			final IOR_OR_Expression ex = (IOR_OR_Expression) localDeclaration.getInitialization();
 			if (ex.getLeft() instanceof ISingleNameReference) {
 				final ISingleNameReference ref = (ISingleNameReference) ex.getLeft();
 				if (addType(ref.getToken()) != null) {
 					localDeclaration.setInferredType(addType(ref.getToken()));
-					
+
 					return true;
 				}
 			}
 		}
-		
-		if (localDeclaration.getInitialization() != null && localDeclaration.getInitialization() instanceof IFunctionCall) {
+
+		if (localDeclaration.getInitialization() != null
+				&& localDeclaration.getInitialization() instanceof IFunctionCall) {
 			IFunctionCall fcall = (IFunctionCall) localDeclaration.getInitialization();
-			if ((fcall.getReceiver() == null || CharOperation.prefixEquals(ext, fcall.getReceiver().toString().toCharArray(), true) ) 
-					&& CharOperation.equals(fcall.getSelector(), alias)) { 
-				localDeclaration.setInferredType(FunctionType); 
-				// now I have to create method for left hand :( but I dont know what I shlould do if not exists
-				
-				return true;
-			} 
 			if (fcall.getReceiver() == null || fcall.getReceiver().toString() == null) {
 				return true;
 			}
-			if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
-					&& ( CharOperation.equals(fcall.getSelector(), extend) || CharOperation.equals(fcall.getSelector(), define) || CharOperation.equals(fcall.getSelector(), attrOverride) )
-					&& findDefinedType(localDeclaration.getName()) == null
-					&& fcall.getArguments().length > 0
-					&& getArgValue(fcall.getArguments()[0]) != null ) {
-				InferredType extended = addType(getArgValue(fcall.getArguments()[0]));
-				InferredType type = addType(localDeclaration.getName(), true);
-				type.sourceStart = localDeclaration.sourceStart();
-				type.setSourceEnd(localDeclaration.sourceEnd());
-				type.setNameStart(localDeclaration.sourceStart());
-				type.referenceClass = extended;
-				localDeclaration.setInferredType(type);
-			} else if (CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
-					&& CharOperation.equals(fcall.getSelector(), create)
-					&& findDefinedType(localDeclaration.getName()) == null
-					
-					
-					
-					&& fcall.getArguments() != null
-					&& fcall.getArguments().length > 0) {
-				if (getArgValue(fcall.getArguments()[0]) != null) {
-					localDeclaration.setInferredType(addType(getArgValue(fcall.getArguments()[0])));
-				} else {
-					localDeclaration.setInferredType(addType(baseClass));
-				}
+
+			if (localDeclaration.getInferredType() == null) {
+				localDeclaration.setInferredType(extCreate(fcall));
 			}
-			
-		
+
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	protected boolean handleFunctionCall(IFunctionCall messageSend, LocalDeclaration assignmentExpression) {
-		if (assignmentExpression != null && assignmentExpression.getInitialization() != null && assignmentExpression.getInitialization() instanceof IOR_OR_Expression) {
+		if (assignmentExpression != null && assignmentExpression.getInitialization() != null
+				&& assignmentExpression.getInitialization() instanceof IOR_OR_Expression) {
 			final IOR_OR_Expression ex = (IOR_OR_Expression) assignmentExpression.getInitialization();
 			if (ex.getLeft() instanceof ISingleNameReference) {
 				final ISingleNameReference ref = (ISingleNameReference) ex.getLeft();
 				if (addType(ref.getToken()) != null) {
 					assignmentExpression.setInferredType(addType(ref.getToken()));
-					
+
 					return true;
 				}
 			}
-			
-			// Set inferred type for alias still not work as expected
-			if ((messageSend.getReceiver() == null || CharOperation.prefixEquals(ext, messageSend.getReceiver().toString().toCharArray(), true) ) && CharOperation.equals(messageSend.getSelector(), alias)) { 
-				assignmentExpression.setInferredType(FunctionType); 
-				return true;
-			} 
-			if (messageSend.getReceiver() == null || messageSend.getReceiver().toString() == null) {
-				return true;
-			}
-			if (CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
-					&& ( CharOperation.equals(messageSend.getSelector(), extend) || CharOperation.equals(messageSend.getSelector(), define) || CharOperation.equals(messageSend.getSelector(), attrOverride) )
-					&& findDefinedType(assignmentExpression.getName()) == null
-					&& messageSend.getArguments().length > 0
-					&& getArgValue(messageSend.getArguments()[0]) != null ) {
-				InferredType type = buildType(messageSend);
-				assignmentExpression.setInferredType(type);
-			} else if (CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
-					&& CharOperation.equals(messageSend.getSelector(), create)
-					&& findDefinedType(assignmentExpression.getName()) == null
-					&& messageSend.getArguments().length > 0) {
-				if (getArgValue(messageSend.getArguments()[0]) != null) {
-					assignmentExpression.setInferredType(addType(getArgValue(messageSend.getArguments()[0])));
-				} else {
-					assignmentExpression.setInferredType(addType(baseClass));
-				}
-			}
 		}
-		
+
+		if (messageSend.getReceiver() == null || messageSend.getReceiver().toString() == null
+				|| messageSend.getSelector() == null) {
+			return true;
+		}
+
+		if (isExtDefine(messageSend)) {
+			InferredType type = buildType(messageSend);
+			if (assignmentExpression != null) {
+				assignmentExpression.setInferredType(type);
+			}
+		} else if (assignmentExpression != null && extCreate(messageSend) != null) {
+			assignmentExpression.setInferredType(extCreate(messageSend));
+		} else if (assignmentExpression != null && extAlias(messageSend) != null) {
+			assignmentExpression.setInferredType(extAlias(messageSend));
+		}
+
 		return super.handleFunctionCall(messageSend, assignmentExpression);
 	}
-	
+
+	protected InferredType extCreate(IFunctionCall messageSend) {
+		if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), ext)
+				&& CharOperation.equals(messageSend.getSelector(), create) && messageSend.getArguments() != null
+				&& messageSend.getArguments().length > 0) {
+			if (getArgValue(messageSend.getArguments()[0]) != null) {
+				return addType(getArgValue(messageSend.getArguments()[0]));
+			} else {
+				return addType(baseClass);
+			}
+		}
+
+		return null;
+	}
+
 	@Override
 	public InferredType findDefinedType(char[] className) {
 		try {
 			return super.findDefinedType(className);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public boolean visit(IFieldDeclaration fieldDeclaration) {
 		super.visit(fieldDeclaration);
-		
+
 		if (fieldDeclaration.getInitialization() instanceof IFunctionCall) {
 			IFunctionCall fcall = (IFunctionCall) fieldDeclaration.getInitialization();
-			if (fcall.getReceiver() != null
-					&& CharOperation.equals(fcall.getReceiver().toString().toCharArray(), ext) 
+			if (fcall.getReceiver() != null && CharOperation.equals(getFieldName(fcall.getReceiver()), ext)
 					&& CharOperation.equals(fcall.getSelector(), create)
-					&& findDefinedType(fieldDeclaration.getName()) == null
-					&& fcall.getArguments().length > 0) {
+					&& findDefinedType(fieldDeclaration.getName()) == null && fcall.getArguments().length > 0) {
 				if (getArgValue(fcall.getArguments()[0]) != null) {
 					fieldDeclaration.setInferredType(addType(getArgValue(fcall.getArguments()[0])));
 				} else {
 					fieldDeclaration.setInferredType(addType(baseClass));
 				}
-			} else if(CharOperation.equals(fcall.getSelector(), alias)) {
-				fieldDeclaration.setInferredType(getByAlias(fcall.getArguments()));
 			}
 		}
-		
-		
+
 		return true;
 	}
 
-	private InferredType buildType(IFunctionCall fcall) {
-		if (fcall.getArguments() == null || fcall.getArguments().length < 1) { //invalid call
+	private boolean isExtDefine(IFunctionCall messageSend) {
+		if (((CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(
+				messageSend.getSelector(), define))
+				|| (CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(
+						messageSend.getSelector(), extend)) || CharOperation.equals(messageSend.getSelector(),
+				attrOverride)) && passNumber == 1) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private InferredType buildType(IFunctionCall messageSend) {
+		if (messageSend.getArguments() == null || messageSend.getArguments().length < 1) { // invalid
 			return null;
 		}
-			
+
 		InferredType newType;
-		if (getArgValue(fcall.getArguments()[0]) != null) {
-			char[] name = getArgValue(fcall.getArguments()[0]);
+		IExpression[] args = messageSend.getArguments();
+		if (!CharOperation.equals(getName(messageSend.getReceiver()), ext)) {
+			char[] className = getName(messageSend.getReceiver());
+			if (className == null || className.length == 0) {
+				return null;
+			}
+			newType = addType(className, true);
+			if (newType.getNameStart() > 0) {
+				newType.setNameStart(messageSend.sourceStart());
+				newType.isAnonymous = false;
+			}
+		} else if (getArgValue(messageSend.getArguments()[0]) != null) {
+			char[] name = getArgValue(messageSend.getArguments()[0]);
 			newType = addType(name, true);
-			newType.setNameStart(fcall.getArguments()[0] instanceof IStringLiteral ? fcall.getArguments()[0].sourceStart()+1 : fcall.getArguments()[0].sourceStart()); 
+			newType.setNameStart(messageSend.getArguments()[0] instanceof IStringLiteral ? messageSend.getArguments()[0]
+					.sourceStart() + 1 : messageSend.getArguments()[0].sourceStart());
 			newType.isAnonymous = false;
-		} else if(fcall.getArguments()[0] instanceof INullLiteral) { 
+			args = Arrays.copyOfRange(args, 1, args.length);
+
+		} else if (messageSend.getArguments()[0] instanceof INullLiteral) {
 			newType = createAnonymousType(extendedClass, null);
+			args = Arrays.copyOfRange(args, 1, args.length);
 		} else {
 			return null;
 		}
-		this.inferredGlobal= newType;
-		newType.sourceStart = fcall.sourceStart();
-		newType.sourceEnd = fcall.sourceEnd();
-		
+		this.inferredGlobal = newType;
+		newType.sourceStart = messageSend.sourceStart();
+		newType.sourceEnd = messageSend.sourceEnd();
+
 		newType.isDefinition = true;
 		newType.bits = ASTNode.TYPE_DECLARATION;
 		newType.superClass = addType(baseClass);
-		if (fcall.getArguments().length < 2 ) {
+
+		if (args.length < 1) {
 			return newType;
 		}
-		if (fcall.getArguments()[1] instanceof IObjectLiteral) {
-			buildType(newType, (IObjectLiteral) fcall.getArguments()[1]);
-		} else if (fcall.getArguments()[1] instanceof IFunctionExpression) {
-			newType.addConstructorMethod(newType.getName(), 
-					getDefinedFunction(fcall.getArguments()[1]), 
-					newType.getNameStart());
+		if (args[0] instanceof IObjectLiteral) {
+			buildType(newType, (IObjectLiteral) args[0]);
+		} else if (args[0] instanceof IFunctionExpression) {
+			newType.addConstructorMethod(newType.getName(), getDefinedFunction(args[0]), newType.getNameStart());
 		}
-		
+
 		return newType;
 	}
-	
+
 	@Override
 	protected InferredType getTypeOf(IExpression expression) {
 		if (expression instanceof IFunctionCall) {
 			IFunctionCall messageSend = (IFunctionCall) expression;
-			
-			if (messageSend.getReceiver() != null && messageSend.getSelector() != null
-					&& CharOperation.equals(messageSend.getReceiver().toString().toCharArray(), ext) 
-					&& CharOperation.equals(messageSend.getSelector(), create)
-					&& messageSend.getArguments() != null
-					&& messageSend.getArguments().length > 0) {
-				char[] name = getArgValue(messageSend.getArguments()[0]);
-				if (name != null) {
-					return addType(name);
-				}
+
+			if (extCreate(messageSend) != null) {
+				return extCreate(messageSend);
+			}
+
+			if (extAlias(messageSend) != null) {
+				return extAlias(messageSend);
 			}
 		}
-		
+
 		return super.getTypeOf(expression);
 	}
-	
-	
-	
+
+	@Override
+	protected boolean handleFunctionExpressionAssignment(IAssignment assignment) {
+		// allow inject scope in future
+
+		return super.handleFunctionExpressionAssignment(assignment);
+	}
+
 	private InferredType buildType(InferredType newType, IObjectLiteral init) {
 		char[] typeParent = baseClass;
 		boolean singleton = false;
@@ -293,85 +313,99 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				if (field == null) {
 					continue;
 				}
-				char[] fieldName = field.getFieldName().toString().toCharArray();
+				char[] fieldName = getFieldName(field.getFieldName());
 				if (CharOperation.equals(fieldName, extend) || CharOperation.equals(fieldName, attrOverride)) {
 					typeParent = getArgValue(field.getInitializer());
-					addAttribute(newType, field);
+					addAttribute(newType, field, false);
 					continue;
 				}
-				
-				if (CharOperation.equals(fieldName, attrSingleton)) { 
+
+				if (CharOperation.equals(fieldName, attrSingleton)) {
 					singleton = true;
-					addAttribute(newType, field);
+					addAttribute(newType, field, false);
 					continue;
 				}
-				
+
 				if (CharOperation.equals(fieldName, attrRequires) || CharOperation.equals(fieldName, attrUses)) {
 					addImports(newType, field);
-					addAttribute(newType, field);
+					addAttribute(newType, field, false);
 					continue;
 				}
-				
-	
+
 				if (getDefinedFunction(field.getInitializer()) != null) {
-					InferredMethod method;
-					if (newType.findMethod(fieldName, getDefinedFunction(field.getInitializer())) != null) {
-						continue;
-					}
-					method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-					if (method.getFunctionDeclaration().getInferredType() == null) {
-						method.getFunctionDeclaration().setInferredType(getReturnType(field.getJsDoc()));
-						method.bits = method.bits | ClassFileConstants.AccPublic;
-					}
-					/**
-					 * Simple (unsafe hack) with return statement
-					 */
-					MethodDeclaration declaration = (MethodDeclaration) method.getFunctionDeclaration();
-					declaration.javadoc = (Javadoc) field.getJsDoc();
-					
+					addMethod(newType, field, false);
+
 					continue;
 				}
-				
-				if (CharOperation.equals(fieldName, attrStatics) || CharOperation.equals(fieldName, attrInheritableStatics)) {
+
+				if (CharOperation.equals(fieldName, attrStatics)
+						|| CharOperation.equals(fieldName, attrInheritableStatics)) {
 					if (field.getInitializer() instanceof IObjectLiteral) {
 						addStatics(newType, (IObjectLiteral) field.getInitializer());
 					}
-					IAbstractVariableDeclaration var = getVariable(field.getInitializer());
-					if (var != null && getDefinedFunction(var.getInitialization()) instanceof IObjectLiteral) {
-						addStatics(newType, (IObjectLiteral) var.getInitialization());
-					}
+
 					continue;
 				}
-				
+
 				if (CharOperation.equals(fieldName, attrAlternateClassName)) {
 					aliases(newType, field.getInitializer());
-					addAttribute(newType, field);
+					addAttribute(newType, field, false);
 					continue;
 				}
-				
+
 				if (CharOperation.equals(fieldName, attrMixins)) {
 					mixins(newType, field);
 					continue;
 				}
-				
+
 				// TODO other special EXT elements like configs etc...
-				addAttribute(newType, field);
+				addAttribute(newType, field, false);
 			}
 		}
-		
-		if (singleton) { 
+
+		if (singleton) {
 			isSingleton(newType);
-		} 
-		if(!singleton && !hasConstructor) {
+		}
+		if (!singleton && !hasConstructor) {
 			newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
 		}
-		if(typeParent != null && !CharOperation.equals(newType.getName(), baseName)) {
+		if (typeParent != null && !CharOperation.equals(newType.getName(), baseName)) {
 			newType.superClass = addType(typeParent);
 		}
-		
+
 		return newType;
-	} 
-	
+	}
+
+	private InferredMethod addMethod(InferredType newType, IObjectLiteralField field, boolean isStatic) {
+		char[] fieldName = getFieldName(field.getFieldName());
+		InferredMethod method = newType.findMethod(fieldName, getDefinedFunction(field.getInitializer()));
+		if (method != null) {
+			return method;
+		}
+		method = newType.addMethod(fieldName, getDefinedFunction(field.getInitializer()),
+				field.getFieldName() instanceof IStringLiteral ? field.getFieldName().sourceStart() + 1 : field
+						.getFieldName().sourceStart());
+
+		if (method.getFunctionDeclaration().getInferredType() == null) {
+			method.getFunctionDeclaration().setInferredType(getReturnType(field.getJsDoc()));
+		}
+
+		method.bits = method.bits | ClassFileConstants.AccPublic;
+
+		method.isStatic = isStatic;
+		if (isStatic) {
+			method.bits = method.bits | ClassFileConstants.AccStatic;
+		}
+
+		/**
+		 * Simple (unsafe hack) with return statement
+		 */
+		MethodDeclaration declaration = (MethodDeclaration) method.getFunctionDeclaration();
+		declaration.javadoc = (Javadoc) field.getJsDoc();
+
+		return method;
+	}
+
 	/**
 	 * Imports I'm not how JSDT use this
 	 * 
@@ -382,7 +416,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		field.getInitializer().traverse(new ASTVisitor() {
 			@Override
 			public boolean visit(IStringLiteral stringLiteral) {
-				unit.addImport(stringLiteral.source(), stringLiteral.sourceStart(), stringLiteral.sourceEnd(), stringLiteral.sourceStart());
+				unit.addImport(stringLiteral.source(), stringLiteral.sourceStart(), stringLiteral.sourceEnd(),
+						stringLiteral.sourceStart());
 				return true;
 			}
 		});
@@ -402,39 +437,27 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		if (jdoc.returnType != null && jdoc.returnType.getFullTypeName() != null) {
 			return addType(jdoc.returnType.getFullTypeName());
 		}
-		
+
 		return null;
 	}
-	
-	private InferredAttribute addAttribute(InferredType newType, IObjectLiteralField field) {
-		if (field.getInitializer() instanceof IFunctionCall) {
-			IFunctionCall fcall = (IFunctionCall) field.getInitializer();
-			if (CharOperation.equals(fcall.getSelector(), alias)) {
-				MethodDeclaration methodDeclaration = new MethodDeclaration(unit.compilationResult);
-				methodDeclaration.inferredType = getByAlias(fcall.getArguments());
-				InferredMethod method = newType.addMethod(field.getFieldName().toString().toCharArray(), methodDeclaration, field.getFieldName().sourceStart());
-				method.sourceStart = field.getInitializer().sourceStart();
-				method.sourceEnd = field.getInitializer().sourceEnd();
-				/**
-				 * Simple (unsafe hack) with return statement
-				 */
-				methodDeclaration.javadoc = (Javadoc) field.getJsDoc();
-				
-				return null;
-			}
+
+	private InferredAttribute addAttribute(InferredType newType, IObjectLiteralField field, boolean isStatic) {
+		if (newType.findAttribute(getFieldName(field.getFieldName())) != null) {
+			return newType.findAttribute(getFieldName(field.getFieldName()));
 		}
-		
-		InferredAttribute attr = newType.addAttribute(field.getFieldName().toString().toCharArray(), field.getInitializer(), field.getFieldName().sourceStart());
+
+		InferredAttribute attr = newType.addAttribute(getFieldName(field.getFieldName()), field.getInitializer(), field
+				.getFieldName().sourceStart());
 		attr.sourceStart = field.sourceStart();
 		attr.sourceEnd = field.sourceEnd();
 		attr.initializationStart = field.getInitializer().sourceStart();
-		
+
 		if (field.getJsDoc() != null) {
 			Javadoc doc = (Javadoc) field.getJsDoc();
 			attr.modifiers = doc.modifiers;
 			if ((ClassFileConstants.AccPublic & attr.modifiers) != ClassFileConstants.AccPublic
 					&& (ClassFileConstants.AccProtected & attr.modifiers) != ClassFileConstants.AccProtected
-					&& (ClassFileConstants.AccPrivate & attr.modifiers) != ClassFileConstants.AccPrivate ) {
+					&& (ClassFileConstants.AccPrivate & attr.modifiers) != ClassFileConstants.AccPrivate) {
 				attr.modifiers = ClassFileConstants.AccPublic;
 			}
 			if (getReturnType(doc) != null) {
@@ -443,16 +466,26 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		} else {
 			attr.modifiers = ClassFileConstants.AccPublic;
 		}
+
+		if (isStatic) {
+			attr.isStatic = isStatic;
+			attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic;
+		}
+
 		if (attr.type == null) {
 			attr.type = getTypeOf(field.getInitializer());
 		}
-		
+
+		handleAttributeDeclaration(attr, field.getInitializer());
+
 		return attr;
 	}
-	
+
 	private void mixins(InferredType newType, final IObjectLiteralField field) {
 		final IExpression mixin = field.getInitializer();
 		char[] val = getArgValue(mixin);
+		InferredAttribute attr = addAttribute(newType, field, false);
+		attr.modifiers = ClassFileConstants.AccPrivate;
 		if (val != null) {
 			newType.addMixin(val);
 		} else if (mixin instanceof IArrayInitializer) {
@@ -462,21 +495,28 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				}
 			}
 		} else if (mixin instanceof IObjectLiteral) {
-			InferredAttribute attr = newType.findAttribute(attrMixins);
-			//TODO list of mixins
-			if (attr == null) {
-				attr = newType.addAttribute(attrMixins, field.getInitializer(), field.getFieldName().sourceStart());
+			// TODO list of mixins
+			IObjectLiteral lit = (IObjectLiteral) mixin;
+
+			if (lit.getInferredType() == null) {
+				InferredType t = addType(createAnonymousTypeName(lit));
+				t.isObjectLiteral = true;
+				t.isAnonymous = true;
+				populateType(t, lit, false);
 			}
-			for (IObjectLiteralField f : ((IObjectLiteral) mixin).getFields()) {
-				if (getArgValue(f.getInitializer()) != null) {
-					newType.addMixin(getArgValue(f.getInitializer()));
+			for (IObjectLiteralField f : lit.getFields()) {
+				if (f != null) {
+					InferredAttribute at = lit.getInferredType().findAttribute(getFieldName(f.getFieldName()));
+					newType.addMixin(at.name);
+					at.type = addType(getArgValue(f.getInitializer()));
 				}
 			}
 		}
 	}
-	
+
 	/**
-	 * @see http://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-alternateClassName
+	 * @see http 
+	 *      ://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-alternateClassName
 	 */
 	private void aliases(InferredType newType, IExpression alias) {
 		char[] name = getArgValue(alias);
@@ -485,14 +525,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			newAlias.sourceStart = alias.sourceStart();
 			newAlias.sourceEnd = alias.sourceEnd();
 			newAlias.setNameStart(alias.sourceStart());
-			newAlias.referenceClass = newType;
+			newAlias.superClass = newType;
 		} else if (alias instanceof IObjectLiteral) {
 			aliases(newType, (IObjectLiteral) alias);
 		} else if (alias instanceof IArrayInitializer) {
 			aliases(newType, (IArrayInitializer) alias);
 		}
 	}
-	
+
 	private void aliases(InferredType newType, IObjectLiteral alias) {
 		if (alias.getFields() != null) {
 			for (IObjectLiteralField field : alias.getFields()) {
@@ -502,7 +542,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			}
 		}
 	}
-	
+
 	private void aliases(InferredType newType, IArrayInitializer alias) {
 		Expression[] expressions = ((ArrayInitializer) alias).expressions;
 		if (expressions != null) {
@@ -514,40 +554,53 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			}
 		}
 	}
-	
+
 	private void addStatics(InferredType newType, IObjectLiteral initializer) {
-		if (initializer.getFields() == null) {
+		initializer.setInferredType(newType);
+
+		if (initializer.getFields() == null || newType == null) {
 			return;
 		}
+
 		for (IObjectLiteralField field : initializer.getFields()) {
-			if (field.getInitializer() instanceof IFunctionExpression) {
-				InferredMethod method = newType.addMethod(field.getFieldName().toString().toCharArray(), getDefinedFunction(field.getInitializer()), field.getFieldName().sourceStart());
-				method.isStatic = true;
-				method.bits = method.bits | ClassFileConstants.AccStatic | ClassFileConstants.AccPublic;
-				if (method.getFunctionDeclaration().getInferredType() == null) {
-					method.getFunctionDeclaration().setInferredType(getReturnType(method.getFunctionDeclaration().getJsDoc()));
-				}
-				/**
-				 * Simple (unsafe hack) with return statement
-				 */
-				MethodDeclaration declaration = (MethodDeclaration) method.getFunctionDeclaration();
-				declaration.javadoc = (Javadoc) field.getJsDoc();
+			if (field == null) {
+				continue;
+			}
+			if (getDefinedFunction(field.getInitializer()) != null) {
+				addMethod(newType, field, true);
 			} else {
-				InferredAttribute attr = addAttribute(newType, field);
-				attr.isStatic = true;
-				attr.modifiers = attr.modifiers | ClassFileConstants.AccStatic;
+				addAttribute(newType, field, true);
 			}
 		}
 	}
-	
+
+	@Override
+	protected void populateType(InferredType type, IObjectLiteral objLit, boolean isStatic) {
+		super.populateType(type, objLit, isStatic);
+	}
+
+	@Override
+	protected boolean handleAttributeDeclaration(InferredAttribute attribute, IExpression initializer) {
+
+		if (initializer instanceof IFunctionCall) {
+			IFunctionCall messageSend = (IFunctionCall) initializer;
+			if (extAlias(messageSend) != null) {
+				attribute.type = extAlias(messageSend);
+			}
+		}
+
+		return super.handleAttributeDeclaration(attribute, initializer);
+	}
+
 	/**
 	 * Quick fix due JSDT limitation
+	 * 
 	 * @param newType
 	 */
 	private void isSingleton(InferredType newType) {
 		newType.inferenceStyle = "singleton";
 		newType.bits = InferredType.IsInferredType;
-		
+
 		if (newType.attributes != null && newType.attributes.length > 0) {
 			for (InferredAttribute attr : newType.attributes) {
 				if (attr != null) {
@@ -556,9 +609,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				}
 			}
 		}
-		
+
 		if (newType.methods != null && newType.methods.size() > 0) {
-			for(Object item : newType.methods.toArray()) {
+			for (Object item : newType.methods.toArray()) {
 				if (item instanceof InferredMethod) {
 					InferredMethod method = (InferredMethod) item;
 					method.isStatic = true;
@@ -570,87 +623,83 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 	@Override
 	public boolean visit(IFunctionCall functionCall) {
-		super.visit(functionCall);
-		if (CharOperation.equals(getName(functionCall.getReceiver()), ext) && 
-				(CharOperation.equals(functionCall.getSelector(), define) 
-						|| CharOperation.equals(functionCall.getSelector(), extend )
-						|| CharOperation.equals(functionCall.getSelector(), attrOverride)
-						) && passNumber == 1 ) {
+		if (isExtDefine(functionCall)) {
 			buildType(functionCall);
-			
+
 			return true;
-		} 
-		
+		}
+		super.visit(functionCall);
+
 		return true;
 	}
-	
-	
-	private InferredType getByAlias(IExpression[] arguments) {
-		if (arguments == null || arguments.length < 2) {
-			return null;
+
+	protected InferredType extAlias(IFunctionCall messageSend) {
+		if (CharOperation.equals(messageSend.getSelector(), alias) && messageSend.getArguments() != null) {
+			return getFunctionByAlias(messageSend.getArguments());
 		}
-		IAbstractVariableDeclaration var = getVariable(arguments[0]);
-		char[] obName = null;
-		if (var == null) {
-			obName = getName(arguments[0]);
-		} else {
-			obName = var.getName();
-		}
-		
-		char[] fName = getName(arguments[1]);
-		
-		if (fName == null && !(arguments[1] instanceof IStringLiteral)) {
-			var = getVariable(arguments[1]);
-			if (var != null && !(var.getInitialization() instanceof IStringLiteral)) {
-				return null;
-			} else if (var != null) {
-				fName = ((IStringLiteral) var.getInitialization()).source();
-			}
-			
-		} else if (arguments[1] instanceof IStringLiteral) {
-			fName = ((IStringLiteral) arguments[1]).source();
-		}
-		InferredType type = addType(CharOperation.concat(obName, fName, '.'));
-		type.isAnonymous = true;
-		type.referenceClass = FunctionType;
-		
-		return addType(CharOperation.concat(obName, fName, '.'));
-	}
-	
-	
-	private IFunctionDeclaration getDefinedFunctionByAlias(IExpression[] arguments) {
-		if (arguments == null || arguments.length < 2) {
-			return null;
-		}
-		IAbstractVariableDeclaration var = getVariable(arguments[0]);
-		char[] obName = null;
-		if (var == null) {
-			obName = getName(arguments[0]);
-		} else {
-			obName = var.getName();
-		}
-		
-		char[] fName = getName(arguments[1]);
-		
-		if (fName == null && !(arguments[1] instanceof IStringLiteral)) {
-			var = getVariable(arguments[1]);
-			if (var != null && !(var.getInitialization() instanceof IStringLiteral)) {
-				return null;
-			} else if (var != null) {
-				fName = ((IStringLiteral) var.getInitialization()).source();
-			}
-			
-		} else if (arguments[1] instanceof IStringLiteral) {
-			fName = ((IStringLiteral) arguments[1]).source();
-		}
-		InferredType t = findDefinedType(obName);
-		if (t != null && t.findMethod(fName, null) != null) {
-			return t.findMethod(fName, null).getFunctionDeclaration();
-		}
-		
+
 		return null;
 	}
-		
+
+	private InferredType getFunctionByAlias(IExpression[] arguments) {
+		char[][] arr = readFunctionAlias(arguments);
+		if (arr == null) {
+			return null;
+		}
+
+		InferredType type = addType(CharOperation.concat(arr[0], arr[1], '.'));
+		type.superClass = FunctionType;
+		type.isObjectLiteral = true;
+
+		return type;
+	}
+
+	private char[][] readFunctionAlias(IExpression[] arguments) {
+		if (arguments == null || arguments.length < 2) {
+			return null;
+		}
+		IAbstractVariableDeclaration var = getVariable(arguments[0]);
+		char[] obName = null;
+		if (var == null) {
+			obName = getName(arguments[0]);
+		} else {
+			obName = var.getName();
+		}
+		char[] fName = getName(arguments[1]);
+		if (fName == null && !(arguments[1] instanceof IStringLiteral)) {
+			var = getVariable(arguments[1]);
+			if (var != null && !(var.getInitialization() instanceof IStringLiteral)) {
+				return null;
+			} else if (var != null) {
+				fName = ((IStringLiteral) var.getInitialization()).source();
+			}
+
+		} else if (arguments[1] instanceof IStringLiteral) {
+			fName = ((IStringLiteral) arguments[1]).source();
+		}
+
+		return new char[][] { obName, fName };
+	}
+
+	protected IFunctionDeclaration getDefinedFunction(IExpression expression) {
+		if (expression instanceof IFunctionCall) {
+			IFunctionCall messageSend = (IFunctionCall) expression;
+			if (CharOperation.equals(messageSend.getSelector(), alias)
+					&& (messageSend.getReceiver() == null || CharOperation.equals(getName(messageSend.getReceiver()),
+							ext))) {
+
+				char[][] arr = readFunctionAlias(messageSend.getArguments());
+				if (arr != null) {
+					FieldReference ref = new FieldReference(arr[1], messageSend.sourceStart());
+					ref.receiver = new SingleNameReference(arr[0], messageSend.sourceStart());
+					return super.getDefinedFunction(ref);
+				}
+			}
+		}
+
+		return super.getDefinedFunction(expression);
+	}
+
 	private char[] getName(IExpression expression) {
 		if (expression instanceof ISingleNameReference)
 			return ((ISingleNameReference) expression).getToken();
@@ -658,9 +707,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			return ((IFieldReference) expression).getToken();
 		return null;
 	}
-	
+
 	private char[] getArgValue(IExpression ex) {
-		
+
 		if (ex instanceof IStringLiteral) {
 			return ((IStringLiteral) ex).source();
 		} else if (getVariable(ex) != null) {
@@ -669,41 +718,20 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				return ((IStringLiteral) var.getInitialization()).source();
 			}
 		}
-		
+
 		return null;
 	}
-	
-	@Override
-	public boolean visit(IObjectLiteralField field) {
-		
-		if (field.getInitializer() instanceof IFunctionCall) {
-			IFunctionCall fcall = (IFunctionCall) field.getInitializer();
-			if (CharOperation.equals(fcall.getSelector(), alias)) {
-				IFunctionDeclaration methodDeclaration;
-				if (getDefinedFunctionByAlias(fcall.getArguments()) != null) {
-					methodDeclaration = getDefinedFunctionByAlias(fcall.getArguments());
-				} else {
-					methodDeclaration = new MethodDeclaration(unit.compilationResult);
-				}
-				methodDeclaration.setInferredType(getByAlias(fcall.getArguments()));
-			} else if (CharOperation.equals(fcall.getSelector(), create) && CharOperation.equals(getName(fcall.getReceiver()), ext) ) {
-			}
-		}
-		super.visit(field);
-		
-		return true;
-	}
-	
+
 	@Override
 	public void endVisit(IObjectLiteral literal) {
 		// TODO move scope resolver
 		if (literal == null || literal.getFields() == null || passNumber == 2) {
 			try {
 				super.endVisit(literal);
-			} catch(Throwable e) {
+			} catch (Throwable e) {
 				ExtJSCore.error(e);
 			}
-			
+
 			return;
 		}
 		IThisReference ref = null;
@@ -715,27 +743,28 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 		try {
 			super.endVisit(literal);
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			ExtJSCore.error(e);
 		}
 		if (ref == null) {
 			return;
 		}
-		
+
 		for (IObjectLiteralField field : literal.getFields()) {
 			if (field.getInitializer() instanceof IFunctionExpression) {
 				IFunctionExpression dec = (IFunctionExpression) field.getInitializer();
 				InferredMethod method = dec.getMethodDeclaration().getInferredMethod();
 				InferredType type = getTypeOf(ref);
 				method.inType = type;
-				
+
 				method.getClass();
 			} else if (getFunction(field.getInitializer()) != null && getTypeOf(ref) != null) {
 				IAbstractFunctionDeclaration dec = getFunction(field.getInitializer());
 				dec.getInferredMethod().inType = getTypeOf(ref);
 			}
 		}
-		
+
 		return;
 	}
+
 }

@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
@@ -63,9 +64,19 @@ public class InferProvider implements InferrenceProvider {
 				ExtJSCore.warn(e);
 				return InferrenceProvider.NOT_THIS;
 			}
-			//TODO check file 
+ 			
+			for (IIncludePathEntry entry : scriptProject.getRawIncludepath()) {
+				if (entry.getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
+					continue; //ignore other containers
+				}
+				
+				//TODO allow exclude
+				if (entry.getPath().isPrefixOf(path)) {
+					return InferrenceProvider.ONLY_THIS;
+				}
+			}
 			
-			return InferrenceProvider.ONLY_THIS;
+			return InferrenceProvider.MAYBE_THIS;
 
 		} catch (CoreException e) {
 			ExtJSCore.error(e);

@@ -11,6 +11,8 @@ import java.util.ListIterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -48,14 +50,34 @@ abstract public class AbstractInfer extends Util {
 			while (iterator.hasNext()) {
 				String token = iterator.next();
 				if (token.equals("class")) {
-					token = iterator.next();
+					token = iterator.next().trim();
 					currentType = cu.getType(token);
-					
-					assertTrue(currentType.exists());
+					assertTrue(token + " " + currentType.getFullyQualifiedName(), currentType.exists());
 					assertEquals(token, currentType.getFullyQualifiedName());
 				} else if (token.equals("extends")) {
-					token = iterator.next();
+					token = iterator.next().trim();
 					assertTrue(currentType != null && currentType.getSuperclassName().equals(token));
+				} else if (token.equals("method")) {
+					token = iterator.next();
+					boolean found = false; // TODO signature checking
+					for (IFunction func : currentType.getFunctions()) {
+						if (func.getDisplayName().equals(token)) {
+							found = true; break;
+						}
+					}
+					assertTrue(found);
+				} else if (token.equals("variable")) {
+					token = iterator.next().trim();
+					IField field = currentType.getField(token);
+					assertTrue(field != null);
+					
+					String type = iterator.hasNext() ? iterator.next().trim() : null;
+					
+					if (type == null) {
+						continue;
+					}
+					
+					assertEquals("Q" + type + ";", field.getTypeSignature());
 				}
 			}
 		}

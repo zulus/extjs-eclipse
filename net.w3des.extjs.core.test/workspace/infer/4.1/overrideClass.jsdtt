@@ -1,0 +1,19 @@
+--TEST--
+Test class override
+--FILE--
+Ext.define('classToOverride', {
+    variable : 'Variable',
+    basicFunc : function() {}
+});
+classToOverride.override({
+    sampleFunc : function() {
+    },
+    newVariable : 2
+});
+--EXPECT--
+class classToOverride
+    method sampleFunc
+    method basicFunc
+    variable newVariable Number
+    variable variable String
+    
