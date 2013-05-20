@@ -2,7 +2,7 @@
 <feature
       id="net.w3des.extjs.feature"
       label="ExtJS Feature"
-      version="0.1.0.qualifier">
+      version="0.1.1.qualifier">
 
    <description url="http://zulus.github.com/extjs-eclipse/">
       Eclipse ExtJS plugin for JSDT. More on http://zulus.github.com/extjs-eclipse

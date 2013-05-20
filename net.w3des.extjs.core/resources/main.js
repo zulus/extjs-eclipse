@@ -1,11 +1,12 @@
 /**
  * Empty class for inference engine. Please ignore it!
  * 
- * @class Ext
- * @private
+ * @type Ext
  */
-var Ext = function() {
-};
+var Ext = {};
+/*
+Ext.prototype._eclipse = true;
+Ext.create = function(className, args) {}
 Ext.dom = {};
 Ext.core = {};
 Ext.DomQuery = {};
@@ -39,3 +40,6 @@ Ext.tree = {};
 Ext.util = {};
 Ext.view = {};
 Ext.window = {};
+Ext.DomQuery = {};
+Ext.dom.Query = {};
+Ext.core.DomQuery = {};*/

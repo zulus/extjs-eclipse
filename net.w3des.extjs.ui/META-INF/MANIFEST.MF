@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: net.w3des.extjs UI Plugin
 Bundle-SymbolicName: net.w3des.extjs.ui;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-Activator: net.w3des.extjs.ui.ExtJSUI
 Bundle-Localization: OSGI-INF/l10n/bundle
 Require-Bundle: org.eclipse.ui;bundle-version="3.105.0",

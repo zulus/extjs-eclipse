@@ -1,0 +1,13 @@
+--TEST--
+Test apply/applyif
+--FILE--
+Ext.define('defineClass', {
+    constructor : function() {
+        Ext.apply(this, {
+            item : true
+        });
+    }
+});
+--EXPECT--
+class defineClass
+    variable item Boolean

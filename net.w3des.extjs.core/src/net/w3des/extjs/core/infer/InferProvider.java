@@ -71,7 +71,7 @@ public class InferProvider implements InferrenceProvider {
 				}
 				
 				//TODO allow exclude
-				if (entry.getPath().isPrefixOf(path)) {
+				if (entry.getPath().isPrefixOf(path) || entry.getPath().equals(path)) {
 					return InferrenceProvider.ONLY_THIS;
 				}
 			}

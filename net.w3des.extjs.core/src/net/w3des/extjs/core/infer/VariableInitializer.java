@@ -26,7 +26,7 @@ public class VariableInitializer extends JsGlobalScopeVariableInitializer {
 	 */
 	@Override
 	public void initialize(String variable) {
-		if (!variable.equals("Ext")) { //$NON-NLS-1$
+		if (variable.equals("Ext") || variable.startsWith("Ext.")) { //$NON-NLS-1$
 			try {
 				JavaScriptCore.setIncludepathVariable("Ext",
 						new Path(ExtJSCore.getDefault().getBundle().getEntry("resources/main.js").toString()),
