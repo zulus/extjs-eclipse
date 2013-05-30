@@ -24,6 +24,6 @@ Ext.override(ClassOver, {
 --EXPECT--
 class ClassOver
     variable example Number
-    variable example2 Boolean
-    method exampleMethod
     method method4
+class ClassSecondOver
+    variable example2 Boolean    

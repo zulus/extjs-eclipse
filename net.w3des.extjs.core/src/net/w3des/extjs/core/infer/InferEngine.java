@@ -364,6 +364,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			newType = addType(name, true);
 			newType.setNameStart(args[0] instanceof IStringLiteral ? args[0].sourceStart() + 1 : args[0].sourceStart());
 			newType.isAnonymous = false;
+			newType.inferenceStyle = "override";
 			args = Arrays.copyOfRange(args, 1, args.length);
 
 		} else if (getArgValue(args[0]) != null) {
@@ -407,7 +408,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 		newType.isDefinition = true;
 		newType.bits = ASTNode.TYPE_DECLARATION;
-		newType.superClass = addType(baseClass);
+		if (newType.inferenceStyle == null || !newType.inferenceStyle.equals("override")) {
+			newType.superClass = addType(baseClass);
+		}
+		
 		if (newType.userData == null || !(newType.userData instanceof TypeData)) {
 			newType.userData = new TypeData();
 		}
@@ -447,10 +451,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					InferredType newType = addType(found, true);
 					newType.isAnonymous = false;
 					newType.setNameStart(nameStart);
+					newType.addMixin(type.getName());
 
-					type.superClass = newType;
-
-					return newType;
+					return type;
 				}
 			}
 		}
@@ -493,7 +496,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 
 	private InferredType buildType(InferredType newType, IObjectLiteral init) {
-		char[] typeParent = baseClass;
+		char[] typeParent = newType.superClass == null ? null : baseClass;
+		
 		boolean singleton = false;
 		boolean hasConstructor = false;
 		init.setInferredType(newType);
@@ -1026,7 +1030,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		if (isExtApply(functionCall)) {
 			extApply(functionCall);
 		}
-		
+
 		return res;
 	}
 }
