@@ -451,7 +451,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				if (found != null) {
 					InferredType newType = addType(found, true);
 					newType.isAnonymous = false;
-					newType.sourceStart = nameStart;
 					//newType.setNameStart(nameStart);
 					// when I set nameStart auto completion will be broken :/
 					newType.addMixin(type.getName());
