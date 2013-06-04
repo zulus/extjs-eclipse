@@ -362,7 +362,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			}
 
 			newType = addType(name, true);
-			newType.setNameStart(args[0] instanceof IStringLiteral ? args[0].sourceStart() + 1 : args[0].sourceStart());
+			//newType.setNameStart(args[0] instanceof IStringLiteral ? args[0].sourceStart() + 1 : args[0].sourceStart());
+			// If I set name start code completion will be broken
 			newType.isAnonymous = false;
 			newType.inferenceStyle = "override";
 			args = Arrays.copyOfRange(args, 1, args.length);
@@ -443,15 +444,18 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 					if (CharOperation.equals(getFieldName(field.getFieldName()), attrOverride, true)) {
 						found = getArgValue(field.getInitializer());
-						nameStart = field.getFieldName().sourceStart();
+						nameStart = field.getInitializer() != null ? field.getInitializer().sourceStart() : field.getFieldName().sourceStart();
 					}
 				}
 
 				if (found != null) {
 					InferredType newType = addType(found, true);
 					newType.isAnonymous = false;
-					newType.setNameStart(nameStart);
+					newType.sourceStart = nameStart;
+					//newType.setNameStart(nameStart);
+					// when I set nameStart auto completion will be broken :/
 					newType.addMixin(type.getName());
+					
 					type.inferenceStyle = "override";
 					
 					return type;
