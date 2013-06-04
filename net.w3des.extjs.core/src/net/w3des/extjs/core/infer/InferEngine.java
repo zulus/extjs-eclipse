@@ -452,7 +452,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 					newType.isAnonymous = false;
 					newType.setNameStart(nameStart);
 					newType.addMixin(type.getName());
-
+					type.inferenceStyle = "override";
+					
 					return type;
 				}
 			}
