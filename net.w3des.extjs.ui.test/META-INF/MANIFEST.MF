@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: net.w3des.extjs.ui tests
 Bundle-SymbolicName: net.w3des.extjs.ui.test;singleton:=true
-Bundle-Version: 0.1.2.qualifier
+Bundle-Version: 0.1.3.qualifier
 Bundle-Activator: net.w3des.extjs.ui.test.ExtJSUITest
 Require-Bundle: net.w3des.extjs.core,
  net.w3des.extjs.core.test,
