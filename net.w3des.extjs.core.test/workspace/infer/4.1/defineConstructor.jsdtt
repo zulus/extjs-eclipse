@@ -1,0 +1,13 @@
+--TEST--
+Test class definition
+--FILE--
+Ext.define('defineClass', function() {
+    return {
+        alternateClassName : 'alternateClass',
+        myField : true
+    };
+});
+--EXPECT--
+class defineClass
+    variable myField
+class alternateClass

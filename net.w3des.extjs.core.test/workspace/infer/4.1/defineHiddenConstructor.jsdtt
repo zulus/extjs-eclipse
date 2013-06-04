@@ -1,0 +1,11 @@
+--TEST--
+Test hidden contructor
+--FILE--
+Ext.define('myHiddenConstructor', (function() {
+    return {
+        myField : true
+    }
+})());
+--EXPECT--
+class myHiddenConstructor
+    variable myField Boolean

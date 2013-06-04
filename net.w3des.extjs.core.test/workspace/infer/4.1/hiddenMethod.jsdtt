@@ -1,0 +1,14 @@
+--TEST--
+Method with static variable
+--FILE--
+Ext.define('defineClassVariable', {
+    myMethod : (function() {
+        var myVar = true;
+        return function(arg) {
+            return true;
+        }
+    })()
+});
+--EXPECT--
+class defineClassVariable
+    method myMethod
