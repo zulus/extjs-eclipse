@@ -1,6 +1,7 @@
 package net.w3des.extjs.core.infer;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -78,6 +79,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			'l', 'a', 's', 's', 'N', 'a', 'm', 'e' };
 	private final static char[] attrMixins = new char[] { 'm', 'i', 'x', 'i', 'n', 's' };
 	private final static char[] attrConstructor = new char[] { 'c', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r' };
+	private final static char[] attrListeners = new char[] {'l','i','s','t','e','n','e','r','s'};
+	private final static char[] attrScope = new char[] {'s','c','o','p','e'};
 	private CompilationUnitDeclaration unit;
 	private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
 
@@ -180,8 +183,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 		if (isExtDefine(messageSend)) {
 			InferredType type = buildType(messageSend);
-			if (assignmentExpression != null) {
-				// assignmentExpression.setInferredType(type);
+			if (assignmentExpression != null && passNumber == 2) {
+				InferredType addType = addType(assignmentExpression.getName(), true);
+				addType.superClass = type;
+				addType.sourceStart = assignmentExpression.sourceStart();
+				addType.sourceEnd = assignmentExpression.sourceEnd();
 			}
 		} else if (assignmentExpression != null && extCreate(messageSend) != null) {
 			assignmentExpression.setInferredType(extCreate(messageSend));
@@ -263,7 +269,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				}
 				InferredMethod method = (InferredMethod) m;
 				if (left.findMethod(method.name, method.getFunctionDeclaration()) == null) {
-					left.addMethod(method.name, method.getFunctionDeclaration(), method.nameStart);
+					left.addMethod(method.name, method.getFunctionDeclaration(), method.nameStart).inType = left;
 				}
 			}
 		}
@@ -273,7 +279,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 				if (attr == null) {
 					continue;
 				}
-				left.addAttribute(attr);
+				left.addAttribute(attr).inType = left;
 			}
 		}
 
@@ -466,8 +472,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 					if (CharOperation.equals(getFieldName(field.getFieldName()), attrOverride, true)) {
 						found = getArgValue(field.getInitializer());
-						nameStart = field.getInitializer() != null ? field.getInitializer().sourceStart() : field
-								.getFieldName().sourceStart();
+						nameStart = getNameStart(field.getFieldName());
 					}
 				}
 
@@ -1073,7 +1078,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 	@Override
 	public void endVisit(IObjectLiteral literal) {
-		if (passNumber == 2) {
+		/*if (passNumber == 2) {
 			if (literal == null || literal.getFields() == null || passNumber == 2) {
 				super.endVisit(literal);
 
@@ -1113,7 +1118,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			super.endVisit(literal);
 		}
 
-		return;
+		return;*/
+		super.endVisit(literal);
 	}
 
 	@Override
@@ -1162,5 +1168,25 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		}
 
 		return res;
+	}
+	
+	public boolean visit(InferredType type) {
+		if (passNumber != 2) {
+			return super.visit(type);
+		}
+		InferredAttribute listenersAttribute = type.findAttribute(attrListeners);
+		if (listenersAttribute != null && listenersAttribute.type != null) {
+			InferredAttribute scope = listenersAttribute.type.findAttribute(attrScope);
+			if (scope != null && scope.type != null) {
+				Iterator iterator = listenersAttribute.type.methods.iterator();
+				while (iterator.hasNext()) {
+					InferredMethod method = (InferredMethod) iterator.next();
+					method.inType = scope.type == listenersAttribute.type ? type : scope.type;
+				}
+ 			}
+		}
+		
+		return super.visit(type);
+		
 	}
 }
