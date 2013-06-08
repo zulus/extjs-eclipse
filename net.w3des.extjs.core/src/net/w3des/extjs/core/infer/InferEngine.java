@@ -191,6 +191,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			}
 		} else if (assignmentExpression != null && extCreate(messageSend) != null) {
 			assignmentExpression.setInferredType(extCreate(messageSend));
+			
+			
 		} else if (assignmentExpression != null && extAlias(messageSend) != null) {
 			assignmentExpression.setInferredType(FunctionType);
 		}
@@ -287,17 +289,27 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 
 	protected InferredType extCreate(IFunctionCall messageSend) {
+		InferredType type = null;
 		if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), ext)
 				&& CharOperation.equals(messageSend.getSelector(), create) && messageSend.getArguments() != null
 				&& messageSend.getArguments().length > 0) {
 			if (getArgValue(messageSend.getArguments()[0]) != null) {
-				return addType(getArgValue(messageSend.getArguments()[0]));
+				type = addType(getArgValue(messageSend.getArguments()[0]));
 			} else {
-				return addType(baseClass);
+				type = addType(baseClass);
+			}
+			
+			if (messageSend.getArguments().length > 1) {
+				if (messageSend.getArguments()[1] instanceof IObjectLiteral) {
+					IObjectLiteral literal = (IObjectLiteral) messageSend.getArguments()[1];
+					if (literal.getInferredType() != null) {
+						literal.getInferredType().superClass = type;
+					}
+				}
 			}
 		}
 
-		return null;
+		return type;
 	}
 
 	@Override
@@ -1177,7 +1189,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		InferredAttribute listenersAttribute = type.findAttribute(attrListeners);
 		if (listenersAttribute != null && listenersAttribute.type != null) {
 			InferredAttribute scope = listenersAttribute.type.findAttribute(attrScope);
-			if (scope != null && scope.type != null) {
+			if (scope != null && scope.type != null && listenersAttribute.type.methods != null) {
 				Iterator iterator = listenersAttribute.type.methods.iterator();
 				while (iterator.hasNext()) {
 					InferredMethod method = (InferredMethod) iterator.next();
