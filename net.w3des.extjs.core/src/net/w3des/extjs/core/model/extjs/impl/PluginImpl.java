@@ -3,7 +3,7 @@
 package net.w3des.extjs.core.model.extjs.impl;
 
 import net.w3des.extjs.core.model.extjs.ExtjsPackage;
-import net.w3des.extjs.core.model.extjs.Widget;
+import net.w3des.extjs.core.model.extjs.Plugin;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -11,20 +11,20 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Widget</b></em>'.
+ * An implementation of the model object '<em><b>Plugin</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * </p>
  *
  * @generated
  */
-public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget {
+public class PluginImpl extends MinimalEObjectImpl.Container implements Plugin {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected WidgetImpl() {
+	protected PluginImpl() {
 		super();
 	}
 
@@ -35,7 +35,7 @@ public class WidgetImpl extends MinimalEObjectImpl.Container implements Widget {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ExtjsPackage.Literals.WIDGET;
+		return ExtjsPackage.Literals.PLUGIN;
 	}
 
-} //WidgetImpl
+} //PluginImpl

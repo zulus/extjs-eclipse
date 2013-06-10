@@ -9,17 +9,26 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see net.w3des.extjs.core.model.extjs.ExtJsPackage
+ * @see net.w3des.extjs.core.model.extjs.ExtjsPackage
  * @generated
  */
-public interface ExtJsFactory extends EFactory {
+public interface ExtjsFactory extends EFactory {
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	ExtJsFactory eINSTANCE = net.w3des.extjs.core.model.extjs.impl.ExtJsFactoryImpl.init();
+	ExtjsFactory eINSTANCE = net.w3des.extjs.core.model.extjs.impl.ExtjsFactoryImpl.init();
+
+	/**
+	 * Returns a new object of class '<em>Alias</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Alias</em>'.
+	 * @generated
+	 */
+	Alias createAlias();
 
 	/**
 	 * Returns a new object of class '<em>Widget</em>'.
@@ -31,12 +40,21 @@ public interface ExtJsFactory extends EFactory {
 	Widget createWidget();
 
 	/**
+	 * Returns a new object of class '<em>Plugin</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Plugin</em>'.
+	 * @generated
+	 */
+	Plugin createPlugin();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	ExtJsPackage getExtJsPackage();
+	ExtjsPackage getExtjsPackage();
 
-} //ExtJsFactory
+} //ExtjsFactory

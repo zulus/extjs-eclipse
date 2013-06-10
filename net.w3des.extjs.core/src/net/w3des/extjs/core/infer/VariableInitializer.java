@@ -3,7 +3,7 @@
  */
 package net.w3des.extjs.core.infer;
 
-import net.w3des.extjs.core.ExtJSCore;
+import net.w3des.extjs.core.internal.ExtJSCore;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;

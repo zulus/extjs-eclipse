@@ -17,6 +17,7 @@
   	<maven.version>3.0</maven.version>
   	<tycho.version>0.16.0</tycho.version>
   	<tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <repositories>

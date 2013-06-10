@@ -1,9 +1,12 @@
-package net.w3des.extjs.core;
+package net.w3des.extjs.core.internal;
+
+import net.w3des.extjs.core.IExtJSProjectManager;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -19,11 +22,13 @@ public class ExtJSCore extends Plugin {
 	// The shared instance
 	private static ExtJSCore plugin;
 	
+	
 	boolean started;
 	/**
 	 * The constructor
 	 */
 	public ExtJSCore() {
+		super();
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -87,4 +92,8 @@ public class ExtJSCore extends Plugin {
 		plugin.getLog().log(new Status(IStatus.INFO, PLUGIN_ID, IStatus.OK, e.getLocalizedMessage(), e));
 	}
 	
+	public static IExtJSProjectManager getProjectManager() {
+		ServiceReference<?> serviceReference = plugin.getBundle().getBundleContext().getServiceReference(IExtJSProjectManager.class.getName());
+		return (IExtJSProjectManager) plugin.getBundle().getBundleContext().getService(serviceReference);
+	}
 }

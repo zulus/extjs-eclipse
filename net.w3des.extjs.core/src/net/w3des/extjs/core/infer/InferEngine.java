@@ -5,15 +5,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.w3des.extjs.core.ExtJSCore;
-import net.w3des.extjs.core.model.extjs.ExtJsFactory;
-import net.w3des.extjs.core.model.extjs.ExtJsPackage;
-import net.w3des.extjs.core.model.extjs.Widget;
-import net.w3des.extjs.core.model.extjs.impl.ExtJsFactoryImpl;
-import net.w3des.extjs.core.model.extjs.impl.ExtJsPackageImpl;
+import net.w3des.extjs.core.internal.ExtJSCore;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
-import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
@@ -33,7 +27,6 @@ import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
-import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -48,16 +41,13 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 
 /**
  * @author Dawid zulus Pakula <zulus@w3des.net>
  */
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
-
 	private final static char[] alias = new char[] { 'a', 'l', 'i', 'a', 's' };
 	private final static char[] ext = new char[] { 'E', 'x', 't' };
 	private final static char[] create = new char[] { 'c', 'r', 'e', 'a', 't', 'e' };
@@ -430,10 +420,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			newType.superClass = addType(baseClass);
 		}
 
-		if (newType.userData == null || !(newType.userData instanceof TypeData)) {
-			newType.userData = new TypeData();
-		}
-
 		if (args.length < 1) {
 			return newType;
 		}
@@ -476,7 +462,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 			IObjectLiteral li = (IObjectLiteral) args[0];
 			if (li.getFields() != null) {
 				char[] found = null;
-				int nameStart = 0;
+				//int nameStart = 0;
 				for (IObjectLiteralField field : li.getFields()) {
 					if (field == null) {
 						continue;
@@ -484,7 +470,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
 					if (CharOperation.equals(getFieldName(field.getFieldName()), attrOverride, true)) {
 						found = getArgValue(field.getInitializer());
-						nameStart = getNameStart(field.getFieldName());
+						//nameStart = getNameStart(field.getFieldName());
 					}
 				}
 
@@ -633,12 +619,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	}
 
 	private void aliases(InferredType newType, IExpression initializer) {
-		char[] val = getArgValue(initializer);
+		//char[] val = getArgValue(initializer);
 
-		if (val != null) {
-			TypeData data = (TypeData) newType.userData;
-			data.addAlias(newType.getName(), val, initializer);
-		}
 	}
 
 	private int getNameStart(IExpression expression) {
@@ -1182,6 +1164,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 		return res;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public boolean visit(InferredType type) {
 		if (passNumber != 2) {
 			return super.visit(type);

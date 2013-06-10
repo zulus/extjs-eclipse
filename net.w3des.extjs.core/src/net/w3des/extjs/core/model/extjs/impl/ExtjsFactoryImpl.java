@@ -18,24 +18,24 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class ExtJsFactoryImpl extends EFactoryImpl implements ExtJsFactory {
+public class ExtjsFactoryImpl extends EFactoryImpl implements ExtjsFactory {
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static ExtJsFactory init() {
+	public static ExtjsFactory init() {
 		try {
-			ExtJsFactory theExtJsFactory = (ExtJsFactory)EPackage.Registry.INSTANCE.getEFactory(ExtJsPackage.eNS_URI);
-			if (theExtJsFactory != null) {
-				return theExtJsFactory;
+			ExtjsFactory theExtjsFactory = (ExtjsFactory)EPackage.Registry.INSTANCE.getEFactory(ExtjsPackage.eNS_URI);
+			if (theExtjsFactory != null) {
+				return theExtjsFactory;
 			}
 		}
 		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new ExtJsFactoryImpl();
+		return new ExtjsFactoryImpl();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class ExtJsFactoryImpl extends EFactoryImpl implements ExtJsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtJsFactoryImpl() {
+	public ExtjsFactoryImpl() {
 		super();
 	}
 
@@ -56,10 +56,22 @@ public class ExtJsFactoryImpl extends EFactoryImpl implements ExtJsFactory {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ExtJsPackage.WIDGET: return createWidget();
+			case ExtjsPackage.ALIAS: return createAlias();
+			case ExtjsPackage.WIDGET: return createWidget();
+			case ExtjsPackage.PLUGIN: return createPlugin();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Alias createAlias() {
+		AliasImpl alias = new AliasImpl();
+		return alias;
 	}
 
 	/**
@@ -77,8 +89,18 @@ public class ExtJsFactoryImpl extends EFactoryImpl implements ExtJsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtJsPackage getExtJsPackage() {
-		return (ExtJsPackage)getEPackage();
+	public Plugin createPlugin() {
+		PluginImpl plugin = new PluginImpl();
+		return plugin;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ExtjsPackage getExtjsPackage() {
+		return (ExtjsPackage)getEPackage();
 	}
 
 	/**
@@ -88,8 +110,8 @@ public class ExtJsFactoryImpl extends EFactoryImpl implements ExtJsFactory {
 	 * @generated
 	 */
 	@Deprecated
-	public static ExtJsPackage getPackage() {
-		return ExtJsPackage.eINSTANCE;
+	public static ExtjsPackage getPackage() {
+		return ExtjsPackage.eINSTANCE;
 	}
 
-} //ExtJsFactoryImpl
+} //ExtjsFactoryImpl

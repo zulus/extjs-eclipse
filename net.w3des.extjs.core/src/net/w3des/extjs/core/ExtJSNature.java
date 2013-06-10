@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.w3des.extjs.core.builder.ExtJSBuilder;
+import net.w3des.extjs.core.internal.ExtJSCore;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;

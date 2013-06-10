@@ -80,19 +80,20 @@
              id="org.eclipse.wst.jsdt.core.jsSource">
        </content-type>
     </extension>
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated extjs -->
-      <package
-            uri="http://net.w3des.extjs/1.0"
-            class="net.w3des.extjs.core.model.extjs.ExtJsPackage"
-            genModel="resources/model/extjs.genmodel"/>
-   </extension>
    <extension
          point="org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
       <JsGlobalScopeVariableInitializer
             class="net.w3des.extjs.core.infer.VariableInitializer"
             variable="net.w3des.extjs.core.infer.VariableInitializer">
       </JsGlobalScopeVariableInitializer>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated extjs -->
+      <package
+            uri="http://extjs.w3des.net/1.0"
+            class="net.w3des.extjs.core.model.extjs.ExtjsPackage"
+            genModel="resources/model/extjs.genmodel"/>
    </extension>
 
 </plugin>

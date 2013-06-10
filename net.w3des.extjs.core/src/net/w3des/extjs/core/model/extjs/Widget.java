@@ -2,6 +2,7 @@
  */
 package net.w3des.extjs.core.model.extjs;
 
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -9,9 +10,9 @@ package net.w3des.extjs.core.model.extjs;
  * <!-- end-user-doc -->
  *
  *
- * @see net.w3des.extjs.core.model.extjs.ExtJsPackage#getWidget()
+ * @see net.w3des.extjs.core.model.extjs.ExtjsPackage#getWidget()
  * @model
  * @generated
  */
-public interface Widget extends Alias {
+public interface Widget extends EObject {
 } // Widget

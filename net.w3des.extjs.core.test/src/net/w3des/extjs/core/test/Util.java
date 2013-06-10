@@ -4,7 +4,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.w3des.extjs.core.ExtJSCore;
+import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.test.Versioned.AfterSuite;
 import net.w3des.extjs.core.test.Versioned.BeforeSuite;
 import net.w3des.extjs.core.test.Versioned.ExtSuite;

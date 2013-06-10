@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 
-import net.w3des.extjs.core.ExtJSCore;
+import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.test.Util;
 
 import org.eclipse.core.resources.IFile;

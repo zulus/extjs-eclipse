@@ -16,17 +16,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see net.w3des.extjs.core.model.extjs.ExtJsPackage
+ * @see net.w3des.extjs.core.model.extjs.ExtjsPackage
  * @generated
  */
-public class ExtJsAdapterFactory extends AdapterFactoryImpl {
+public class ExtjsAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static ExtJsPackage modelPackage;
+	protected static ExtjsPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -34,9 +34,9 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtJsAdapterFactory() {
+	public ExtjsAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = ExtJsPackage.eINSTANCE;
+			modelPackage = ExtjsPackage.eINSTANCE;
 		}
 	}
 
@@ -65,8 +65,12 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ExtJsSwitch<Adapter> modelSwitch =
-		new ExtJsSwitch<Adapter>() {
+	protected ExtjsSwitch<Adapter> modelSwitch =
+		new ExtjsSwitch<Adapter>() {
+			@Override
+			public Adapter caseTypeItem(TypeItem object) {
+				return createTypeItemAdapter();
+			}
 			@Override
 			public Adapter caseAlias(Alias object) {
 				return createAliasAdapter();
@@ -74,6 +78,10 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseWidget(Widget object) {
 				return createWidgetAdapter();
+			}
+			@Override
+			public Adapter casePlugin(Plugin object) {
+				return createPluginAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -94,6 +102,20 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 		return modelSwitch.doSwitch((EObject)target);
 	}
 
+
+	/**
+	 * Creates a new adapter for an object of class '{@link net.w3des.extjs.core.model.extjs.TypeItem <em>Type Item</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see net.w3des.extjs.core.model.extjs.TypeItem
+	 * @generated
+	 */
+	public Adapter createTypeItemAdapter() {
+		return null;
+	}
 
 	/**
 	 * Creates a new adapter for an object of class '{@link net.w3des.extjs.core.model.extjs.Alias <em>Alias</em>}'.
@@ -124,6 +146,20 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link net.w3des.extjs.core.model.extjs.Plugin <em>Plugin</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see net.w3des.extjs.core.model.extjs.Plugin
+	 * @generated
+	 */
+	public Adapter createPluginAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for the default case.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null.
@@ -135,4 +171,4 @@ public class ExtJsAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //ExtJsAdapterFactory
+} //ExtjsAdapterFactory

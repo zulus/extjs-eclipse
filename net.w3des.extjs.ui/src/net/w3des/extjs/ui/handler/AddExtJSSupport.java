@@ -1,10 +1,9 @@
-package net.w3des.extjs.ui.command;
+package net.w3des.extjs.ui.handler;
 
-import net.w3des.extjs.core.ExtJSCore;
-import net.w3des.extjs.ui.ExtJSUI;
+import javax.inject.Named;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
+import net.w3des.extjs.core.internal.ExtJSCore;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -14,24 +13,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-public class AddExtJSSupport extends AbstractHandler {
+public class AddExtJSSupport { 
 
-	@Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		ISelection rawSelection = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().getSelection();
+	@Execute
+	public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, final String version)
+			throws ExecutionException {
 
-		if (!(rawSelection instanceof IStructuredSelection)) {
-			return null;
-		}
-
-		IAdaptable adaptable = (IAdaptable) ((IStructuredSelection) rawSelection).getFirstElement();
+		IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
 		final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
 
 		Job job = new Job("Install ExtJS Support") {
@@ -42,11 +37,7 @@ public class AddExtJSSupport extends AbstractHandler {
 					final IFacetedProject fproject = ProjectFacetsManager.create(project, true, monitor);
 					final IProjectFacetVersion facet;
 
-					if (event.getParameters().containsKey("version")) { //$NON-NLS-1$
-						facet = (IProjectFacetVersion) event.getParameters().get("version"); //$NON-NLS-1$
-					} else {
-						facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getDefaultVersion();
-					}
+					facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getVersion(version);
 
 					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web"))) { //$NON-NLS-1$
 						fproject.installProjectFacet(ProjectFacetsManager
@@ -58,8 +49,6 @@ public class AddExtJSSupport extends AbstractHandler {
 					}
 
 				} catch (CoreException e) {
-					ExtJSUI.error(e);
-
 					return Status.CANCEL_STATUS;
 				}
 
@@ -68,7 +57,6 @@ public class AddExtJSSupport extends AbstractHandler {
 		};
 		job.schedule();
 
-		return null;
 	}
 
 }

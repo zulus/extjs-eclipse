@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="extjs" nsURI="http://net.w3des.extjs/1.0" nsPrefix="extjs">
-  <eClassifiers xsi:type="ecore:EClass" name="Alias" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="className" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="extjs" nsURI="http://extjs.w3des.net/1.0" nsPrefix="extjs">
+  <eClassifiers xsi:type="ecore:EClass" name="TypeItem" abstract="true" eSuperTypes="#//Alias">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceStart" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceEnd" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Widget" eSuperTypes="#//Alias"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Alias" eSuperTypes="#//Widget #//Plugin">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rawName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Widget"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Plugin"/>
 </ecore:EPackage>

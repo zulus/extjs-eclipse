@@ -19,17 +19,17 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see net.w3des.extjs.core.model.extjs.ExtJsPackage
+ * @see net.w3des.extjs.core.model.extjs.ExtjsPackage
  * @generated
  */
-public class ExtJsSwitch<T> extends Switch<T> {
+public class ExtjsSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static ExtJsPackage modelPackage;
+	protected static ExtjsPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -37,9 +37,9 @@ public class ExtJsSwitch<T> extends Switch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ExtJsSwitch() {
+	public ExtjsSwitch() {
 		if (modelPackage == null) {
-			modelPackage = ExtJsPackage.eINSTANCE;
+			modelPackage = ExtjsPackage.eINSTANCE;
 		}
 	}
 
@@ -66,21 +66,52 @@ public class ExtJsSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case ExtJsPackage.ALIAS: {
-				Alias alias = (Alias)theEObject;
-				T result = caseAlias(alias);
+			case ExtjsPackage.TYPE_ITEM: {
+				TypeItem typeItem = (TypeItem)theEObject;
+				T result = caseTypeItem(typeItem);
+				if (result == null) result = caseAlias(typeItem);
+				if (result == null) result = caseWidget(typeItem);
+				if (result == null) result = casePlugin(typeItem);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ExtJsPackage.WIDGET: {
+			case ExtjsPackage.ALIAS: {
+				Alias alias = (Alias)theEObject;
+				T result = caseAlias(alias);
+				if (result == null) result = caseWidget(alias);
+				if (result == null) result = casePlugin(alias);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ExtjsPackage.WIDGET: {
 				Widget widget = (Widget)theEObject;
 				T result = caseWidget(widget);
-				if (result == null) result = caseAlias(widget);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ExtjsPackage.PLUGIN: {
+				Plugin plugin = (Plugin)theEObject;
+				T result = casePlugin(plugin);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			default: return defaultCase(theEObject);
 		}
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Type Item</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Type Item</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTypeItem(TypeItem object) {
+		return null;
 	}
 
 	/**
@@ -114,6 +145,21 @@ public class ExtJsSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Plugin</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Plugin</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T casePlugin(Plugin object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -129,4 +175,4 @@ public class ExtJsSwitch<T> extends Switch<T> {
 		return null;
 	}
 
-} //ExtJsSwitch
+} //ExtjsSwitch

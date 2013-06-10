@@ -1,6 +1,6 @@
 package net.w3des.extjs.core.infer;
 
-import net.w3des.extjs.core.ExtJSCore;
+import net.w3des.extjs.core.internal.ExtJSCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -24,7 +24,8 @@ public class InferProvider implements InferrenceProvider {
 
 	public IInferEngine getInferEngine() {
 		InferEngine eng = new InferEngine();
-		eng.inferenceProvider=this;
+		eng.inferenceProvider = this;
+		
 		return eng;
 	}
 
@@ -55,7 +56,7 @@ public class InferProvider implements InferrenceProvider {
 			if (!scriptProject.exists()) {
 				return InferrenceProvider.NOT_THIS;
 			}
-			
+
 			try {
 				if (!FacetedProjectFramework.hasProjectFacet(project, ExtJSCore.FACET_EXT)) {
 					return InferrenceProvider.NOT_THIS;
@@ -64,18 +65,18 @@ public class InferProvider implements InferrenceProvider {
 				ExtJSCore.warn(e);
 				return InferrenceProvider.NOT_THIS;
 			}
- 			
+
 			for (IIncludePathEntry entry : scriptProject.getRawIncludepath()) {
 				if (entry.getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
-					continue; //ignore other containers
+					continue; // ignore other containers
 				}
-				
-				//TODO allow exclude
+
+				// TODO allow exclude
 				if (entry.getPath().isPrefixOf(path) || entry.getPath().equals(path)) {
 					return InferrenceProvider.ONLY_THIS;
 				}
 			}
-			
+
 			return InferrenceProvider.MAYBE_THIS;
 
 		} catch (CoreException e) {
@@ -92,7 +93,7 @@ public class InferProvider implements InferrenceProvider {
 	public ResolutionConfiguration getResolutionConfiguration() {
 		return new ResolutionConfiguration();
 	}
-	
+
 	/**
 	 * TODO create refactoring for ExtJS classes
 	 */

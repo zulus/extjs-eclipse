@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmlns:ui="http://www.eclipse.org/ui/2010/UIModel/application/ui" xmi:id="_z8BroNFxEeKoXOTloxsHMg">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_KQP7oNFyEeKUAqZmGwoQog" featurename="commands" parentElementId="org.eclipse.e4.legacy.ide.application">
+    <elements xsi:type="commands:Command" xmi:id="_YcYqMNFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.command.addExtJS41Support" commandName="Add ExtJS 4.1 Support"/>
+    <elements xsi:type="commands:Command" xmi:id="_OlT2wNHHEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.command.addExtJS42Support" commandName="Add ExtJS 4.2 Support"/>
+    <elements xsi:type="commands:Command" xmi:id="_hrjvgNFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.command.removeExtJSSupport" commandName="Remove ExtJS Support"/>
+    <elements xsi:type="commands:Command" xmi:id="_wfHX4NHJEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.command.refreshjs" commandName="Refresh JavaScript"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_BUfS0NF4EeKUAqZmGwoQog" featurename="handlers" parentElementId="org.eclipse.e4.legacy.ide.application">
+    <elements xsi:type="commands:Handler" xmi:id="_uJyx0NFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.handler.addExtJS41Support" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.AddExtJS41Support" command="_YcYqMNFyEeKUAqZmGwoQog"/>
+    <elements xsi:type="commands:Handler" xmi:id="_UKWzsNHHEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handler.addExtJS42Support" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.AddExtJS42Support" command="_OlT2wNHHEeKB1tgznwrt9g"/>
+    <elements xsi:type="commands:Handler" xmi:id="_mkdYINFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.handler.removeExtJSSupport" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.RemoveExtJSSupport" command="_hrjvgNFyEeKUAqZmGwoQog"/>
+    <elements xsi:type="commands:Handler" xmi:id="_BoTQ8NHLEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handler.0" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.RefreshJS" command="_wfHX4NHJEeKB1tgznwrt9g"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_1aYWoNGKEeKUAqZmGwoQog" featurename="menuContributions" parentElementId="org.eclipse.e4.legacy.ide.application" positionInList="">
+    <elements xsi:type="menu:MenuContribution" xmi:id="_LSzbcNGLEeKUAqZmGwoQog" elementId="net.w3des.extjs.menu.addSupportContribution" positionInParent="after=additions" parentId="org.eclipse.ui.projectConfigure">
+      <tags>scheme:popup</tags>
+      <children xsi:type="menu:Menu" xmi:id="_j3qvANGkEeKtMvp8s2tgIg" elementId="net.w3des.extjs.ui.menucontribution.addextjs" label="Add ExtJS Support" iconURI="platform:/plugin/net.w3des.extjs.ui/icons/obj16/ext.png">
+        <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_ZP1qUNHIEeKB1tgznwrt9g" coreExpressionId="net.w3des.extjs.ui.expressions.notextjsproject"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_Jt1xgNHHEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handledmenuitem.0" label="4.2" command="_OlT2wNHHEeKB1tgznwrt9g"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_r3PxsNHFEeKpoZB6BQHCpw" elementId="net.w3des.extjs.ui.handledmenuitem.41" label="4.1" command="_YcYqMNFyEeKUAqZmGwoQog"/>
+      </children>
+      <children xsi:type="menu:HandledMenuItem" xmi:id="_ah6gwNHJEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handledmenuitem.removeextjs" label="Remove ExtJS Support" iconURI="platform:/plugin/net.w3des.extjs.ui/icons/obj16/delext.png" command="_hrjvgNFyEeKUAqZmGwoQog">
+        <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_w0eHYNHKEeKB1tgznwrt9g" coreExpressionId="net.w3des.extjs.ui.expressions.extjsproject"/>
+      </children>
+      <children xsi:type="menu:HandledMenuItem" xmi:id="_o7ue8NHJEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handledmenuitem.refreshjs" label="Refresh Javascript Index" command="_wfHX4NHJEeKB1tgznwrt9g">
+        <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_EJURoNHKEeKB1tgznwrt9g" coreExpressionId="net.w3des.extjs.ui.expressions.extjsproject"/>
+      </children>
+    </elements>
+  </fragments>
+</fragment:ModelFragments>
