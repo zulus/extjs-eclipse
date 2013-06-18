@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.w3des.extjs.core.internal.ExtJSCore;
+import net.w3des.extjs.core.model.basic.File;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
@@ -73,9 +74,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static char[] attrScope = new char[] {'s','c','o','p','e'};
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
     private CompilationUnitDeclaration unit;
+    private File file;
 
     @Override
     public void doInfer() {
+        file = ExtJSCore.getProjectManager().getFile(String.valueOf(unit.getFileName()));
+        file.cleanAliases();
         super.doInfer();
     }
 
@@ -621,7 +625,20 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private void aliases(InferredType newType, IExpression initializer) {
-        //char[] val = getArgValue(initializer);
+        if (getArgValue(initializer) != null) {
+            file.addAlias(String.valueOf(getArgValue(initializer)), initializer.sourceStart(), initializer.sourceEnd(),
+                    String.valueOf(newType.getName()));
+        } else if (initializer instanceof IArrayInitializer) {
+            final ArrayInitializer arr = (ArrayInitializer) initializer;
+            if (arr.expressions != null) {
+                for (final IExpression ex : arr.expressions) {
+                    if (getArgValue(ex) != null) {
+                        file.addAlias(String.valueOf(getArgValue(ex)), ex.sourceStart(), ex.sourceEnd(),
+                                String.valueOf(newType.getName()));
+                    }
+                }
+            }
+        }
 
     }
 

@@ -92,7 +92,7 @@
       <!-- @generated extjs -->
       <package
             uri="http://extjs.w3des.net/1.0"
-            class="net.w3des.extjs.core.model.extjs.ExtjsPackage"
+            class="net.w3des.extjs.core.model.basic.ExtJSPackage"
             genModel="resources/model/extjs.genmodel"/>
    </extension>
 

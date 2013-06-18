@@ -84,6 +84,56 @@
              class="net.w3des.extjs.ui.completion.TypeCompletion">
        </javaCompletionProposalComputer>
     </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.alias"
+          name="ExtJS Alias"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.AliasCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.widget"
+          name="ExtJS Widget"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.WidgetCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.plugin"
+          name="ExtJS Widget"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.PluginCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.layout"
+          name="ExtJS Widget"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.LayoutCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
+    <extension
+          id="net.w3des.extjs.ui.completion.feature"
+          name="ExtJS Widget"
+          point="org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer">
+       <javaCompletionProposalComputer
+             activate="true"
+             categoryId="net.w3des.extjs.ui.completion.extCategory"
+             class="net.w3des.extjs.ui.completion.FeatureCompletion">
+       </javaCompletionProposalComputer>
+    </extension>
    <extension id="net.w3des.extjs.ui.fragment" point="org.eclipse.e4.workbench.model">
       <fragment uri="model/fragment.e4xmi"></fragment>
    </extension>

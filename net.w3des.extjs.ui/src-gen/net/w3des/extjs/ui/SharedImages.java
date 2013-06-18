@@ -36,6 +36,11 @@ public class SharedImages{
 	 */
 	public static interface OBJ16{
 		/**
+		 * Image constant for icons/obj16/alias.png
+		 */
+		public static final String ALIAS = "icons/obj16/alias.png";
+		
+		/**
 		 * Image constant for icons/obj16/cmd.png
 		 */
 		public static final String CMD = "icons/obj16/cmd.png";
@@ -46,9 +51,34 @@ public class SharedImages{
 		public static final String DELEXT = "icons/obj16/delext.png";
 		
 		/**
+		 * Image constant for icons/obj16/event.png
+		 */
+		public static final String EVENT = "icons/obj16/event.png";
+		
+		/**
 		 * Image constant for icons/obj16/ext.png
 		 */
 		public static final String EXT = "icons/obj16/ext.png";
+		
+		/**
+		 * Image constant for icons/obj16/feature.png
+		 */
+		public static final String FEATURE = "icons/obj16/feature.png";
+		
+		/**
+		 * Image constant for icons/obj16/layout.png
+		 */
+		public static final String LAYOUT = "icons/obj16/layout.png";
+		
+		/**
+		 * Image constant for icons/obj16/plugin.png
+		 */
+		public static final String PLUGIN = "icons/obj16/plugin.png";
+		
+		/**
+		 * Image constant for icons/obj16/widget.png
+		 */
+		public static final String WIDGET = "icons/obj16/widget.png";
 	}
 	
 	/**
