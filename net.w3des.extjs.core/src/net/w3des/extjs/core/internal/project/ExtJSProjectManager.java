@@ -88,7 +88,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     @Override
     public boolean isExtJSProject(final IProject project) {
         try {
-            if (project.isOpen() && project.isAccessible()) {
+            if (project.isAccessible()) {
                 return project.hasNature(ExtJSNature.NATURE_ID);
             }
 
@@ -251,6 +251,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
         for (final Entry<IProject, ExtJSProject> entry : projects.entrySet()) {
             final IJavaScriptProject pr = JavaScriptCore.create(entry.getKey());
+
             if (pr.getPackageFragmentRoot(filePath) != null && pr.getPackageFragmentRoot(filePath).exists()) {
                 entry.getValue().getFiles().add(file);
             }
