@@ -88,7 +88,11 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     @Override
     public boolean isExtJSProject(final IProject project) {
         try {
-            return project.hasNature(ExtJSNature.NATURE_ID);
+            if (project.isOpen() && project.isAccessible()) {
+                return project.hasNature(ExtJSNature.NATURE_ID);
+            }
+
+            return false;
         } catch (final CoreException e) {
             ExtJSCore.error(e);
             return false;
