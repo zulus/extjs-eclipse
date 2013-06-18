@@ -10,7 +10,7 @@
     <elements xsi:type="commands:Handler" xmi:id="_uJyx0NFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.handler.addExtJS41Support" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.AddExtJS41Support" command="_YcYqMNFyEeKUAqZmGwoQog"/>
     <elements xsi:type="commands:Handler" xmi:id="_UKWzsNHHEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handler.addExtJS42Support" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.AddExtJS42Support" command="_OlT2wNHHEeKB1tgznwrt9g"/>
     <elements xsi:type="commands:Handler" xmi:id="_mkdYINFyEeKUAqZmGwoQog" elementId="net.w3des.extjs.ui.handler.removeExtJSSupport" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.RemoveExtJSSupport" command="_hrjvgNFyEeKUAqZmGwoQog"/>
-    <elements xsi:type="commands:Handler" xmi:id="_BoTQ8NHLEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handler.0" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.RefreshJS" command="_wfHX4NHJEeKB1tgznwrt9g"/>
+    <elements xsi:type="commands:Handler" xmi:id="_BoTQ8NHLEeKB1tgznwrt9g" elementId="net.w3des.extjs.ui.handler.refreshJS" contributionURI="bundleclass://net.w3des.extjs.ui/net.w3des.extjs.ui.handler.RefreshJS" command="_wfHX4NHJEeKB1tgznwrt9g"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_1aYWoNGKEeKUAqZmGwoQog" featurename="menuContributions" parentElementId="org.eclipse.e4.legacy.ide.application" positionInList="">
     <elements xsi:type="menu:MenuContribution" xmi:id="_LSzbcNGLEeKUAqZmGwoQog" elementId="net.w3des.extjs.menu.addSupportContribution" positionInParent="after=additions" parentId="org.eclipse.ui.projectConfigure">

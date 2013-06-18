@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,15 @@ import net.w3des.extjs.core.model.basic.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -38,6 +42,8 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     private Map<IProject, ExtJSProject> projects;
 
     private Map<String, File> files;
+
+    private IResource findMember;
 
     public ExtJSProjectManager() {
     }
@@ -164,15 +170,19 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
                     if (project != null && project.isOpen() && isExtJSProject(project)) {
                         projects.put(project, extProject);
-                        final IJavaScriptProject pr = JavaScriptCore.create(project);
-                        for (final File f : extProject.getFiles()) {
-                            final IPackageFragmentRoot packageFragmentRoot = pr.getPackageFragmentRoot(f.getName());
-                            if (packageFragmentRoot == null || !packageFragmentRoot.exists()) {
+                        final Iterator<File> iterator = extProject.getFiles().iterator();
+                        while (iterator.hasNext()) {
+                            final File item = iterator.next();
+                            if (!inProject(project, item.getName())) {
+                                iterator.remove();
                                 continue;
                             }
 
-                            if (!files.containsKey(f.getName())) {
-                                files.put(f.getName(), f);
+                            if (!files.containsKey(item.getName())) {
+                                files.put(item.getName(), item);
+                            } else {
+                                iterator.remove();
+                                extProject.getFiles().add(item);
                             }
                         }
                     }
@@ -248,16 +258,34 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
         file.setName(filePath);
         files.put(filePath, file);
         // find and connect projects
-
         for (final Entry<IProject, ExtJSProject> entry : projects.entrySet()) {
-            final IJavaScriptProject pr = JavaScriptCore.create(entry.getKey());
-
-            if (pr.getPackageFragmentRoot(filePath) != null && pr.getPackageFragmentRoot(filePath).exists()) {
+            if (inProject(entry.getKey(), filePath)) {
                 entry.getValue().getFiles().add(file);
             }
 
         }
 
         return file;
+    }
+
+    private boolean inProject(IProject project, String filePath) {
+        final IJavaScriptProject pr = JavaScriptCore.create(project);
+        final IPath path = new Path(filePath);
+        try {
+            final IPackageFragmentRoot packageFragment = pr.findPackageFragmentRoot(path);
+            if (packageFragment != null) {
+                return true;
+            }
+        } catch (final Throwable e) {
+            ExtJSCore.info(e);
+        }
+
+        findMember = project.findMember(path.removeFirstSegments(1));
+
+        if (findMember != null) {
+            return true;
+        }
+
+        return false;
     }
 }
