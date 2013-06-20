@@ -18,11 +18,14 @@ import net.w3des.extjs.core.model.basic.ExtJSPackage;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
 import net.w3des.extjs.core.model.basic.File;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,8 +45,6 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     private Map<IProject, ExtJSProject> projects;
 
     private Map<String, File> files;
-
-    private IResource findMember;
 
     public ExtJSProjectManager() {
     }
@@ -130,6 +131,27 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     public void resourceChanged(final IResourceChangeEvent event) {
         if (event.getResource() instanceof IProject) {
             projectChanged((IProject) event.getResource(), event);
+        } else if (event.getType() == IResourceChangeEvent.POST_CHANGE && event.getDelta() != null) {
+            try {
+                event.getDelta().accept(new IResourceDeltaVisitor() {
+                    @Override
+                    public boolean visit(IResourceDelta delta) throws CoreException {
+                        if (delta.getResource() instanceof IFile && delta.getKind() == IResourceDelta.REMOVED
+                                && files.containsKey(delta.getResource().getFullPath().toString())) {
+                            final File remove = files.remove(delta.getResource().getFullPath().toString());
+                            for (final ExtJSProject pr : projects.values()) {
+                                if (pr.getFiles().contains(remove)) {
+                                    pr.getFiles().remove(remove);
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+                });
+            } catch (final CoreException e) {
+                ExtJSCore.error(e);
+            }
         }
 
     }
@@ -280,7 +302,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
             ExtJSCore.info(e);
         }
 
-        findMember = project.findMember(path.removeFirstSegments(1));
+        final IResource findMember = project.findMember(path.removeFirstSegments(1));
 
         if (findMember != null) {
             return true;
