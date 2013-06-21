@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 public class WidgetCompletion extends AliasCompletion {
     public WidgetCompletion() {
-        super(new String[] { "Ext.createWidget(", "xtype:", ".xtype=" });
+        super(new String[] { "Ext.createWidget(", "xtype:", ".xtype=", "Ext.widget(" });
     }
 
     @Override
