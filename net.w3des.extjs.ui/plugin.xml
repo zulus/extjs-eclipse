@@ -21,7 +21,7 @@
              <with variable="selection">
                 <iterate
                     ifEmpty="false"
-                    operator="or">
+                    operator="and">
                     <test
                         forcePluginActivation="true"
                         property="org.eclipse.core.resources.projectNature"
@@ -32,11 +32,11 @@
                 <with variable="selection">
                     <iterate
                         ifEmpty="false"
-                        operator="or">
+                        operator="and">
                         <test 
                             forcePluginActivation="true"
-                            property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                            value="wst.jsdt.extjs.core" />
+                            property="org.pdtextensions.parentProjectNature"
+                            value="net.w3des.extjs.core.extjsNature" />
                     </iterate>                            
                 </with>
             </not>
@@ -48,11 +48,11 @@
              variable="selection">
           <iterate
                 ifEmpty="false"
-                operator="or">
+                operator="and">
              <test
                    forcePluginActivation="true"
-                   property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                   value="wst.jsdt.extjs.core">
+                   property="org.pdtextensions.parentProjectNature"
+                   value="net.w3des.extjs.core.extjsNature">
              </test>
           </iterate>
        </with>         
