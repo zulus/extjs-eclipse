@@ -37,9 +37,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 final public class ExtJSProjectManager implements IExtJSProjectManager, IResourceChangeListener {
     private Map<IProject, ExtJSProject> projects;
@@ -306,6 +308,28 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
         if (findMember != null) {
             return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onBuildPath(IResource resource) {
+        final IJavaScriptProject scriptProject = JavaScriptCore.create(resource.getProject());
+        try {
+            for (final IIncludePathEntry entry : scriptProject.getRawIncludepath()) {
+                if (entry.getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
+                    continue; // ignore other containers
+                }
+
+                // TODO allow exclude
+                if (entry.getPath().isPrefixOf(resource.getFullPath().removeFirstSegments(1))
+                        || entry.getPath().equals(resource.getFullPath().removeFirstSegments(1))) {
+                    return true;
+                }
+            }
+        } catch (final JavaScriptModelException e) {
+            return false;
         }
 
         return false;

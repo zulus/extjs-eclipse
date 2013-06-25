@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
+import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -35,7 +36,6 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
@@ -46,6 +46,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
  * @author Dawid zulus Pakula <zulus@w3des.net>
+ * @todo Optimize this!
  */
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
@@ -74,20 +75,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static char[] attrListeners = new char[] { 'l', 'i', 's', 't', 'e', 'n', 'e', 'r', 's' };
     private final static char[] attrScope = new char[] { 's', 'c', 'o', 'p', 'e' };
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
-    private CompilationUnitDeclaration unit;
     private File file;
 
     @Override
     public void doInfer() {
-        file = ExtJSCore.getProjectManager().getFile(String.valueOf(unit.getFileName()));
+        file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
         file.cleanAliases();
         super.doInfer();
-    }
-
-    @Override
-    public void setCompilationUnit(CompilationUnitDeclaration scriptFileDeclaration) {
-        super.setCompilationUnit(scriptFileDeclaration);
-        unit = scriptFileDeclaration;
     }
 
     @Override
@@ -95,9 +89,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         super.initializeOptions(inferOptions);
         inferOptions.useAssignments = true;
         inferOptions.useInitMethod = true;
-        inferOptions.saveArgumentComments = true;
+        inferOptions.saveArgumentComments = false;
         inferOptions.docLocation = 0;
-
         inferOptions.engineClass = this.getClass().getName();
     }
 
@@ -121,6 +114,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     @Override
     public boolean visit(ILocalDeclaration localDeclaration) {
+        final boolean res = super.visit(localDeclaration);
         if (localDeclaration.getInitialization() != null
                 && localDeclaration.getInitialization() instanceof IOR_OR_Expression) {
             final IOR_OR_Expression ex = (IOR_OR_Expression) localDeclaration.getInitialization();
@@ -128,7 +122,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 final ISingleNameReference ref = (ISingleNameReference) ex.getLeft();
                 if (addType(ref.getToken()) != null) {
                     localDeclaration.setInferredType(addType(ref.getToken()));
-                    return super.visit(localDeclaration);
+                    return res;
                 }
             }
         }
@@ -137,16 +131,24 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 && localDeclaration.getInitialization() instanceof IFunctionCall) {
             final IFunctionCall fcall = (IFunctionCall) localDeclaration.getInitialization();
             if (fcall.getReceiver() == null || fcall.getReceiver().toString() == null) {
-                return super.visit(localDeclaration);
+                return res;
             }
 
             if (localDeclaration.getInferredType() == null) {
                 localDeclaration.setInferredType(extCreate(fcall));
-                return super.visit(localDeclaration);
+                return res;
             }
         }
 
-        return super.visit(localDeclaration);
+        if (passNumber == 1 && localDeclaration.getInitialization() instanceof IThisReference) {
+            final InferredType typeOf = getTypeOf(localDeclaration.getInitialization());
+            if (typeOf != null) {
+                typeOf.isDefinition = true;
+                localDeclaration.setInferredType(typeOf);
+            }
+        }
+
+        return res;
     }
 
     @Override
@@ -194,22 +196,47 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     @Override
     public boolean visit(IAssignment assignment) {
-
+        pushContext();
         if (getFullName(assignment.getLeftHandSide()) != null
-                && CharOperation.indexOf(ext, getFullName(assignment.getLeftHandSide()), true) == 0
-                ) {
+                && CharOperation.indexOf(ext, getFullName(assignment.getLeftHandSide()), true) == 0) {
             if (CharOperation.indexOf(extDot, getFullName(assignment.getLeftHandSide()), true) == 0) {
                 addType(ext);
             }
             if (assignment.getExpression() instanceof IObjectLiteral) {
                 final InferredType type = addType(getFullName(assignment.getLeftHandSide()), true);
                 type.superClass = ObjectType;
-                // buildType(type, (IObjectLiteral) assignment.getExpression());
                 populateType(type, (IObjectLiteral) assignment.getExpression(), true);
             } else if (assignment.getExpression() instanceof IAssignment) {
                 visit((IAssignment) assignment.getExpression());
             }
+        } else if (assignment.getLeftHandSide() instanceof IFieldReference) {
+            final IFieldReference lhs = (IFieldReference) assignment.getLeftHandSide();
+            if (getVariable(lhs.getReceiver()) != null
+                    && getVariable(lhs.getReceiver()).getInitialization() instanceof IThisReference) {
+                final InferredType type = getVariable(lhs.getReceiver()).getInferredType();
+                if (passNumber == 1 && type != null) {
+                    final int nameStart = lhs.getReceiver().sourceEnd() + 2;
+                    if (getFunction(assignment.getExpression()) instanceof IFunctionDeclaration) {
+                        type.addMethod(lhs.getToken(), (IFunctionDeclaration) getFunction(assignment.getExpression()),
+                                nameStart);
+                    } else if (assignment.getExpression() instanceof IFunctionExpression) {
+                        type.addMethod(lhs.getToken(),
+                                ((IFunctionExpression) assignment.getExpression()).getMethodDeclaration(), nameStart);
+                    } else if (handlePossibleMethod(type, lhs.getToken(), lhs.sourceStart(),
+                            assignment.getExpression(), assignment.getJsDoc()) == null) {
+                        final InferredAttribute addAttribute = type.addAttribute(lhs.getToken(),
+                                assignment.getExpression(), nameStart);
+                        addAttribute.type = getTypeOf(assignment.getExpression());
+                        assignment.setInferredType(addAttribute.type);
+                    }
+
+                }
+
+                return true;
+            }
         }
+
+        popContext();
 
         return super.visit(assignment);
     }
@@ -347,9 +374,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             if (isExtDefine(fcall)) {
                 fieldDeclaration.setInferredType(buildType(fcall));
 
+                return true;
             }
             if (extCreate(fcall) != null) {
                 fieldDeclaration.setInferredType(extCreate(fcall));
+
+                return true;
             }
         }
 
@@ -394,7 +424,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 newType.isAnonymous = false;
             }
         } else if (CharOperation.equals(messageSend.getSelector(), attrOverride)) {
-            final char[] name = getFieldName(args[0]);
+            char[] name = null;
+            if (args[0] instanceof IStringLiteral) {
+                name = getFieldName(args[0]);
+            } else if (getTypeOf(args[0]) != null) {
+                name = getTypeOf(args[0]).getName();
+            } else {
+                name = getFieldName(args[0]);
+            }
 
             newType = findDefinedType(name);
             if (passNumber == 2 && newType != null) {
@@ -402,9 +439,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
 
             newType = addType(name, true);
-            // newType.setNameStart(args[0] instanceof IStringLiteral ?
-            // args[0].sourceStart() + 1 : args[0].sourceStart());
-            // If I set name start code completion will be broken
+            newType.setNameStart(getNameStart(args[0]));
             newType.isAnonymous = false;
             newType.inferenceStyle = "override";
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -728,8 +763,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         field.getInitializer().traverse(new ASTVisitor() {
             @Override
             public boolean visit(IStringLiteral stringLiteral) {
-                unit.addImport(stringLiteral.source(), stringLiteral.sourceStart(), stringLiteral.sourceEnd(),
-                        stringLiteral.sourceStart());
+                getScriptFileDeclaration().addImport(stringLiteral.source(), stringLiteral.sourceStart(),
+                        stringLiteral.sourceEnd(), stringLiteral.sourceStart());
                 return true;
             }
         });
@@ -842,7 +877,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             newAlias.sourceStart = alias.sourceStart();
             newAlias.sourceEnd = alias.sourceEnd();
             newAlias.setNameStart(alias.sourceStart());
-            newAlias.superClass = newType;
+            newAlias.referenceClass = newType;
         } else if (alias instanceof IObjectLiteral) {
             alternateClassName(newType, (IObjectLiteral) alias);
         } else if (alias instanceof IArrayInitializer) {
@@ -893,7 +928,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     @Override
     protected boolean isPossibleClassName(char[] name) {
-        return CharOperation.equals(name, ext);
+        return CharOperation.equals(name, ext) || (name != null && CharOperation.indexOf(extDot, name, true) == 0);
     }
 
     @Override
@@ -941,6 +976,18 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         }
 
         return null;
+    }
+
+    @Override
+    protected boolean handlePotentialType(IAssignment assignment) {
+        if (getVariable(assignment.getLeftHandSide()) != null) {
+            final IAbstractVariableDeclaration variable = getVariable(assignment.getLeftHandSide());
+            if (variable.getInferredType() != null) {
+                assignment.setInferredType(variable.getInferredType());
+            }
+        }
+
+        return super.handlePotentialType(assignment);
     }
 
     protected IReturnStatement[] checkInternalFunction(IExpression initializer) {
@@ -1182,7 +1229,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
         }
 
-        return super.visit(type);
+        if ((type.attributes == null || type.attributes.length == 0)
+                && (type.methods == null || type.methods.size() == 0)
+                && (type.mixins == null || type.mixins.size() == 0)) {
+            type.isDefinition = false;
+            type.isAnonymous = true;
 
+        }
+
+        return super.visit(type);
     }
 }

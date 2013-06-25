@@ -26,4 +26,5 @@ Export-Package: net.w3des.extjs.core,
  net.w3des.extjs.core.model.basic,
  net.w3des.extjs.core.model.basic.impl,
  net.w3des.extjs.core.model.basic.util
-Service-Component: OSGI-INF/component.xml
+Service-Component: OSGI-INF/projectManager.xml,
+ OSGI-INF/inferHelper.xml

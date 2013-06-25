@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" activate="activate" deactivate="deactivate" name="net.w3des.extjs.core.InferHelper">
+   <implementation class="net.w3des.extjs.core.internal.project.InferHelper"/>
+   <service>
+      <provide interface="net.w3des.extjs.core.IInferHelper"/>
+   </service>
+</scr:component>
