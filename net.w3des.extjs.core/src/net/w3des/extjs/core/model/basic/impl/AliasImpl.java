@@ -6,9 +6,7 @@ import net.w3des.extjs.core.model.basic.Alias;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -211,6 +209,15 @@ public class AliasImpl extends TypeItemImpl implements Alias {
         result.append(name);
         result.append(')');
         return result.toString();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (!(obj instanceof Alias)) {
+    		return false;
+    	}
+    	
+    	return ((Alias)obj).getRawName().equals(obj);
     }
 
 } //AliasImpl

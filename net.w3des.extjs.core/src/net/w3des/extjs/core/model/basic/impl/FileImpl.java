@@ -164,8 +164,9 @@ public class FileImpl extends MinimalEObjectImpl.Container implements File {
         alias.setSourceStart(sourceStart);
         alias.setSourceEnd(sourceEnd);
         alias.setTypeName(type);
-
-        getAliases().add(alias);
+        if (!getAliases().contains(alias)) {
+        	getAliases().add(alias);
+        }
     }
 
     /**

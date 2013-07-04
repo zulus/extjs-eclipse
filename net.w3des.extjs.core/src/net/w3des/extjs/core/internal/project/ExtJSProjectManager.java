@@ -191,24 +191,27 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
                     final ExtJSProject extProject = (ExtJSProject) o;
                     final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                             .getProject(((ExtJSProject) o).getName());
-
-                    if (project != null && project.isOpen() && isExtJSProject(project)) {
-                        projects.put(project, extProject);
-                        final Iterator<File> iterator = extProject.getFiles().iterator();
-                        while (iterator.hasNext()) {
-                            final File item = iterator.next();
-                            if (!inProject(project, item.getName())) {
-                                iterator.remove();
-                                continue;
-                            }
-
-                            if (!files.containsKey(item.getName())) {
-                                files.put(item.getName(), item);
-                            } else {
-                                iterator.remove();
-                                extProject.getFiles().add(item);
-                            }
-                        }
+                    try {
+	                    if (project != null && isExtJSProject(project)) {
+	                        projects.put(project, extProject);
+	                        final Iterator<File> iterator = extProject.getFiles().iterator();
+	                        while (iterator.hasNext()) {
+	                            final File item = iterator.next();
+	                            if (!inProject(project, item.getName())) {
+	                                iterator.remove();
+	                                continue;
+	                            }
+	
+	                            if (!files.containsKey(item.getName())) {
+	                                files.put(item.getName(), item);
+	                            } else {
+	                                iterator.remove();
+	                                extProject.getFiles().add(item);
+	                            }
+	                        }
+	                    }
+                    } catch (Throwable e) {
+                    	
                     }
                 }
             }

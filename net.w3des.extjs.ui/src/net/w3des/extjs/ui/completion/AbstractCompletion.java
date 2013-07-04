@@ -1,6 +1,7 @@
 package net.w3des.extjs.ui.completion;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -124,6 +125,16 @@ abstract public class AbstractCompletion implements IJavaCompletionProposalCompu
             final List<ICompletionProposal> proposals = new LinkedList<ICompletionProposal>();
 
             computeCompletionProposals(inString, start, proposals, context, monitor);
+            final List<String> strs = new LinkedList<String>();
+            Iterator<ICompletionProposal> iterator = proposals.iterator();
+            while (iterator.hasNext()) {
+            	ICompletionProposal next = iterator.next();
+            	if (strs.contains(next.getDisplayString())) {
+            		iterator.remove();
+            	}
+            	strs.add(next.getDisplayString());
+            }
+            
 
             return proposals;
         } catch (final Throwable e) {
