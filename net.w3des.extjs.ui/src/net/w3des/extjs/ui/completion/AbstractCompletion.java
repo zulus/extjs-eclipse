@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.w3des.extjs.core.Util;
+import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.ui.ExtJSUI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,7 +51,6 @@ abstract public class AbstractCompletion implements IJavaCompletionProposalCompu
                 return Collections.EMPTY_LIST;
             }
             final JavaContentAssistInvocationContext context = (JavaContentAssistInvocationContext) rawContext;
-
             if (!Util.isExtProject(context.getProject())) {
                 return Collections.EMPTY_LIST;
             }

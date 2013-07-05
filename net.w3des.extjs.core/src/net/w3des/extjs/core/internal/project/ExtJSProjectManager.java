@@ -204,19 +204,20 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 	
 	                            if (!files.containsKey(item.getName())) {
 	                                files.put(item.getName(), item);
+	                                extProject.getFiles().add(item);
 	                            } else {
 	                                iterator.remove();
-	                                extProject.getFiles().add(item);
+	                                extProject.getFiles().add(files.get(item.getName()));
 	                            }
 	                        }
 	                    }
                     } catch (Throwable e) {
-                    	
+                    	ExtJSCore.error(e);
                     }
                 }
             }
         } catch (final Throwable e) {
-            // ignore all errors
+        	ExtJSCore.error(e);
         }
 
         // scan

@@ -1,5 +1,6 @@
 package net.w3des.extjs.core.internal;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -15,8 +16,10 @@ public class WorkspaceHelper {
 		for (IResource r : res) {
 			if (r instanceof IFolder) {
 				touch(((IFolder) r).members(), monitor);
-			} else if (r.getName().endsWith(".js")) {
+			} else if (r.getName().contains(".js")) {
 				r.touch(monitor);
+			} else if(!(r instanceof IFile)) {
+				ExtJSCore.warn("Invalid class: " + r.getClass().getName());
 			}
 		}
 	}
