@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.w3des.extjs.core.Util;
-import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.ui.ExtJSUI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
