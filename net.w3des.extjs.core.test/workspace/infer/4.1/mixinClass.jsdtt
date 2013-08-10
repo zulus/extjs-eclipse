@@ -1,0 +1,14 @@
+--TEST--
+Test class override
+--FILE--
+Ext.define('classToMix', {
+    variable : 'Variable',
+    myFunc : function() {}
+});
+Ext.define('classMixed', {
+    mixins : ['classToMix']
+});
+--EXPECT--
+class classMixed
+    method myFunc
+    variable variable String

@@ -856,8 +856,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     if (f != null) {
                         final InferredAttribute at = lit.getInferredType()
                                 .findAttribute(getFieldName(f.getFieldName()));
-                        newType.addMixin(at.name);
                         if (getArgValue(f.getInitializer()) != null) {
+                        	newType.addMixin(getArgValue(f.getInitializer()));
                             at.type = addType(getArgValue(f.getInitializer()));
                         }
                     }
