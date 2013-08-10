@@ -9,6 +9,7 @@ import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.File;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
+import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
@@ -487,6 +488,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (args.length < 1) {
             return newType;
         }
+        if (args.length > 1 && getDefinedFunction(args[1]) != null) {
+            InferredMethod addMethod = newType.addMethod(new char[] {'$', '_', 'p','o','s','t','C','o','n','s','t','r','u','c','t','o','r'}, getDefinedFunction(args[1]), args[1].sourceStart());
+            addMethod.bits &= ClassFileConstants.AccPrivate;
+        }
+        
         if (args[0] instanceof IObjectLiteral) {
             buildType(newType, (IObjectLiteral) args[0]);
         } else if (args[0] instanceof IFunctionExpression) {

@@ -125,7 +125,7 @@ public class FileImpl extends MinimalEObjectImpl.Container implements File {
      */
     @Override
     public void cleanAliases() {
-        if (getAliases().size() > 0) {
+        if (getAliases() != null && getAliases().size() > 0) {
             getAliases().clear();
         }
     }
