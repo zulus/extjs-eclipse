@@ -256,6 +256,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     /**
      * Copy from left to right
      * 
+     * TODO: Calculate scope, check type
+     * TODO: Optimisation
+     * 
      * @param args
      */
     private InferredType extApply(IFunctionCall messageSend) {
@@ -1223,6 +1226,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (passNumber != 2) {
             return super.visit(type);
         }
+        if (CharOperation.equals(type.getName(), ext)) {
+            this.addType(ext, true);
+        }
+        
         final InferredAttribute listenersAttribute = type.findAttribute(attrListeners);
         if (listenersAttribute != null && listenersAttribute.type != null) {
             final InferredAttribute scope = listenersAttribute.type.findAttribute(attrScope);
