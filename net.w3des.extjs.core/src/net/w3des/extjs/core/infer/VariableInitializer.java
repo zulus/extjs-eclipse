@@ -17,24 +17,24 @@ import org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer;
  */
 public class VariableInitializer extends JsGlobalScopeVariableInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer#initialize
-	 * (java.lang.String)
-	 */
-	@Override
-	public void initialize(String variable) {
-		if (variable.equals("Ext") || variable.startsWith("Ext.")) { //$NON-NLS-1$
-			try {
-				JavaScriptCore.setIncludepathVariable("Ext",
-						new Path(ExtJSCore.getDefault().getBundle().getEntry("resources/main.js").toString()),
-						new NullProgressMonitor());
-			} catch (JavaScriptModelException e) {
-				ExtJSCore.error(e);
-			}
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer#initialize
+     * (java.lang.String)
+     */
+    @Override
+    public void initialize(String variable) {
+        if (variable.equals("Ext") || variable.startsWith("Ext.")) { //$NON-NLS-1$
+            try {
+                JavaScriptCore.setIncludepathVariable("Ext", new Path(ExtJSCore
+                        .getDefault().getBundle().getEntry("resources/main.js")
+                        .toString()), new NullProgressMonitor());
+            } catch (JavaScriptModelException e) {
+                ExtJSCore.error(e);
+            }
+        }
+    }
 
 }

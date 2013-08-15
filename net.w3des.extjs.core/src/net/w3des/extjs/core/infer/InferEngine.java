@@ -1,15 +1,25 @@
 package net.w3des.extjs.core.infer;
 
+import java.io.CharArrayReader;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.w3des.extjs.core.internal.ExtJSCore;
+import net.w3des.extjs.core.internal.parser.Comment;
+import net.w3des.extjs.core.internal.parser.CommentIterator;
+import net.w3des.extjs.core.internal.parser.Field;
+import net.w3des.extjs.core.internal.parser.JSDocParser;
+import net.w3des.extjs.core.internal.parser.Tag;
 import net.w3des.extjs.core.model.basic.File;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
-import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
@@ -37,6 +47,7 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
@@ -44,6 +55,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 
 /**
  * @author Dawid zulus Pakula <zulus@w3des.net>
@@ -77,12 +89,39 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static char[] attrScope = new char[] { 's', 'c', 'o', 'p', 'e' };
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
     private File file;
+    private CompilationUnitDeclaration unit;
+    private JSDocParser parser;
 
     @Override
     public void doInfer() {
         file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
         file.cleanAliases();
+        ICompilationUnit compilationUnit = this.unit.compilationResult().getCompilationUnit();
+        
+        if (compilationUnit != null) {
+            parser = new JSDocParser(compilationUnit.getContents(), this.unit.comments);
+        } else {
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(String.valueOf(getScriptFileDeclaration().getFileName())));
+            if (file != null) {
+                try {
+                    parser = new JSDocParser(file.getContents(), this.unit.comments);
+                } catch (CoreException e) {
+                    ExtJSCore.error(e);
+                }
+            }
+        }
+        
+        if (parser != null) {
+            checkDocs();
+        }
+        
         super.doInfer();
+        this.parser = null;
+    }
+    
+    public void setCompilationUnit(CompilationUnitDeclaration scriptFileDeclaration) {
+        this.unit = scriptFileDeclaration;
+        super.setCompilationUnit(scriptFileDeclaration);
     }
 
     @Override
@@ -93,6 +132,93 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         inferOptions.saveArgumentComments = false;
         inferOptions.docLocation = 0;
         inferOptions.engineClass = this.getClass().getName();
+    }
+    
+    private void checkDocs() {
+        if (parser.count() > 0) {
+            Comment first = parser.get(0);
+            if (first.hasTag("class")) {
+                Tag cl = first.getTag("class");
+                if (cl.getFields().size() > 0) {
+                    InferredType t = useField(cl.getField(0));
+                    t.isDefinition = true;
+                    checkDocs(t, unit.sourceStart, unit.sourceEnd);
+                }
+            }
+        }
+    }
+    
+    private void checkDocs(InferredType type, int start, int end) {
+        for (CommentIterator iterator = parser.iterator(); iterator.hasNext(); ) {
+            Comment c = iterator.next();
+            if (c.getEnd() > end) {
+                break;
+            } else if(c.getStart() < start) {
+                continue;
+            }
+            
+            if (c.hasTag("property") && c.getTag("property").getFields().size() > 0) { // add property
+                InferredType toType = getCommentType(c, type);
+                Tag t = c.getTag("property");
+                char[] name = t.getField(0).getContent().toCharArray();
+                if (t.getFields().size() > 1 && t.getField(1) instanceof Field) {
+                    name = t.getField(1).getContent().toCharArray();
+                }
+                
+                if (!String.valueOf(name).matches("^[-\\w]+$")) {
+                    continue;
+                }
+                
+                try {
+                    InferredAttribute addAttribute = toType.addAttribute(new InferredAttribute(name, toType, t.getStart(), t.getStop()));
+                    addAttribute.type = useField(t.getField(0));
+                } catch(Throwable e) {
+                    ExtJSCore.error(e);
+                }
+                
+            } /*else if (c.hasTag("method") && c.getTag("method").getFields().size() > 0) { // add property
+                /*InferredType toType = getCommentType(c, type);
+                Tag t = c.getTag("method");
+                char[] name = t.getField(0).getContent().toCharArray();
+                if (t.getFields().size() > 1 && t.getField(1) instanceof Field) {
+                    name = t.getField(1).getContent().toCharArray();
+                }
+                
+                InferredMethod method = toType.addMethod(name, null, t.getField(0).getStart());
+            } */
+        }
+    }
+    
+    private InferredType getCommentType(Comment comment, InferredType type) {
+        if (comment.hasTag("memberOf")) {
+            return useField(comment.getTag("memberOf").getField(0));
+        }
+        
+        return type;
+    }
+    
+    private InferredType useField(Field field) {
+        char[] name = field.getContent().toCharArray();
+        InferredType type = null;
+        
+        if (CharOperation.endsWith(name, new char[]{'[', ']'})) {
+            type = new InferredType(InferredType.ARRAY_NAME);
+            type.isArray = true;
+            type.referenceClass = addType(CharOperation.subarray(name, 0, name.length-2));
+        } else {
+            type = addType(name, false);
+        }
+        if (type.sourceStart == 0) {
+            type.sourceStart = field.getStart();
+        }
+        if (type.sourceEnd < field.getStop()) {
+            type.sourceEnd = field.getStop();
+        }
+        if (type.getNameStart() == 0) {
+            type.setNameStart(field.getStartContent());
+        }
+        
+        return type;
     }
 
     /**
@@ -496,6 +622,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             addMethod.bits &= ClassFileConstants.AccPrivate;
         }
         
+        if (passNumber == 1) {
+            checkDocs(newType, messageSend.sourceStart(), messageSend.sourceEnd());
+        }
+        
         if (args[0] instanceof IObjectLiteral) {
             buildType(newType, (IObjectLiteral) args[0]);
         } else if (args[0] instanceof IFunctionExpression) {
@@ -802,8 +932,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             return newType.findAttribute(getFieldName(field.getFieldName()));
         }
 
-        final InferredAttribute attr = newType.addAttribute(getFieldName(field.getFieldName()), field.getInitializer(),
-                getNameStart(field.getFieldName()));
+        
+        InferredAttribute attr = newType.findAttribute(getFieldName(field.getFieldName()));
+        if (attr == null) {
+            attr =  newType.addAttribute(getFieldName(field.getFieldName()), field.getInitializer(),
+                    getNameStart(field.getFieldName()));
+        } else if (attr.node == null) {
+            attr.node = (ASTNode) field.getInitializer();
+        }
         attr.sourceStart = field.sourceStart();
         attr.sourceEnd = field.sourceEnd();
         attr.initializationStart = field.getInitializer().sourceStart();
@@ -842,12 +978,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         final char[] val = getArgValue(mixin);
         final InferredAttribute attr = addAttribute(newType, field, false);
         attr.modifiers = ClassFileConstants.AccPrivate;
-        if (val != null) {
-            ExtJSCore.info(String.valueOf(val));
+        if (val != null && val.length > 0) {
             newType.addMixin(val);
         } else if (mixin instanceof IArrayInitializer) {
             for (final Expression e : ((ArrayInitializer) mixin).expressions) {
-                if (e != null && getArgValue(e) != null) {
+                if (e != null && getArgValue(e) != null && getArgValue(e).length > 0) {
                     newType.addMixin(getArgValue(e));
                 }
             }
@@ -865,8 +1000,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     if (f != null) {
                         final InferredAttribute at = lit.getInferredType()
                                 .findAttribute(getFieldName(f.getFieldName()));
-                        if (getArgValue(f.getInitializer()) != null) {
-                        	newType.addMixin(getArgValue(f.getInitializer()));
+                        if (getArgValue(f.getInitializer()) != null && getArgValue(f.getInitializer()).length > 0) {
+                            newType.addMixin(getArgValue(f.getInitializer()));
                             at.type = addType(getArgValue(f.getInitializer()));
                         }
                     }
@@ -1178,7 +1313,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 || assignment.getLeftHandSide() instanceof IFieldReference) {
             final char[] name = getFullName(assignment.getLeftHandSide());
             final InferredType t = findDefinedType(name);
-            if ((t == null || !t.isDefinition) && alternates(assignment.getExpression()) != null) {
+            if ((t == null || !t.isDefinition) && alternates(assignment.getExpression()) != null && alternates(assignment.getExpression()).isDefinition) {
                 final InferredType reference = alternates(assignment.getExpression());
                 if (reference != null && t == null) {
                     final InferredType type = addType(name, true);
