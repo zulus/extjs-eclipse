@@ -84,7 +84,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         file.cleanAliases();
         super.doInfer();
         file = null;
-        inferredGlobal = null;
+        //inferredGlobal = null;
     }
 
     @Override
