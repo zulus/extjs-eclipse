@@ -9,7 +9,6 @@ import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.File;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
-import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
@@ -47,7 +46,10 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
  * @author Dawid zulus Pakula <zulus@w3des.net>
- * @todo Optimize this!
+ * TODO: Use visit + contexts instead of huge (and ugly) wrappers
+ * TODO: More tests
+ * TODO: Find better method for singletones. Should be global properties with type
+ * TODO: Why Ext.apply is marked as type!!!!!!
  */
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
@@ -67,10 +69,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static char[] attrOverride = new char[] { 'o', 'v', 'e', 'r', 'r', 'i', 'd', 'e' };
     private final static char[] attrSingleton = new char[] { 's', 'i', 'n', 'g', 'l', 'e', 't', 'o', 'n' };
     private final static char[] attrStatics = new char[] { 's', 't', 'a', 't', 'i', 'c', 's' };
-    private final static char[] attrInheritableStatics = new char[] { 'i', 'n', 'h', 'e', 'r', 'i', 't', 'a', 'b', 'l',
-        'e', 'S', 't', 'a', 't', 'i', 'c', 's' };
-    private final static char[] attrAlternateClassName = new char[] { 'a', 'l', 't', 'e', 'r', 'n', 'a', 't', 'e', 'C',
-        'l', 'a', 's', 's', 'N', 'a', 'm', 'e' };
+    private final static char[] attrInheritableStatics = new char[] { 'i', 'n', 'h', 'e', 'r', 'i', 't', 'a', 'b', 'l', 'e', 'S', 't', 'a', 't', 'i', 'c', 's' };
+    private final static char[] attrAlternateClassName = new char[] { 'a', 'l', 't', 'e', 'r', 'n', 'a', 't', 'e', 'C', 'l', 'a', 's', 's', 'N', 'a', 'm', 'e' };
     private final static char[] attrMixins = new char[] { 'm', 'i', 'x', 'i', 'n', 's' };
     private final static char[] attrConstructor = new char[] { 'c', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r' };
     private final static char[] attrListeners = new char[] { 'l', 'i', 's', 't', 'e', 'n', 'e', 'r', 's' };
@@ -83,6 +83,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
         file.cleanAliases();
         super.doInfer();
+        file = null;
+        inferredGlobal = null;
     }
 
     @Override
@@ -116,8 +118,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     @Override
     public boolean visit(ILocalDeclaration localDeclaration) {
         final boolean res = super.visit(localDeclaration);
-        if (localDeclaration.getInitialization() != null
-                && localDeclaration.getInitialization() instanceof IOR_OR_Expression) {
+        if (localDeclaration.getInitialization() != null && localDeclaration.getInitialization() instanceof IOR_OR_Expression) {
             final IOR_OR_Expression ex = (IOR_OR_Expression) localDeclaration.getInitialization();
             if (ex.getLeft() instanceof ISingleNameReference) {
                 final ISingleNameReference ref = (ISingleNameReference) ex.getLeft();
@@ -128,8 +129,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
         }
 
-        if (localDeclaration.getInitialization() != null
-                && localDeclaration.getInitialization() instanceof IFunctionCall) {
+        if (localDeclaration.getInitialization() != null && localDeclaration.getInitialization() instanceof IFunctionCall) {
             final IFunctionCall fcall = (IFunctionCall) localDeclaration.getInitialization();
             if (fcall.getReceiver() == null || fcall.getReceiver().toString() == null) {
                 return res;
@@ -172,8 +172,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
         }
 
-        if (messageSend.getReceiver() == null || messageSend.getReceiver().toString() == null
-                || messageSend.getSelector() == null) {
+        if (messageSend.getReceiver() == null || messageSend.getReceiver().toString() == null || messageSend.getSelector() == null) {
             return super.handleFunctionCall(messageSend, assignmentExpression);
         }
 
@@ -198,8 +197,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     @Override
     public boolean visit(IAssignment assignment) {
         pushContext();
-        if (getFullName(assignment.getLeftHandSide()) != null
-                && CharOperation.indexOf(ext, getFullName(assignment.getLeftHandSide()), true) == 0) {
+        if (getFullName(assignment.getLeftHandSide()) != null && CharOperation.indexOf(ext, getFullName(assignment.getLeftHandSide()), true) == 0) {
             if (CharOperation.indexOf(extDot, getFullName(assignment.getLeftHandSide()), true) == 0) {
                 addType(ext);
             }
@@ -212,21 +210,16 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
         } else if (assignment.getLeftHandSide() instanceof IFieldReference) {
             final IFieldReference lhs = (IFieldReference) assignment.getLeftHandSide();
-            if (getVariable(lhs.getReceiver()) != null
-                    && getVariable(lhs.getReceiver()).getInitialization() instanceof IThisReference) {
+            if (getVariable(lhs.getReceiver()) != null && getVariable(lhs.getReceiver()).getInitialization() instanceof IThisReference) {
                 final InferredType type = getVariable(lhs.getReceiver()).getInferredType();
                 if (passNumber == 1 && type != null) {
                     final int nameStart = lhs.getReceiver().sourceEnd() + 2;
                     if (getFunction(assignment.getExpression()) instanceof IFunctionDeclaration) {
-                        type.addMethod(lhs.getToken(), (IFunctionDeclaration) getFunction(assignment.getExpression()),
-                                nameStart);
+                        type.addMethod(lhs.getToken(), (IFunctionDeclaration) getFunction(assignment.getExpression()), nameStart);
                     } else if (assignment.getExpression() instanceof IFunctionExpression) {
-                        type.addMethod(lhs.getToken(),
-                                ((IFunctionExpression) assignment.getExpression()).getMethodDeclaration(), nameStart);
-                    } else if (handlePossibleMethod(type, lhs.getToken(), lhs.sourceStart(),
-                            assignment.getExpression(), assignment.getJsDoc()) == null) {
-                        final InferredAttribute addAttribute = type.addAttribute(lhs.getToken(),
-                                assignment.getExpression(), nameStart);
+                        type.addMethod(lhs.getToken(), ((IFunctionExpression) assignment.getExpression()).getMethodDeclaration(), nameStart);
+                    } else if (handlePossibleMethod(type, lhs.getToken(), lhs.sourceStart(), assignment.getExpression(), assignment.getJsDoc()) == null) {
+                        final InferredAttribute addAttribute = type.addAttribute(lhs.getToken(), assignment.getExpression(), nameStart);
                         addAttribute.type = getTypeOf(assignment.getExpression());
                         assignment.setInferredType(addAttribute.type);
                     }
@@ -243,10 +236,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtApply(IFunctionCall messageSend) {
-        if (messageSend.getReceiver() != null
-                && CharOperation.equals(getFieldName(messageSend.getReceiver()), ext)
-                && (CharOperation.equals(messageSend.getSelector(), apply) || CharOperation.equals(
-                        messageSend.getSelector(), applyIf))) {
+        if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), ext)
+                && (CharOperation.equals(messageSend.getSelector(), apply) || CharOperation.equals(messageSend.getSelector(), applyIf))) {
             return true;
         }
 
@@ -256,8 +247,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     /**
      * Copy from left to right
      * 
-     * TODO: Calculate scope, check type
-     * TODO: Optimisation
+     * TODO: Calculate scope, check type TODO: Optimisation
      * 
      * @param args
      */
@@ -336,8 +326,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     protected InferredType extCreate(IFunctionCall messageSend) {
         InferredType type = null;
         if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), ext)
-                && CharOperation.equals(messageSend.getSelector(), create) && messageSend.getArguments() != null
-                && messageSend.getArguments().length > 0) {
+                && CharOperation.equals(messageSend.getSelector(), create) && messageSend.getArguments() != null && messageSend.getArguments().length > 0) {
 
             if (getArgValue(messageSend.getArguments()[0]) != null) {
                 type = addType(getArgValue(messageSend.getArguments()[0]));
@@ -391,11 +380,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtDefine(IFunctionCall messageSend) {
-        if (((CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(
-                messageSend.getSelector(), define))
-                || (CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(
-                        messageSend.getSelector(), extend)) || CharOperation.equals(messageSend.getSelector(),
-                                attrOverride)) && passNumber == 1) {
+        if (((CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(messageSend.getSelector(), define))
+                || (CharOperation.equals(getName(messageSend.getReceiver()), ext) && CharOperation.equals(messageSend.getSelector(), extend)) || CharOperation
+                    .equals(messageSend.getSelector(), attrOverride)) && passNumber == 1) {
             return true;
         }
 
@@ -492,10 +479,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             return newType;
         }
         if (args.length > 1 && getDefinedFunction(args[1]) != null) {
-            InferredMethod addMethod = newType.addMethod(new char[] {'$', '_', 'p','o','s','t','C','o','n','s','t','r','u','c','t','o','r'}, getDefinedFunction(args[1]), args[1].sourceStart());
+            InferredMethod addMethod = newType.addMethod(new char[] { '$', '_', 'p', 'o', 's', 't', 'C', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r' },
+                    getDefinedFunction(args[1]), args[1].sourceStart());
             addMethod.bits &= ClassFileConstants.AccPrivate;
         }
-        
+
         if (args[0] instanceof IObjectLiteral) {
             buildType(newType, (IObjectLiteral) args[0]);
         } else if (args[0] instanceof IFunctionExpression) {
@@ -509,8 +497,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                             if (ret.getExpression() instanceof IObjectLiteral) {
                                 buildType(newType, (IObjectLiteral) ret.getExpression());
                             } else if (getVariable(ret.getExpression()).getInitialization() instanceof IObjectLiteral) {
-                                buildType(newType, (IObjectLiteral) getVariable(ret.getExpression())
-                                        .getInitialization());
+                                buildType(newType, (IObjectLiteral) getVariable(ret.getExpression()).getInitialization());
                             }
                         }
                     }
@@ -644,8 +631,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, attrStatics)
-                        || CharOperation.equals(fieldName, attrInheritableStatics)) {
+                if (CharOperation.equals(fieldName, attrStatics) || CharOperation.equals(fieldName, attrInheritableStatics)) {
                     if (field.getInitializer() instanceof IObjectLiteral) {
                         addStatics(newType, (IObjectLiteral) field.getInitializer());
                     }
@@ -670,8 +656,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     continue;
                 }
 
-                if (handlePossibleMethod(newType, fieldName, getNameStart(field.getFieldName()),
-                        field.getInitializer(), field.getJsDoc()) != null) {
+                if (handlePossibleMethod(newType, fieldName, getNameStart(field.getFieldName()), field.getInitializer(), field.getJsDoc()) != null) {
                     continue;
                 }
 
@@ -695,15 +680,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     private void aliases(InferredType newType, IExpression initializer) {
         if (getArgValue(initializer) != null) {
-            file.addAlias(String.valueOf(getArgValue(initializer)), initializer.sourceStart(), initializer.sourceEnd(),
-                    String.valueOf(newType.getName()));
+            file.addAlias(String.valueOf(getArgValue(initializer)), initializer.sourceStart(), initializer.sourceEnd(), String.valueOf(newType.getName()));
         } else if (initializer instanceof IArrayInitializer) {
             final ArrayInitializer arr = (ArrayInitializer) initializer;
             if (arr.expressions != null) {
                 for (final IExpression ex : arr.expressions) {
                     if (getArgValue(ex) != null) {
-                        file.addAlias(String.valueOf(getArgValue(ex)), ex.sourceStart(), ex.sourceEnd(),
-                                String.valueOf(newType.getName()));
+                        file.addAlias(String.valueOf(getArgValue(ex)), ex.sourceStart(), ex.sourceEnd(), String.valueOf(newType.getName()));
                     }
                 }
             }
@@ -772,8 +755,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         field.getInitializer().traverse(new ASTVisitor() {
             @Override
             public boolean visit(IStringLiteral stringLiteral) {
-                getScriptFileDeclaration().addImport(stringLiteral.source(), stringLiteral.sourceStart(),
-                        stringLiteral.sourceEnd(), stringLiteral.sourceStart());
+                getScriptFileDeclaration().addImport(stringLiteral.source(), stringLiteral.sourceStart(), stringLiteral.sourceEnd(),
+                        stringLiteral.sourceStart());
                 return true;
             }
         });
@@ -802,8 +785,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             return newType.findAttribute(getFieldName(field.getFieldName()));
         }
 
-        final InferredAttribute attr = newType.addAttribute(getFieldName(field.getFieldName()), field.getInitializer(),
-                getNameStart(field.getFieldName()));
+        final InferredAttribute attr = newType.addAttribute(getFieldName(field.getFieldName()), field.getInitializer(), getNameStart(field.getFieldName()));
         attr.sourceStart = field.sourceStart();
         attr.sourceEnd = field.sourceEnd();
         attr.initializationStart = field.getInitializer().sourceStart();
@@ -863,10 +845,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             if (lit.getFields() != null) {
                 for (final IObjectLiteralField f : lit.getFields()) {
                     if (f != null) {
-                        final InferredAttribute at = lit.getInferredType()
-                                .findAttribute(getFieldName(f.getFieldName()));
+                        final InferredAttribute at = lit.getInferredType().findAttribute(getFieldName(f.getFieldName()));
                         if (getArgValue(f.getInitializer()) != null) {
-                        	newType.addMixin(getArgValue(f.getInitializer()));
+                            newType.addMixin(getArgValue(f.getInitializer()));
                             at.type = addType(getArgValue(f.getInitializer()));
                         }
                     }
@@ -876,7 +857,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     /**
-     * @see http
+     * @see http 
      *      ://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-alternateClassName
      */
     private void alternateClassName(InferredType newType, IExpression alias) {
@@ -955,8 +936,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         return res;
     }
 
-    protected InferredMethod handlePossibleMethod(InferredType newType, char[] name, int nameStart,
-            IExpression initializer, IJsDoc jsdoc) {
+    protected InferredMethod handlePossibleMethod(InferredType newType, char[] name, int nameStart, IExpression initializer, IJsDoc jsdoc) {
 
         final IReturnStatement[] checkInternalFunction = checkInternalFunction(initializer);
         if (checkInternalFunction.length == 0) {
@@ -1112,8 +1092,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (expression instanceof IFunctionCall) {
             final IFunctionCall messageSend = (IFunctionCall) expression;
             if (CharOperation.equals(messageSend.getSelector(), alias)
-                    && (messageSend.getReceiver() == null || CharOperation.equals(getName(messageSend.getReceiver()),
-                            ext))) {
+                    && (messageSend.getReceiver() == null || CharOperation.equals(getName(messageSend.getReceiver()), ext))) {
 
                 final char[][] arr = readFunctionAlias(messageSend.getArguments());
                 if (arr != null) {
@@ -1159,8 +1138,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
                 for (final IReturnStatement ret : checkInternalFunction(field.getInitializer())) {
                     if (ret.getExpression() instanceof IFunctionExpression && field.getJsDoc() != null) {
-                        final MethodDeclaration declaration = ((IFunctionExpression) ret.getExpression())
-                                .getMethodDeclaration();
+                        final MethodDeclaration declaration = ((IFunctionExpression) ret.getExpression()).getMethodDeclaration();
                         declaration.javadoc = (Javadoc) field.getJsDoc();
                         if (declaration.inferredType == null) {
                             declaration.inferredType = getReturnType(field.getJsDoc());
@@ -1174,8 +1152,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     @Override
     public void endVisit(IAssignment assignment) {
-        if (assignment.getLeftHandSide() instanceof ISingleNameReference
-                || assignment.getLeftHandSide() instanceof IFieldReference) {
+        if (assignment.getLeftHandSide() instanceof ISingleNameReference || assignment.getLeftHandSide() instanceof IFieldReference) {
             final char[] name = getFullName(assignment.getLeftHandSide());
             final InferredType t = findDefinedType(name);
             if ((t == null || !t.isDefinition) && alternates(assignment.getExpression()) != null) {
@@ -1229,7 +1206,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (CharOperation.equals(type.getName(), ext)) {
             this.addType(ext, true);
         }
-        
+        /**
+         * TODO Do it alwais if scope exists TODO Support for advance listeners
+         */
         final InferredAttribute listenersAttribute = type.findAttribute(attrListeners);
         if (listenersAttribute != null && listenersAttribute.type != null) {
             final InferredAttribute scope = listenersAttribute.type.findAttribute(attrScope);
@@ -1242,12 +1221,27 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
         }
 
-        if ((type.attributes == null || type.attributes.length == 0)
-                && (type.methods == null || type.methods.size() == 0)
+        if ((type.attributes == null || type.attributes.length == 0) && (type.methods == null || type.methods.size() == 0)
                 && (type.mixins == null || type.mixins.size() == 0)) {
             type.isDefinition = false;
             type.isAnonymous = true;
+        }
 
+        final InferredAttribute singleton = type.findAttribute(attrSingleton);
+        if (singleton != null && singleton.isStatic) {
+            if (type.methods != null) {
+                final Iterator iterator = type.methods.iterator();
+                while (iterator.hasNext()) {
+                    ((InferredMethod) iterator.next()).isStatic = true;
+                }
+            }
+            if (type.attributes != null) {
+                for(int i = 0; i < type.attributes.length; i++) {
+                    if (type.attributes[i] != null) {
+                        type.attributes[i].isStatic = true;
+                    }
+                }
+            }
         }
 
         return super.visit(type);

@@ -5,6 +5,7 @@ package net.w3des.extjs.core.model.basic.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.Alias;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
@@ -124,8 +125,8 @@ public class FileImpl extends MinimalEObjectImpl.Container implements File {
      * 
      */
     @Override
-    public void cleanAliases() {
-        if (getAliases() != null && getAliases().size() > 0) {
+    public synchronized void cleanAliases() {
+        if (getAliases() != null && !getAliases().isEmpty()) {
             getAliases().clear();
         }
     }
