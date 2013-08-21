@@ -2,7 +2,7 @@
 <feature
       id="net.w3des.extjs.feature"
       label="ExtJS Feature"
-      version="0.1.4.qualifier"
+      version="0.1.5.qualifier"
       provider-name="w3des.net">
 
    <description url="http://zulus.github.com/extjs-eclipse/">
