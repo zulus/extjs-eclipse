@@ -59,6 +59,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static char[] create = new char[] { 'c', 'r', 'e', 'a', 't', 'e' };
     private final static char[] define = new char[] { 'd', 'e', 'f', 'i', 'n', 'e' };
     private final static char[] extend = new char[] { 'e', 'x', 't', 'e', 'n', 'd' };
+    private final static char[] prototypeDot = new char[] {'.','p','r','o','t','o', 't','y','p','e'};
     private final static char[] baseClass = new char[] { 'E', 'x', 't', '.', 'B', 'a', 's', 'e' };
     private final static char[] baseName = new char[] { 'B', 'a', 's', 'e' };
     private final static char[] extendedClass = new char[] { 'E', 'x', 't', '.', 'B', 'a', 's', 'e', '.', 'A', 'n', 'o' };
@@ -261,13 +262,30 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         InferredType right = null;
         final IAbstractVariableDeclaration vl = getVariable(args[0]);
         final IAbstractVariableDeclaration vr = getVariable(args[1]);
+        boolean asStatic = false;
         if (args[0] instanceof IObjectLiteral) {
             left = ((IObjectLiteral) args[0]).getInferredType();
-        } else if (vl != null) {
-            left = vl.getInferredType();
-        } else {
+         } else if (vl != null) {
+            //again hack :(
+            char[] name = null;
+            if (vl.getInitialization() != null && (vl.getInitialization() instanceof IFieldReference)) {
+                name = getFullName(vl.getInitialization());
+            } else if (vl.getInitialization() != null && vl.getInitialization() instanceof IAssignment) {
+                name = getFullName(((IAssignment) vl.getInitialization()).getLeftHandSide());
+            }
+            if (name != null && CharOperation.prefixEquals(extDot, name)) {
+                left = addType(name, true);
+                
+                asStatic =  !CharOperation.endsWith(name, prototypeDot);
+            } else {
+                left = vl.getInferredType();
+                if (CharOperation.prefixEquals(ext, vl.getName()) || CharOperation.equals(ext, vl.getName())) {
+                    asStatic = !CharOperation.endsWith(vl.getName(), prototypeDot);
+                }
+            }
+         } else {
             left = getTypeOf(args[0]);
-        }
+        } 
 
         if (left == null || left == FunctionType || left.superClass == FunctionType) {
             if (args[0] instanceof ISingleNameReference) {
@@ -306,7 +324,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 }
                 final InferredMethod method = (InferredMethod) m;
                 if (left.findMethod(method.name, method.getFunctionDeclaration()) == null) {
-                    left.addMethod(method.name, method.getFunctionDeclaration(), method.nameStart).inType = left;
+                    InferredMethod addMethod = left.addMethod(method.name, method.getFunctionDeclaration(), method.nameStart);
+                    addMethod.inType = left;
+                    addMethod.isStatic = asStatic;
+                } else {
+                    left.findMethod(method.name, method.getFunctionDeclaration()).isStatic = asStatic;
                 }
             }
         }
@@ -316,7 +338,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 if (attr == null) {
                     continue;
                 }
-                left.addAttribute(attr).inType = left;
+                InferredAttribute addAttribute = left.addAttribute(attr);
+                addAttribute.inType = left;
+                addAttribute.isStatic = asStatic;
             }
         }
 
