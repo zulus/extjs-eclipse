@@ -358,17 +358,16 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 type = addType(baseClass);
             }
 
-            if (messageSend.getArguments().length > 1) {
-                if (messageSend.getArguments()[1] instanceof IObjectLiteral) {
-                    final IObjectLiteral literal = (IObjectLiteral) messageSend.getArguments()[1];
-                    if (literal.getInferredType() == null) {
-                        final InferredType tmpType = createAnonymousType(type.getName(), null);
-                        tmpType.isAnonymous = true;
-                        populateType(tmpType, literal, false);
-                        tmpType.superClass = type;
-                    }
-                    return literal.getInferredType();
+            if (messageSend.getArguments().length > 1 && type != null && messageSend.getArguments()[1] instanceof IObjectLiteral) {
+                final IObjectLiteral literal = (IObjectLiteral) messageSend.getArguments()[1];
+                if (literal.getInferredType() == null) {
+                    final InferredType tmpType = createAnonymousType(type.getName(), null);
+                    tmpType.isAnonymous = true;
+                    populateType(tmpType, literal, false);
+                    tmpType.superClass = type;
                 }
+
+                return literal.getInferredType();
             }
         }
 
