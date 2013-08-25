@@ -127,7 +127,11 @@ public class FileImpl extends MinimalEObjectImpl.Container implements File {
     @Override
     public synchronized void cleanAliases() {
         if (getAliases() != null && !getAliases().isEmpty()) {
-            getAliases().clear();
+            try {
+                getAliases().clear();
+            } catch (Throwable e) {
+                ExtJSCore.warn("NPE while clean", e);
+            }
         }
     }
 
