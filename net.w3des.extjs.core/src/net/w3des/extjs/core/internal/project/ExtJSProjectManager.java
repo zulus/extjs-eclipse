@@ -163,13 +163,13 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
             return;
         }
         switch (event.getType()) {
-            case IResourceChangeEvent.PRE_DELETE:
-            case IResourceChangeEvent.PRE_CLOSE:
-                projects.remove(project);
-                break;
-            case IResourceChangeEvent.POST_CHANGE:
-                projects.get(project).setName(project.getName());
-                break;
+        case IResourceChangeEvent.PRE_DELETE:
+        case IResourceChangeEvent.PRE_CLOSE:
+            projects.remove(project);
+            break;
+        case IResourceChangeEvent.POST_CHANGE:
+            projects.get(project).setName(project.getName());
+            break;
         }
     }
 
@@ -185,40 +185,40 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         try {
             final Resource resource = getResource();
-
-            for (final Object o : resource.getContents()) {
-                if (o instanceof ExtJSProject) {
-                    final ExtJSProject extProject = (ExtJSProject) o;
-                    final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                            .getProject(extProject.getName());
-                    try {
-	                    if (project != null && isExtJSProject(project)) {
-	                        projects.put(project, extProject);
-	                        final Iterator<File> iterator = extProject.getFiles().iterator();
-	                        while (iterator.hasNext()) {
-	                            final File item = iterator.next();
-	                            if (!inProject(project, item.getName())) {
-	                                iterator.remove();
-	                                continue;
-	                            }
-	                            if (!files.containsKey(item.getName())) {
-	                                files.put(item.getName(), item);
-	                                extProject.getFiles().add(item);
-	                            } else {
-	                                extProject.getFiles().add(files.get(item.getName()));
-	                                iterator.remove();
-	                            }
-	                        }
-	                    } else {
-	                    	ExtJSCore.warn(String.format("Project {0} haven't extjs support!", project.getName())); //$NON-NLS-1$
-	                    }
-                    } catch (Throwable e) {
-                    	ExtJSCore.error(e);
+            if (resource != null) {
+                for (final Object o : resource.getContents()) {
+                    if (o instanceof ExtJSProject) {
+                        final ExtJSProject extProject = (ExtJSProject) o;
+                        final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extProject.getName());
+                        try {
+                            if (project != null && isExtJSProject(project)) {
+                                projects.put(project, extProject);
+                                final Iterator<File> iterator = extProject.getFiles().iterator();
+                                while (iterator.hasNext()) {
+                                    final File item = iterator.next();
+                                    if (!inProject(project, item.getName())) {
+                                        iterator.remove();
+                                        continue;
+                                    }
+                                    if (!files.containsKey(item.getName())) {
+                                        files.put(item.getName(), item);
+                                        extProject.getFiles().add(item);
+                                    } else {
+                                        extProject.getFiles().add(files.get(item.getName()));
+                                        iterator.remove();
+                                    }
+                                }
+                            } else {
+                                ExtJSCore.warn(String.format("Project {0} haven't extjs support!", project.getName())); //$NON-NLS-1$
+                            }
+                        } catch (Throwable e) {
+                            ExtJSCore.error(e);
+                        }
                     }
                 }
             }
         } catch (final Throwable e) {
-        	ExtJSCore.error(e);
+            ExtJSCore.error(e);
         }
 
         // scan
@@ -229,6 +229,10 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
     private Resource createResource() {
         final java.io.File file = ExtJSCore.getDefault().getStateLocation().append("index.extjsproject").toFile(); //$NON-NLS-1$
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+        }
 
         final Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
         final Map<String, Object> m = reg.getExtensionToFactoryMap();
@@ -262,8 +266,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
         for (final Entry<IProject, ExtJSProject> entry : projects.entrySet()) {
             final IJavaScriptProject create = JavaScriptCore.create(entry.getKey());
             for (final File f : entry.getValue().getFiles()) {
-                if (create.getPackageFragmentRoot(f.getName()) == null
-                        || !create.getPackageFragmentRoot(f.getName()).exists()) {
+                if (create.getPackageFragmentRoot(f.getName()) == null || !create.getPackageFragmentRoot(f.getName()).exists()) {
                     entry.getValue().getFiles().remove(f);
                 }
             }
@@ -280,24 +283,24 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
     @Override
     public File getFile(String filePath) {
-    	File file = null;
+        File file = null;
         if (files.containsKey(filePath)) {
             file = files.get(filePath);
         } else {
-        	file = ExtJSFactory.eINSTANCE.createFile();
-        	file.setName(filePath);
+            file = ExtJSFactory.eINSTANCE.createFile();
+            file.setName(filePath);
             files.put(filePath, file);
         }
-        
+
         // find and connect projects
         for (final Entry<IProject, ExtJSProject> entry : projects.entrySet()) {
-        	try {
-	            if (!entry.getValue().getFiles().contains(file) && inProject(entry.getKey(), filePath) ) {
-	                entry.getValue().getFiles().add(file);
-	            }
-        	} catch(Throwable e) {
-        		ExtJSCore.error(e);
-        	}
+            try {
+                if (!entry.getValue().getFiles().contains(file) && inProject(entry.getKey(), filePath)) {
+                    entry.getValue().getFiles().add(file);
+                }
+            } catch (Throwable e) {
+                ExtJSCore.error(e);
+            }
 
         }
 
@@ -316,7 +319,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
             ExtJSCore.error(e);
         }
         if (!path.segment(0).equals(project.getName())) {
-        	return false;
+            return false;
         }
         final IResource findMember = project.findMember(path.removeFirstSegments(1));
 

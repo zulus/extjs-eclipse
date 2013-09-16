@@ -9,12 +9,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class AddExtJS41Support extends AddExtJSSupport {
 
-	@Execute
-	public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection)
-			throws ExecutionException {
+    @Execute
+    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection) throws ExecutionException {
 
-		execute(selection, "4.1");
+        execute(selection, "4.1");
 
-	}
+    }
 
 }

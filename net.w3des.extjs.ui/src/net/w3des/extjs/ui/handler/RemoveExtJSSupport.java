@@ -19,30 +19,28 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 public class RemoveExtJSSupport {
-	
-	@Execute
-	public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection) {
-		final IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
-		final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
-		Job job = new Job("Remove ExtJS support") {
-			
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					final IFacetedProject fproject = ProjectFacetsManager.create(project, false, monitor);
 
-					fproject.uninstallProjectFacet(
-							fproject.getInstalledVersion(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT)),
-							null, monitor);
-				} catch (CoreException e) {
-					return Status.CANCEL_STATUS;
-				}
+    @Execute
+    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection) {
+        final IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
+        final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
+        Job job = new Job("Remove ExtJS support") {
 
-				return Status.OK_STATUS;
-			}
-		};
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    final IFacetedProject fproject = ProjectFacetsManager.create(project, false, monitor);
 
-		job.schedule();
-	}
+                    fproject.uninstallProjectFacet(fproject.getInstalledVersion(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT)), null, monitor);
+                } catch (CoreException e) {
+                    return Status.CANCEL_STATUS;
+                }
+
+                return Status.OK_STATUS;
+            }
+        };
+
+        job.schedule();
+    }
 
 }

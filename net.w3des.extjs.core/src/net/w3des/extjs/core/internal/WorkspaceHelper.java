@@ -12,32 +12,32 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class WorkspaceHelper {
-	private static void touch(IResource[] res, IProgressMonitor monitor) throws CoreException {
-		for (IResource r : res) {
-			if (r instanceof IFolder) {
-				touch(((IFolder) r).members(), monitor);
-			} else if (r.getName().contains(".js")) {
-				r.touch(monitor);
-			} else if(!(r instanceof IFile)) {
-				ExtJSCore.warn("Invalid class: " + r.getClass().getName());
-			}
-		}
-	}
-	
-	public static void refreshJavaScriptProject(IJavaScriptProject jsProject, IProgressMonitor monitor) throws JavaScriptModelException, CoreException {
-		final IProject project = jsProject.getProject();
-		for (IIncludePathEntry e : jsProject.getResolvedIncludepath(true)) {
-			if (e.getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
-				continue;
-			}
-			
-			if (project.getFullPath().equals(e.getPath())) {
-				touch(project.members(false), monitor);
-				continue;
-			} 
-			
-			IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(e.getPath());
-			touch(folder.members(false), monitor);
-		}
-	}
+    private static void touch(IResource[] res, IProgressMonitor monitor) throws CoreException {
+        for (IResource r : res) {
+            if (r instanceof IFolder) {
+                touch(((IFolder) r).members(), monitor);
+            } else if (r.getName().contains(".js")) {
+                r.touch(monitor);
+            } else if (!(r instanceof IFile)) {
+                ExtJSCore.warn("Invalid class: " + r.getClass().getName());
+            }
+        }
+    }
+
+    public static void refreshJavaScriptProject(IJavaScriptProject jsProject, IProgressMonitor monitor) throws JavaScriptModelException, CoreException {
+        final IProject project = jsProject.getProject();
+        for (IIncludePathEntry e : jsProject.getResolvedIncludepath(true)) {
+            if (e.getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
+                continue;
+            }
+
+            if (project.getFullPath().equals(e.getPath())) {
+                touch(project.members(false), monitor);
+                continue;
+            }
+
+            IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(e.getPath());
+            touch(folder.members(false), monitor);
+        }
+    }
 }

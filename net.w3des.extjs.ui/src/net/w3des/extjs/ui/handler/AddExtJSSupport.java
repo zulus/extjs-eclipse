@@ -20,43 +20,41 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-public class AddExtJSSupport { 
+public class AddExtJSSupport {
 
-	@Execute
-	public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, final String version)
-			throws ExecutionException {
+    @Execute
+    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, final String version) throws ExecutionException {
 
-		IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
-		final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
+        IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
+        final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
 
-		Job job = new Job("Install ExtJS Support") {
+        Job job = new Job("Install ExtJS Support") {
 
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					final IFacetedProject fproject = ProjectFacetsManager.create(project, true, monitor);
-					final IProjectFacetVersion facet;
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    final IFacetedProject fproject = ProjectFacetsManager.create(project, true, monitor);
+                    final IProjectFacetVersion facet;
 
-					facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getVersion(version);
+                    facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getVersion(version);
 
-					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web"))) { //$NON-NLS-1$
-						fproject.installProjectFacet(ProjectFacetsManager
-								.getProjectFacet("wst.jsdt.web").getDefaultVersion(), null, monitor); //$NON-NLS-1$
-					}
+                    if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web"))) { //$NON-NLS-1$
+                        fproject.installProjectFacet(ProjectFacetsManager.getProjectFacet("wst.jsdt.web").getDefaultVersion(), null, monitor); //$NON-NLS-1$
+                    }
 
-					if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT))) {
-						fproject.installProjectFacet(facet, null, monitor);
-					}
+                    if (!fproject.hasProjectFacet(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT))) {
+                        fproject.installProjectFacet(facet, null, monitor);
+                    }
 
-				} catch (CoreException e) {
-					return Status.CANCEL_STATUS;
-				}
+                } catch (CoreException e) {
+                    return Status.CANCEL_STATUS;
+                }
 
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
 
-	}
+    }
 
 }

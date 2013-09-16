@@ -8,9 +8,9 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 public class CmdInstall implements IDelegate {
 
-	@Override
-	public void execute(IProject project, IProjectFacetVersion version, Object config, IProgressMonitor monitor) throws CoreException {
-		monitor.done();
-	}
+    @Override
+    public void execute(IProject project, IProjectFacetVersion version, Object config, IProgressMonitor monitor) throws CoreException {
+        monitor.done();
+    }
 
 }

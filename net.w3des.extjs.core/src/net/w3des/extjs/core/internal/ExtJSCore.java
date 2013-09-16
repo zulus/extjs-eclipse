@@ -19,13 +19,13 @@ public class ExtJSCore extends Plugin {
     public static final String PLUGIN_ID = "net.w3des.extjs.core"; //$NON-NLS-1$
 
     public static final String FACET_EXT = "wst.jsdt.extjs.core"; //$NON-NLS-1$
-    public static final String FACET_CMD = "wst.jsdt.extjs.cmd";  //$NON-NLS-1$
+    public static final String FACET_CMD = "wst.jsdt.extjs.cmd"; //$NON-NLS-1$
 
     // The shared instance
     private static ExtJSCore plugin;
 
-
     boolean started;
+
     /**
      * The constructor
      */
@@ -36,7 +36,7 @@ public class ExtJSCore extends Plugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        plugin  = this;
+        plugin = this;
         started = true;
         final ISaveParticipant saveParticipant = new SaveParticipant();
         ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
@@ -51,7 +51,7 @@ public class ExtJSCore extends Plugin {
 
     /**
      * Returns the shared instance
-     *
+     * 
      * @return the shared instance
      */
     public static ExtJSCore getDefault() {
@@ -63,7 +63,7 @@ public class ExtJSCore extends Plugin {
     }
 
     public static void error(String message) {
-        plugin.getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, message,null));
+        plugin.getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, message, null));
     }
 
     public static void error(Throwable e) {

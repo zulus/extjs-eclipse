@@ -6,14 +6,14 @@ import net.w3des.extjs.core.internal.ExtJSCore;
 import org.junit.Test;
 
 /**
-* Sample integration test. In Eclipse, right-click > Run As > JUnit-Plugin. <br/>
-* In Maven CLI, run "mvn integration-test".
-*/
+ * Sample integration test. In Eclipse, right-click > Run As > JUnit-Plugin. <br/>
+ * In Maven CLI, run "mvn integration-test".
+ */
 public class ActivatorTest {
 
-	@Test
-	public void veryStupidTest() {
-		assertEquals("net.w3des.extjs.core", ExtJSCore.PLUGIN_ID);
-	}
-	
+    @Test
+    public void veryStupidTest() {
+        assertEquals("net.w3des.extjs.core", ExtJSCore.PLUGIN_ID);
+    }
+
 }

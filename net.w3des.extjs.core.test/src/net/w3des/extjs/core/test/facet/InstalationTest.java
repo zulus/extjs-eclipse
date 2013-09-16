@@ -24,45 +24,46 @@ import org.junit.Test;
 
 public class InstalationTest {
 
-	private IProject project = null;
-	private IFile file = null;
-	
-	final private String name = "test.js";
-	final private String contents = "Ext.define('test', {});";
-	
-	@Before
-	public void createProject() throws CoreException {
-		project = Util.createJSProject("facet-project", true);
-		file = project.getFile(name);
-		if (file.exists()) {
-			file.setContents(new ByteArrayInputStream(contents.getBytes()), IResource.FORCE, null);
-		} else {
-			file.create(new ByteArrayInputStream(contents.getBytes()), IResource.FORCE, null);
-		}
-		
-	}
-	
-	@After
-	public void deleteProject() throws CoreException {
-		Util.deleteProject(project);
-	}
+    private IProject project = null;
+    private IFile file = null;
 
-	@Test()
-	public void typeNotExists() {
-		IJavaScriptUnit compilationUnit = JavaScriptCore.createCompilationUnitFrom(file);
-		assertFalse(compilationUnit.getType("type").exists());
-	}
-	
-	@Test()
-	public void activation() throws CoreException {
-		JavaScriptCore.createCompilationUnitFrom(file); // create compilationUnit
-		
-		IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, null);
-		facetedProject.installProjectFacet(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getVersion("4.1"), null, null);
-		IType type = JavaScriptCore.createCompilationUnitFrom(file).getType("test");
-		
-		assertTrue(type.exists());
-		assertEquals("test", type.getFullyQualifiedName());
-	}
+    final private String name = "test.js";
+    final private String contents = "Ext.define('test', {});";
+
+    @Before
+    public void createProject() throws CoreException {
+        project = Util.createJSProject("facet-project", true);
+        file = project.getFile(name);
+        if (file.exists()) {
+            file.setContents(new ByteArrayInputStream(contents.getBytes()), IResource.FORCE, null);
+        } else {
+            file.create(new ByteArrayInputStream(contents.getBytes()), IResource.FORCE, null);
+        }
+
+    }
+
+    @After
+    public void deleteProject() throws CoreException {
+        Util.deleteProject(project);
+    }
+
+    @Test()
+    public void typeNotExists() {
+        IJavaScriptUnit compilationUnit = JavaScriptCore.createCompilationUnitFrom(file);
+        assertFalse(compilationUnit.getType("type").exists());
+    }
+
+    @Test()
+    public void activation() throws CoreException {
+        JavaScriptCore.createCompilationUnitFrom(file); // create
+                                                        // compilationUnit
+
+        IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, null);
+        facetedProject.installProjectFacet(ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT).getVersion("4.1"), null, null);
+        IType type = JavaScriptCore.createCompilationUnitFrom(file).getType("test");
+
+        assertTrue(type.exists());
+        assertEquals("test", type.getFullyQualifiedName());
+    }
 
 }

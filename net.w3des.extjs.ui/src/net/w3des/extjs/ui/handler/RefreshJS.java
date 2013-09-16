@@ -19,21 +19,21 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class RefreshJS {
-	@Execute
-	public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, IProgressMonitor monitor) {
-		final IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
-		final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
-		try {
-			ExtJSProject pr = ExtJSCore.getProjectManager().createProject(project);
-			if (pr != null && pr.getFiles().size() > 0) {
-				pr.getFiles().clear();
-			}
-			WorkspaceHelper.refreshJavaScriptProject(JavaScriptCore.create(project), monitor);
-		} catch (JavaScriptModelException e) {
-			ExtJSUI.error(e);
-		} catch (CoreException e) {
-			ExtJSUI.error(e);
-		}
-		
-	}
+    @Execute
+    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, IProgressMonitor monitor) {
+        final IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
+        final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
+        try {
+            ExtJSProject pr = ExtJSCore.getProjectManager().createProject(project);
+            if (pr != null && pr.getFiles().size() > 0) {
+                pr.getFiles().clear();
+            }
+            WorkspaceHelper.refreshJavaScriptProject(JavaScriptCore.create(project), monitor);
+        } catch (JavaScriptModelException e) {
+            ExtJSUI.error(e);
+        } catch (CoreException e) {
+            ExtJSUI.error(e);
+        }
+
+    }
 }

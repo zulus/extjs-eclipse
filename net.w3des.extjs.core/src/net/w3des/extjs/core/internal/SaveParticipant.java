@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.CoreException;
 
 public class SaveParticipant implements ISaveParticipant {
 
-
     @Override
     public void doneSaving(ISaveContext context) {
     }
@@ -22,9 +21,9 @@ public class SaveParticipant implements ISaveParticipant {
 
     @Override
     public void saving(ISaveContext context) throws CoreException {
-        switch(context.getKind()) {
-            case ISaveContext.FULL_SAVE:
-                ExtJSCore.getProjectManager().save();
+        switch (context.getKind()) {
+        case ISaveContext.FULL_SAVE:
+            ExtJSCore.getProjectManager().save();
         }
     }
 

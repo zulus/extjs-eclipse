@@ -6,8 +6,8 @@ import org.junit.Test;
 
 public class EmptyTest {
 
-	@Test
-	public void empty() {
-		assertTrue(ExtJSUITest.getDefault().started);
-	}
+    @Test
+    public void empty() {
+        assertTrue(ExtJSUITest.getDefault().started);
+    }
 }

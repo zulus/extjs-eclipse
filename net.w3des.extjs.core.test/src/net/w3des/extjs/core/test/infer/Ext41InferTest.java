@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 @ExtSuite(dir = "infer", version = "4.1", sub = { "4.1" })
 public class Ext41InferTest extends AbstractInfer {
 
-	public Ext41InferTest(ExtTFile file) {
-		super(file);
-	}
+    public Ext41InferTest(ExtTFile file) {
+        super(file);
+    }
 
 }

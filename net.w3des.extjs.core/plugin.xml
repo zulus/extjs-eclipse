@@ -80,13 +80,6 @@
              id="org.eclipse.wst.jsdt.core.jsSource">
        </content-type>
     </extension>
-   <extension
-         point="org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
-      <JsGlobalScopeVariableInitializer
-            class="net.w3des.extjs.core.infer.VariableInitializer"
-            variable="net.w3des.extjs.core.infer.VariableInitializer">
-      </JsGlobalScopeVariableInitializer>
-   </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated extjs -->

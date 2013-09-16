@@ -3,7 +3,7 @@ package net.w3des.extjs.ui.completion;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.w3des.extjs.core.Util;
+import net.w3des.extjs.core.Utils;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -21,7 +21,7 @@ public class TypeCompletion extends AbstractCompletion {
     @Override
     protected void computeCompletionProposals(boolean inString, String start, List<ICompletionProposal> proposals,
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
-        final IType[] types = Util.findTypes(start, context.getProject());
+        final IType[] types = Utils.findTypes(start, context.getProject());
         final List<String> l = new ArrayList<String>(types.length);
 
         for (final IType type : types) {
