@@ -10,4 +10,31 @@
     <artifactId>net.w3des.extjs.site</artifactId>
     <packaging>eclipse-repository</packaging>
     <name>net.w3des.extjs :: update site</name>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-p2-index</id>
+                        <!-- here the phase you need -->
+                        <phase>test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/target/repository</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>p2-files/</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
