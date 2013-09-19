@@ -1,4 +1,4 @@
-package net.w3des.extjs.core.infer;
+package net.w3des.extjs.core.internal.infer;
 
 import net.w3des.extjs.core.internal.ExtJSCore;
 

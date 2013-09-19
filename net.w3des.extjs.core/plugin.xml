@@ -6,7 +6,7 @@
     <extension
         point="org.eclipse.wst.jsdt.core.inferrenceSupport"
         name="ExtJS Inference Support">
-        <inferenceProvider class="net.w3des.extjs.core.infer.InferProvider" />
+        <inferenceProvider class="net.w3des.extjs.core.internal.infer.InferProvider" />
     </extension> 
     
     <extension 

@@ -26,7 +26,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
    </license>
 
    <requires>
-      <import feature="org.eclipse.wst.jsdt.feature" version="1.4.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.wst.jsdt.feature" version="1.5.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

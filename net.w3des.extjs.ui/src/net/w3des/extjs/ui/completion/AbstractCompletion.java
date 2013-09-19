@@ -21,8 +21,8 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 abstract public class AbstractCompletion implements IJavaCompletionProposalComputer {
 
     private int maxLength = 0;
-    private String[] before = new String[] { "Ext.override(", "Ext.create(", "Ext.require(", "requires:[", "uses:[",
-            "requires:", "uses:", "override:", "extend:", "mixins:", "mixins:[" };
+    private String[] before = new String[] { "Ext.override(", "Ext.create(", "Ext.require(", "requires:[", "uses:[", "requires:", "uses:", "override:",
+            "extend:", "mixins:", "mixins:[" };
 
     final private String[] stopBefore = new String[] { ")", ";", "}" };
     private String error = null;
@@ -120,20 +120,18 @@ abstract public class AbstractCompletion implements IJavaCompletionProposalCompu
                 start = toCompare.substring(found.length() + (inString ? 1 : 0));
             }
 
-
             final List<ICompletionProposal> proposals = new LinkedList<ICompletionProposal>();
 
             computeCompletionProposals(inString, start, proposals, context, monitor);
             final List<String> strs = new LinkedList<String>();
             Iterator<ICompletionProposal> iterator = proposals.iterator();
             while (iterator.hasNext()) {
-            	ICompletionProposal next = iterator.next();
-            	if (strs.contains(next.getDisplayString())) {
-            		iterator.remove();
-            	}
-            	strs.add(next.getDisplayString());
+                ICompletionProposal next = iterator.next();
+                if (strs.contains(next.getDisplayString())) {
+                    iterator.remove();
+                }
+                strs.add(next.getDisplayString());
             }
-            
 
             return proposals;
         } catch (final Throwable e) {
@@ -142,22 +140,19 @@ abstract public class AbstractCompletion implements IJavaCompletionProposalCompu
         }
     }
 
-    protected abstract void computeCompletionProposals(boolean inString, String start,
-            List<ICompletionProposal> proposals, JavaContentAssistInvocationContext context, IProgressMonitor monitor);
+    protected abstract void computeCompletionProposals(boolean inString, String start, List<ICompletionProposal> proposals,
+            JavaContentAssistInvocationContext context, IProgressMonitor monitor);
 
-    protected ICompletionProposal createTextProposal(boolean inString, Image ico, String proposal, int offset,
-            String start, IContextInformation contextInformation, String additionalProposalInfo) {
+    protected ICompletionProposal createTextProposal(boolean inString, Image ico, String proposal, int offset, String start,
+            IContextInformation contextInformation, String additionalProposalInfo) {
 
         if (inString) {
             final String completion = proposal.substring(start.length());
-            return new CompletionProposal(completion, offset, 0, completion.length(), ico, proposal,
-                    contextInformation, additionalProposalInfo);
+            return new CompletionProposal(completion, offset, 0, completion.length(), ico, proposal, contextInformation, additionalProposalInfo);
         }
 
-        return new CompletionProposal("'" + proposal + "'", offset - start.length(), start.length(),
-                proposal.length() + 2, ico,
-                proposal,
-                contextInformation, additionalProposalInfo);
+        return new CompletionProposal("'" + proposal + "'", offset - start.length(), start.length(), proposal.length() + 2, ico, proposal, contextInformation,
+                additionalProposalInfo);
 
     }
 

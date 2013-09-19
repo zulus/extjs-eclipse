@@ -247,6 +247,9 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     private Resource getResource() {
         final java.io.File file = ExtJSCore.getDefault().getStateLocation().append("index.extjsproject").toFile(); //$NON-NLS-1$
 
+        if (!file.exists()) {
+            return null;
+        }
         final Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
         final Map<String, Object> m = reg.getExtensionToFactoryMap();
         m.put("extjsproject", new XMIResourceFactoryImpl()); //$NON-NLS-1$
