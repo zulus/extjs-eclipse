@@ -28,6 +28,11 @@
             <layout>p2</layout>
             <url>http://download.eclipse.org/releases/kepler</url>
         </repository>
+        <repository>
+            <id>wtp-dev</id>
+            <layout>p2</layout>
+            <url>http://download.eclipse.org/webtools/downloads/drops/R3.5.1/M-3.5.1RC4-20130913223750/repository</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
