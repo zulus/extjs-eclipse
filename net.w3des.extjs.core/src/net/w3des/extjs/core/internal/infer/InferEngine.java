@@ -378,8 +378,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtDefine(IFunctionCall messageSend) {
-        if (((CharOperation.equals(getName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.define))
-                || (CharOperation.equals(getName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.attrExtend)) || CharOperation
+        if (((CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.define))
+                || (CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.attrExtend)) || CharOperation
                     .equals(messageSend.getSelector(), Constants.attrOverride)) && passNumber == 1) {
             return true;
         }
@@ -397,8 +397,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (args == null) {
             return null;
         }
-        if (!CharOperation.equals(getName(messageSend.getReceiver()), Constants.ext)) {
-            final char[] className = getName(messageSend.getReceiver());
+        if (!CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext)) {
+            final char[] className = getFullName(messageSend.getReceiver());
             if (className == null || className.length == 0) {
                 return null;
             }
@@ -1058,11 +1058,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         IAbstractVariableDeclaration var = getVariable(arguments[0]);
         char[] obName = null;
         if (var == null) {
-            obName = getName(arguments[0]);
+            obName = getFullName(arguments[0]);
         } else {
             obName = var.getName();
         }
-        char[] fName = getName(arguments[1]);
+        char[] fName = getFullName(arguments[1]);
         if (fName == null && !(arguments[1] instanceof IStringLiteral)) {
             var = getVariable(arguments[1]);
             if (var != null && !(var.getInitialization() instanceof IStringLiteral)) {
@@ -1089,7 +1089,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (expression instanceof IFunctionCall) {
             final IFunctionCall messageSend = (IFunctionCall) expression;
             if (CharOperation.equals(messageSend.getSelector(), Constants.attrAlias)
-                    && (messageSend.getReceiver() == null || CharOperation.equals(getName(messageSend.getReceiver()), Constants.ext))) {
+                    && (messageSend.getReceiver() == null || CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext))) {
 
                 final char[][] arr = readFunctionAlias(messageSend.getArguments());
                 if (arr != null) {
