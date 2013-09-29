@@ -48,11 +48,11 @@ public class InferProvider implements InferrenceProvider {
             return InferrenceProvider.NOT_THIS;
         }
 
-        if (!ExtJSCore.getProjectManager().onBuildPath(member)) {
+        if (ExtJSCore.getProjectManager().onBuildPath(member)) {
             return InferrenceProvider.ONLY_THIS;
         }
 
-        return InferrenceProvider.ONLY_THIS;
+        return InferrenceProvider.MAYBE_THIS;
     }
 
     @Override
