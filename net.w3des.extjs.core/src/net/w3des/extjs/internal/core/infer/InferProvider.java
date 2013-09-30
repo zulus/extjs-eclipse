@@ -1,6 +1,6 @@
-package net.w3des.extjs.core.internal.infer;
+package net.w3des.extjs.internal.core.infer;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

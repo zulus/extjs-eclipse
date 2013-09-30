@@ -1,7 +1,7 @@
 package net.w3des.extjs.core.test;
 
 import static org.junit.Assert.assertEquals;
-import net.w3des.extjs.core.internal.ExtJSCore;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.junit.Test;
 

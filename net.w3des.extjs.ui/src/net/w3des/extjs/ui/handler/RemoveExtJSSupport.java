@@ -2,7 +2,7 @@ package net.w3des.extjs.ui.handler;
 
 import javax.inject.Named;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

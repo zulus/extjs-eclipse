@@ -5,11 +5,11 @@ package net.w3des.extjs.core.model.basic.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.Alias;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
 import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;

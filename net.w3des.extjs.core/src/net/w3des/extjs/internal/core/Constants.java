@@ -1,4 +1,4 @@
-package net.w3des.extjs.core.internal;
+package net.w3des.extjs.internal.core;
 
 /**
  * Statics for infer engine and others

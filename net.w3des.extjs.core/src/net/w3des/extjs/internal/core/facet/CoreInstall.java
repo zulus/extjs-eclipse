@@ -1,7 +1,7 @@
-package net.w3des.extjs.core.internal.facet;
+package net.w3des.extjs.internal.core.facet;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
-import net.w3des.extjs.core.internal.WorkspaceHelper;
+import net.w3des.extjs.internal.core.ExtJSCore;
+import net.w3des.extjs.internal.core.WorkspaceHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

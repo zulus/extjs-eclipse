@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" activate="activate" deactivate="save" name="net.w3des.extjs.core.ProjectManager">
-   <implementation class="net.w3des.extjs.core.internal.project.ExtJSProjectManager"/>
+   <implementation class="net.w3des.extjs.internal.core.project.ExtJSProjectManager"/>
    <service>
       <provide interface="net.w3des.extjs.core.IExtJSProjectManager"/>
    </service>

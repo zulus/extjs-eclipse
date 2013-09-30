@@ -2,11 +2,11 @@ package net.w3des.extjs.ui.completion;
 
 import java.util.List;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.Alias;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
 import net.w3des.extjs.core.model.basic.File;
 import net.w3des.extjs.core.model.basic.Layout;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;

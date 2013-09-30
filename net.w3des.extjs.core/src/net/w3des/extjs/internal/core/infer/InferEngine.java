@@ -1,13 +1,13 @@
-package net.w3des.extjs.core.internal.infer;
+package net.w3des.extjs.internal.core.infer;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.w3des.extjs.core.internal.Constants;
-import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.internal.core.Constants;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
@@ -528,7 +527,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             final IObjectLiteral li = (IObjectLiteral) args[0];
             if (li.getFields() != null) {
                 char[] found = null;
-                int nameStart = 0;
+                //int nameStart = 0;
                 for (final IObjectLiteralField field : li.getFields()) {
                     if (field == null) {
                         continue;
@@ -536,7 +535,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
                     if (CharOperation.equals(getFieldName(field.getFieldName()), Constants.attrOverride, true)) {
                         found = getArgValue(field.getInitializer());
-                        nameStart = field.getInitializer().sourceStart() + 1;
+                        //nameStart = field.getInitializer().sourceStart() + 1;
                         break;
                     }
                 }

@@ -1,4 +1,4 @@
-package net.w3des.extjs.core.internal.project;
+package net.w3des.extjs.internal.core.project;
 
 import net.w3des.extjs.core.IInferHelper;
 

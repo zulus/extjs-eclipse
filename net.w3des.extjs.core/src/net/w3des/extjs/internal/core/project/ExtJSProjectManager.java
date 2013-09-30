@@ -1,4 +1,4 @@
-package net.w3des.extjs.core.internal.project;
+package net.w3des.extjs.internal.core.project;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,11 +12,11 @@ import java.util.Map.Entry;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSProjectManager;
-import net.w3des.extjs.core.internal.ExtJSCore;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
 import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

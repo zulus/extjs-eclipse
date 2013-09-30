@@ -2,9 +2,9 @@ package net.w3des.extjs.ui.handler;
 
 import javax.inject.Named;
 
-import net.w3des.extjs.core.internal.ExtJSCore;
-import net.w3des.extjs.core.internal.WorkspaceHelper;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
+import net.w3des.extjs.internal.core.ExtJSCore;
+import net.w3des.extjs.internal.core.WorkspaceHelper;
 import net.w3des.extjs.ui.ExtJSUI;
 
 import org.eclipse.core.resources.IProject;

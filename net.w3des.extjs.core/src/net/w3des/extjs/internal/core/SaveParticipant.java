@@ -1,4 +1,4 @@
-package net.w3des.extjs.core.internal;
+package net.w3des.extjs.internal.core;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
