@@ -7,9 +7,13 @@
  ******************************************************************************/
 package net.w3des.extjs.core.language;
 
-
 import net.w3des.extjs.core.ExtJSNature;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.dltk.core.AbstractLanguageToolkit;
 
 /**
@@ -17,6 +21,7 @@ import org.eclipse.dltk.core.AbstractLanguageToolkit;
  */
 public class ExtJSLanguageToolkit extends AbstractLanguageToolkit {
 	public static final String CONTENT_TYPE = "org.eclipse.wst.jsdt.core.jsSource"; //$NON-NLS-1$
+	private static final IContentType JS_CONTENT_TYPE = Platform.getContentTypeManager().getContentType(CONTENT_TYPE);
 
 
 	@Override
@@ -31,6 +36,11 @@ public class ExtJSLanguageToolkit extends AbstractLanguageToolkit {
 
 	@Override
 	public String getLanguageContentType() {
-		return "org.eclipse.wst.jsdt.core.jsSource"; //$NON-NLS-1$
+		return CONTENT_TYPE; //$NON-NLS-1$
+	}
+	
+	@Override
+	public IStatus validateSourceModule(IResource resource) {
+		return (JS_CONTENT_TYPE.isAssociatedWith(resource.getName())) ? Status.OK_STATUS : Status.CANCEL_STATUS;
 	}
 }

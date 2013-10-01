@@ -89,13 +89,13 @@
             class="net.w3des.extjs.core.model.basic.ExtJSPackage"
             genModel="resources/model/extjs.genmodel"/>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.dltk.core.language">
       <language
             class="net.w3des.extjs.core.language.ExtJSLanguageToolkit"
             nature="net.w3des.extjs.core.extjsNature"
-            priority="0">
+            priority="2">
       </language>
-   </extension>
+   </extension-->
 
 </plugin>
