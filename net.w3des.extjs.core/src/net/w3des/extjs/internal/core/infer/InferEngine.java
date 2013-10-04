@@ -218,7 +218,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return false;
     }
-
+    
     /**
      * Copy from left to right
      * 
@@ -482,7 +482,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             return newType;
         }
         if (args.length > 1 && getDefinedFunction(args[1]) != null) {
-            InferredMethod addMethod = newType.addMethod(new char[] { '$', '_', 'p', 'o', 's', 't', 'C', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r' },
+            InferredMethod addMethod = newType.addMethod(Constants.postConstructor,
                     getDefinedFunction(args[1]), args[1].sourceStart());
             addMethod.bits &= ClassFileConstants.AccPrivate;
         }
@@ -1250,12 +1250,32 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         final boolean res = super.visit(functionCall);
         if (isExtApply(functionCall)) {
             extApply(functionCall);
+        } else if (isExtApp(functionCall)) {
+        	extApplication(functionCall);
         }
 
         return res;
     }
+    
+    private boolean isExtApp(IFunctionCall messageSend) {
+    	if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asArray()) && (CharOperation.equals(messageSend.getSelector(), Constants.APPLICATION.asArray()))) {
+            return true;
+        }
+    	
+    	return false;
+	}
 
-    @Override
+    private void extApplication(IFunctionCall functionCall) {
+    	if (functionCall.getArguments() != null && functionCall.getArguments().length > 0) {
+    		InferredType typeOf = getTypeOf(functionCall.getArguments()[0]);
+    		if (typeOf != null) {
+    			typeOf.setSuperType(addType(Constants.APPLICATION_CLASS.asArray()));
+    			typeOf.isObjectLiteral = false;
+    		}
+    	}
+	}
+
+	@Override
     @SuppressWarnings("rawtypes")
     public boolean visit(InferredType type) {
         if (passNumber != 2) {
