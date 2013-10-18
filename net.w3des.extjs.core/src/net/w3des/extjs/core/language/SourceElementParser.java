@@ -8,20 +8,16 @@
  * Contributors:
  *      w3des.net - initial API and implementation
  ******************************************************************************/
-package net.w3des.extjs.ui.handler;
+package net.w3des.extjs.core.language;
 
-import javax.inject.Named;
+import net.w3des.extjs.core.ExtJSNature;
 
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.dltk.core.AbstractSourceElementParser;
 
-public class AddExtJS42Support extends AddExtJSSupport {
-
-    @Execute
-    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection) throws ExecutionException {
-        execute(selection, "4.2");
-    }
+public class SourceElementParser extends AbstractSourceElementParser {
+	@Override
+	protected String getNatureId() {
+		return ExtJSNature.NATURE_ID;
+	}
 
 }

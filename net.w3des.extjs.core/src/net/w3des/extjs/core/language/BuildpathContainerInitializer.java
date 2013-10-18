@@ -8,20 +8,19 @@
  * Contributors:
  *      w3des.net - initial API and implementation
  ******************************************************************************/
-package net.w3des.extjs.ui.handler;
+package net.w3des.extjs.core.language;
 
-import javax.inject.Named;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.core.IScriptProject;
 
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.IStructuredSelection;
+public class BuildpathContainerInitializer extends org.eclipse.dltk.core.BuildpathContainerInitializer {
 
-public class AddExtJS42Support extends AddExtJSSupport {
+	public BuildpathContainerInitializer() {
+	}
 
-    @Execute
-    public static void execute(@Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection) throws ExecutionException {
-        execute(selection, "4.2");
-    }
-
+	@Override
+	public void initialize(IPath containerPath, IScriptProject project) throws CoreException {
+		
+	}
 }

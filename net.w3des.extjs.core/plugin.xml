@@ -65,7 +65,7 @@
         </static-preset>
     </extension>
     <extension
-          id="net.w3des.extjs.core.extjsNature"
+          id="extjsNature"
           name="ExtJS Nature"
           point="org.eclipse.core.resources.natures">
        <runtime>
@@ -77,7 +77,7 @@
              id="org.eclipse.wst.jsdt.core.jsNature">
        </requires-nature>
        <content-type
-             id="org.eclipse.wst.jsdt.core.jsSource">
+             id="net.w3des.extjs.core.extjsContentType">
        </content-type>
     </extension>
     
@@ -89,13 +89,42 @@
             class="net.w3des.extjs.core.model.basic.ExtJSPackage"
             genModel="resources/model/extjs.genmodel"/>
    </extension>
+   
+   <extension point="org.eclipse.team.core.fileTypes">
+        <fileTypes extension="js" type="text"/>
+   </extension>
+   
+    <extension
+             point="org.eclipse.core.contenttype.contentTypes">
+          <content-type
+                file-extensions="js"
+                base-type="org.eclipse.core.runtime.text"
+                id="net.w3des.extjs.core.extjsContentType"
+                name="ExtJS Content Type"
+                priority="high">
+          </content-type>
+   </extension>
    <!--extension
          point="org.eclipse.dltk.core.language">
       <language
             class="net.w3des.extjs.core.language.ExtJSLanguageToolkit"
-            nature="net.w3des.extjs.core.extjsNature"
-            priority="2">
+            nature="net.w3des.extjs.core.extjsNature">
       </language>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.sourceElementParsers">
+      <parser
+            class="net.w3des.extjs.core.language.SourceElementParser"
+            nature="net.w3des.extjs.core.extjsNature"
+            priority="0">
+      </parser>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.buildpathContainerInitializer">
+      <buildpathContainerInitializer
+            class="net.w3des.extjs.core.language.BuildpathContainerInitializer"
+            id="net.w3des.extjs.core.buildpathContainerInitializer">
+      </buildpathContainerInitializer>
    </extension-->
 
 </plugin>

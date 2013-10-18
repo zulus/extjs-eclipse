@@ -20,12 +20,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.common.modulecore;bundle-version="[1.2.200,2.0.0)",
  javax.inject,
  org.eclipse.equinox.ds,
- org.eclipse.dltk.core;bundle-version="[5.0.0,6.0.0)"
+ org.eclipse.dltk.core;bundle-version="[5.0.0,6.0.0)",
+ org.eclipse.dltk.core.index
 Export-Package: net.w3des.extjs.core,
  net.w3des.extjs.core.model.basic,
  net.w3des.extjs.core.model.basic.impl,
  net.w3des.extjs.core.model.basic.util,
  net.w3des.extjs.internal.core;x-friends:="net.w3des.extjs.ui,net.w3des.extjs.core.test,net.w3des.extjs.ui.test",
- net.w3des.extjs.internal.core.project;x-friends:="net.w3des.extjs.ui"
+ net.w3des.extjs.internal.core.project;x-friends:="net.w3des.extjs.ui",
+ net.w3des.extjs.core.language
 Service-Component: OSGI-INF/projectManager.xml,
  OSGI-INF/inferHelper.xml
