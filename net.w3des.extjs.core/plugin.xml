@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
     <!-- inference extjs class -->
     <extension
         point="org.eclipse.wst.jsdt.core.inferrenceSupport"
@@ -20,6 +19,16 @@
             <description>ExtJS core facet</description>
             <member category="wst.jsdt.extjs.category" />
         </project-facet>
+        <project-facet-version facet="wst.jsdt.extjs.core" version="3.4">
+          <constraint>
+              <requires facet="wst.jsdt.web" />
+          </constraint>
+        </project-facet-version>
+        <project-facet-version facet="wst.jsdt.extjs.core" version="4.0">
+          <constraint>
+              <requires facet="wst.jsdt.web" />
+          </constraint>
+        </project-facet-version>
         <project-facet-version facet="wst.jsdt.extjs.core" version="4.1">
           <constraint>
               <requires facet="wst.jsdt.web" />
@@ -33,7 +42,7 @@
         
         <project-facet id="wst.jsdt.extjs.cmd">
             <label>Sencha CMD&#174;</label>
-            <description>Support for Sencha CMD</description>
+            <description>Support for Sencha CMD&#174;</description>
             <member category="wst.jsdt.extjs.category" />
         </project-facet>
         <project-facet-version facet="wst.jsdt.extjs.cmd" version="3.1">
