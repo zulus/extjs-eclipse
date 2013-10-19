@@ -19,6 +19,7 @@ import net.w3des.extjs.internal.core.validation.problem.ValidationProblem;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -44,7 +45,7 @@ public class TrailingCommaValidation extends ValidationParticipant {
 		super.reconcile(context);
 		try {
 			IResource resource = context.getWorkingCopy().getCorrespondingResource();
-			if (resource instanceof IFile) {
+			if (resource instanceof IFile && !resource.isDerived(IResource.CHECK_ANCESTORS)) {
 				IBuffer buffer = context.getWorkingCopy().getBuffer();
 				context.putProblems(ValidationProblem.MARKER_TYPE, validate(buffer.getCharacters(), resource.getFullPath().toString().toCharArray()));
 			}
@@ -60,6 +61,9 @@ public class TrailingCommaValidation extends ValidationParticipant {
 		}
 
 		for (BuildContext context : files) {
+			if (context.getFile().isDerived(IResource.CHECK_ANCESTORS)) {
+				continue;
+			}
 			context.recordNewProblems(this.validate(context.getContents(), context.getFile().getName().toCharArray()));
 		}
 	}
@@ -97,5 +101,10 @@ public class TrailingCommaValidation extends ValidationParticipant {
 	@Override
 	public void cleanStarting(IJavaScriptProject project) {
 		super.cleanStarting(project);
+		try {
+			project.getProject().deleteMarkers(ValidationProblem.MARKER_TYPE, false, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) {
+			ExtJSCore.error(e);
+		}
 	}
 }
