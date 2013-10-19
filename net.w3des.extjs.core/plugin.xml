@@ -113,6 +113,23 @@
                 priority="high">
           </content-type>
    </extension>
+    <extension
+          point="org.eclipse.wst.jsdt.core.validationParticipant">
+       <validationParticipant
+             class="net.w3des.extjs.internal.core.validation.TrailingCommaValidation"
+             createsProblems="true"
+             id="net.w3des.extjs.core.validation.trailingComma"
+             modifiesEnvironment="false">
+          <managedMarker
+                markerType="net.w3des.extjs.validation.problem">
+          </managedMarker>
+       </validationParticipant>
+    </extension>
+    <extension id="net.w3des.extjs.validation.problem" point="org.eclipse.core.resources.markers" name="ExtJS Problem">
+        <super type="org.eclipse.wst.jsdt.core.problem" />
+        <persistent value="true"/>
+    </extension>   
+    
    <!--extension
          point="org.eclipse.dltk.core.language">
       <language
