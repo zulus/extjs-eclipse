@@ -64,6 +64,10 @@ public class TrailingCommaValidation extends ValidationParticipant {
 			if (context.getFile().isDerived(IResource.CHECK_ANCESTORS)) {
 				continue;
 			}
+			try {
+				context.getFile().deleteMarkers(ValidationProblem.MARKER_TYPE, false, IResource.DEPTH_INFINITE);
+			} catch (CoreException e) {
+			}
 			context.recordNewProblems(this.validate(context.getContents(), context.getFile().getName().toCharArray()));
 		}
 	}
