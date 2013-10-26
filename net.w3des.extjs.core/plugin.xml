@@ -6,9 +6,9 @@
         point="org.eclipse.wst.jsdt.core.inferrenceSupport"
         name="ExtJS Inference Support">
         <inferenceProvider class="net.w3des.extjs.internal.core.infer.InferProvider" />
-    </extension> 
-    
-    <extension 
+    </extension>
+
+    <extension
         point="org.eclipse.wst.common.project.facet.core.facets">
         <category id="wst.jsdt.extjs.category">
             <label>ExtJS facets</label>
@@ -39,7 +39,7 @@
                 <requires facet="wst.jsdt.web" version="1.0" />
            </constraint>
         </project-facet-version>
-        
+
         <project-facet id="wst.jsdt.extjs.cmd">
             <label>Sencha CMD&#174;</label>
             <description>Support for Sencha CMD&#174;</description>
@@ -89,7 +89,7 @@
              id="net.w3des.extjs.core.extjsContentType">
        </content-type>
     </extension>
-    
+
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated extjs -->
@@ -98,11 +98,11 @@
             class="net.w3des.extjs.core.model.basic.ExtJSPackage"
             genModel="resources/model/extjs.genmodel"/>
    </extension>
-   
+
    <extension point="org.eclipse.team.core.fileTypes">
         <fileTypes extension="js" type="text"/>
    </extension>
-   
+
     <extension
              point="org.eclipse.core.contenttype.contentTypes">
           <content-type
@@ -128,29 +128,5 @@
     <extension id="net.w3des.extjs.validation.problem" point="org.eclipse.core.resources.markers" name="ExtJS Problem">
         <super type="org.eclipse.wst.jsdt.core.problem" />
         <persistent value="true"/>
-    </extension>   
-    
-   <!--extension
-         point="org.eclipse.dltk.core.language">
-      <language
-            class="net.w3des.extjs.core.language.ExtJSLanguageToolkit"
-            nature="net.w3des.extjs.core.extjsNature">
-      </language>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.sourceElementParsers">
-      <parser
-            class="net.w3des.extjs.core.language.SourceElementParser"
-            nature="net.w3des.extjs.core.extjsNature"
-            priority="0">
-      </parser>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.buildpathContainerInitializer">
-      <buildpathContainerInitializer
-            class="net.w3des.extjs.core.language.BuildpathContainerInitializer"
-            id="net.w3des.extjs.core.buildpathContainerInitializer">
-      </buildpathContainerInitializer>
-   </extension-->
-
+    </extension>
 </plugin>

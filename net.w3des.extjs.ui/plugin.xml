@@ -137,12 +137,4 @@
    <extension id="net.w3des.extjs.ui.fragment" point="org.eclipse.e4.workbench.model">
       <fragment uri="model/fragment.e4xmi"></fragment>
    </extension>
-   <!--extension
-         point="org.eclipse.dltk.ui.language">
-      <language
-            class="net.w3des.extjs.ui.language.ExtJSUILanguageToolkit"
-            nature="net.w3des.extjs.core.extjsNature"
-            priority="0">
-      </language>
-   </extension-->
 </plugin>
