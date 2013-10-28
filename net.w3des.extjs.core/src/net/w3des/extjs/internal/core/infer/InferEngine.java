@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *      w3des.net - initial API and implementation
  ******************************************************************************/
@@ -62,7 +62,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
     private File file;
-    
+
     @Override
     public void doInfer() {
         file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
@@ -84,7 +84,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     /**
      * Get field name by expression
-     * 
+     *
      * @param expression
      * @return
      */
@@ -228,13 +228,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return false;
     }
-    
+
     /**
      * Copy from left to right
-     * 
-     * TODO: Calculate scope, check type 
+     *
+     * TODO: Calculate scope, check type
      * TODO: Optimisation
-     * 
+     *
      * @param args
      */
     private InferredType extApply(IFunctionCall messageSend) {
@@ -260,7 +260,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
             if (name != null && CharOperation.prefixEquals(Constants.extDot, name)) {
                 left = addType(name, true);
-                
+
                 asStatic =  !CharOperation.endsWith(name, Constants.prototypeDot);
             } else {
                 left = vl.getInferredType();
@@ -270,7 +270,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
          } else {
             left = getTypeOf(args[0]);
-        } 
+        }
 
         if (left == null || left == getFunctionType() || left.superClass == getFunctionType()) {
             if (args[0] instanceof ISingleNameReference) {
@@ -484,8 +484,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (!newType.inferenceStyle.equals("override")) {
             newType.setSuperType(addType(Constants.baseClass));
         }
-        
-       
+
+
         newType.setIsGlobal(!newType.isAnonymous);
 
         if (args.length < 1) {
@@ -496,7 +496,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     getDefinedFunction(args[1]), args[1].sourceStart());
             addMethod.bits &= ClassFileConstants.AccPrivate;
         }
-        
+
 
         if (args[0] instanceof IObjectLiteral) {
             buildType(newType, (IObjectLiteral) args[0]);
@@ -603,7 +603,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return null;
     }
-    
+
     private void removeType(InferredType type) {
     	if (type == null) {
     		return;
@@ -611,12 +611,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     	/*
         CompilationUnitDeclaration scriptFileDeclaration = (CompilationUnitDeclaration) this.getScriptFileDeclaration();
         InferredType tmp = (InferredType) scriptFileDeclaration.inferredTypesHash.get(type.getName());
-        
+
         scriptFileDeclaration.inferredTypesHash.removeKey(type.getName());
         scriptFileDeclaration.numberInferredTypes--;*/
     	renameType(type, createAnonymousTypeName(type));
     	type.isAnonymous = true;
-    	
+
 //    	type.setIsDefinition(false);
 //    	type.setIsGlobal(false);
     	type.sourceEnd = 0;
@@ -626,11 +626,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     private InferredType buildType(InferredType newType, IObjectLiteral init) {
         char[] typeParent = null;
-        
+
         if (init.getInferredType() != null) {
         	/*newType.mixin(init.getInferredType(), true);
         	removeType(init.getInferredType());*/
-        	
+
         	final InferredType tmp = init.getInferredType();
         	tmp.sourceStart = newType.sourceStart;
         	tmp.sourceEnd = newType.sourceEnd;
@@ -646,7 +646,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         	}
         	final boolean rename = !newType.isAnonymous;
         	final char[] name = newType.getName();
-        	
+
         	tmp.setIsDefinition(true);
         	tmp.setSuperType(null);
         	removeType(newType);
@@ -657,8 +657,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         		tmp.isAnonymous = false;
         		tmp.setIsDefinition(true);
         	}
-        }	
-        
+        }
+
         boolean singleton = false;
         boolean hasConstructor = false;
         init.setInferredType(newType);
@@ -735,9 +735,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (!singleton && !hasConstructor && newType.findMethod(newType.getName(), emptyDeclaration) == null) {
             newType.addConstructorMethod(newType.getName(), emptyDeclaration, newType.getNameStart());
         }
-        if (typeParent != null && !CharOperation.equals(newType.getName(), Constants.baseName) && !newType.inferenceStyle.equals("override")) {
+        if (typeParent != null && !CharOperation.equals(newType.getName(), Constants.BASE_CLASS_NAME.asArray()) && !newType.inferenceStyle.equals("override")) {
         	InferredType addType = addType(typeParent);
-        	if (addType.getNameStart() == 0) {
+        	if (addType != null && addType.getNameStart() == 0) {
 	        	addType.setNameStart(1);
 	        	addType.sourceStart = 1;
 	        	addType.sourceEnd = 2;
@@ -797,7 +797,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 method.getFunctionDeclaration().setInferredType(getReturnType(field.getJsDoc()));
             }
         }
-        
+
 
         method.bits = method.bits | ClassFileConstants.AccPublic;
 
@@ -815,14 +815,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (declaration.getInferredType() == null) {
         	declaration.setInferredType(getReturnType(declaration.getJsDoc()));
         }
-        
+
 
         return method;
     }
 
     /**
      * Imports I'm not how JSDT use this
-     * 
+     *
      * @param newType
      * @param field
      */
@@ -839,7 +839,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     /**
      * Read jsdoc and return inferred type from "@return"
-     * 
+     *
      * @param doc
      * @return
      */
@@ -932,7 +932,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     /**
-     * @see http 
+     * @see http
      *      ://docs.sencha.com/ext-js/4-1/#!/api/Ext.Class-cfg-alternateClassName
      */
     private void alternateClassName(InferredType newType, IExpression alias) {
@@ -1082,7 +1082,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     /**
      * Quick fix due JSDT limitation
-     * 
+     *
      * @param newType
      */
     private void isSingleton(InferredType newType) {
@@ -1181,7 +1181,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return super.getDefinedFunction(expression);
     }
-    
+
     private char[] getArgValue(IExpression ex) {
 
         if (ex instanceof IStringLiteral) {
@@ -1266,12 +1266,12 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return res;
     }
-    
+
     private boolean isExtApp(IFunctionCall messageSend) {
     	if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asArray()) && (CharOperation.equals(messageSend.getSelector(), Constants.APPLICATION.asArray()))) {
             return true;
         }
-    	
+
     	return false;
 	}
 
@@ -1295,7 +1295,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             this.addType(Constants.ext, true);
         }
         /**
-         * TODO Do it always if scope exists 
+         * TODO Do it always if scope exists
          * TODO Support for advance listeners
          */
         final InferredAttribute listenersAttribute = type.findAttribute(Constants.attrListeners);

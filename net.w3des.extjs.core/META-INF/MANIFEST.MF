@@ -25,7 +25,6 @@ Export-Package: net.w3des.extjs.core,
  net.w3des.extjs.core.model.basic.impl,
  net.w3des.extjs.core.model.basic.util,
  net.w3des.extjs.internal.core;x-friends:="net.w3des.extjs.ui,net.w3des.extjs.core.test,net.w3des.extjs.ui.test",
- net.w3des.extjs.internal.core.project;x-friends:="net.w3des.extjs.ui",
- net.w3des.extjs.core.language
+ net.w3des.extjs.internal.core.project;x-friends:="net.w3des.extjs.ui"
 Service-Component: OSGI-INF/projectManager.xml,
  OSGI-INF/inferHelper.xml
