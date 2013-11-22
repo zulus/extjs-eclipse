@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-    <feature id="net.w3des.extjs.feature" version="0.0.0">
-        <category name="ExtJS" />
-    </feature>
-    
-    <category-def name="ExtJS" label="ExtJS">
-        <description>
-            ExtJS JSDT Integration
-        </description>
-    </category-def>
+   <feature id="net.w3des.extjs.feature" version="0.0.0">
+      <category name="ExtJS"/>
+   </feature>
+   <feature url="org.eclipse.wst.jsdt.feature" id="org.eclipse.wst.jsdt.feature" version="0.0.0">
+      <category name="Other"/>
+   </feature>
+   <feature url="org.eclipse.emf.ecore" id="org.eclipse.emf.ecore" version="0.0.0">
+      <category name="Other"/>
+   </feature>
+   <category-def name="ExtJS" label="ExtJS">
+      <description>
+         ExtJS JSDT Integration
+      </description>
+   </category-def>
+   <category-def name="Other" label="Other dependencies"/>
 </site>

@@ -5,7 +5,7 @@
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
   http://www.eclipse.org/legal/epl-v10.html
-   
+
   Contributors:
        w3des.net - initial API and implementation
 -->
@@ -26,7 +26,7 @@
     <properties>
         <java.version>1.6</java.version>
         <maven.version>3.0</maven.version>
-        <tycho.version>0.18.1</tycho.version>
+        <tycho.version>0.19.0</tycho.version>
         <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <executionEnvironmentDefault>J2SE-1.6</executionEnvironmentDefault>
@@ -41,7 +41,7 @@
         <repository>
             <id>wtp-dev</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/webtools/downloads/drops/R3.5.1/M-3.5.1RC4-20130913223750/repository</url>
+            <url>http://download.eclipse.org/webtools/downloads/drops/R3.5.2/M-3.5.2-20131121055605/repository</url>
         </repository>
     </repositories>
 
@@ -134,7 +134,7 @@
                             <include>**/*Test.java</include>
                         </includes>
                         <argLine>${tycho.test.jvmArgs}</argLine>
-                        <!-- kill test JVM if tests take more than 1 minute 
+                        <!-- kill test JVM if tests take more than 1 minute
                             (60 seconds) to finish -->
                         <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
                     </configuration>
