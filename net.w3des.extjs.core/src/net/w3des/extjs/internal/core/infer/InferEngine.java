@@ -182,9 +182,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     @Override
     public boolean visit(IAssignment assignment) {
         pushContext();
-        if (getFullName(assignment.getLeftHandSide()) != null && CharOperation.indexOf(Constants.ext, getFullName(assignment.getLeftHandSide()), true) == 0) {
-            if (CharOperation.indexOf(Constants.extDot, getFullName(assignment.getLeftHandSide()), true) == 0) {
-                addType(Constants.ext);
+        if (getFullName(assignment.getLeftHandSide()) != null && CharOperation.indexOf(Constants.EXT.asChar, getFullName(assignment.getLeftHandSide()), true) == 0) {
+            if (CharOperation.indexOf(Constants.EXT_DOT.asChar, getFullName(assignment.getLeftHandSide()), true) == 0) {
+                addType(Constants.EXT.asChar);
             }
             if (assignment.getExpression() instanceof IObjectLiteral) {
                 final InferredType type = addType(getFullName(assignment.getLeftHandSide()), true);
@@ -221,8 +221,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtApply(IFunctionCall messageSend) {
-        if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.ext)
-                && (CharOperation.equals(messageSend.getSelector(), Constants.apply) || CharOperation.equals(messageSend.getSelector(), Constants.applyIf))) {
+        if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asChar)
+                && (CharOperation.equals(messageSend.getSelector(), Constants.APPLY.asChar) || CharOperation.equals(messageSend.getSelector(), Constants.APPLY_IF.asChar))) {
             return true;
         }
 
@@ -258,14 +258,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             } else if (vl.getInitialization() != null && vl.getInitialization() instanceof IAssignment) {
                 name = getFullName(((IAssignment) vl.getInitialization()).getLeftHandSide());
             }
-            if (name != null && CharOperation.prefixEquals(Constants.extDot, name)) {
+            if (name != null && CharOperation.prefixEquals(Constants.EXT_DOT.asChar, name)) {
                 left = addType(name, true);
 
-                asStatic =  !CharOperation.endsWith(name, Constants.prototypeDot);
+                asStatic =  !CharOperation.endsWith(name, Constants.DOT_PROTOTYPE.asChar);
             } else {
                 left = vl.getInferredType();
-                if (CharOperation.prefixEquals(Constants.ext, vl.getName()) || CharOperation.equals(Constants.ext, vl.getName())) {
-                    asStatic = !CharOperation.endsWith(vl.getName(), Constants.prototypeDot);
+                if (CharOperation.prefixEquals(Constants.EXT.asChar, vl.getName()) || CharOperation.equals(Constants.EXT.asChar, vl.getName())) {
+                    asStatic = !CharOperation.endsWith(vl.getName(), Constants.DOT_PROTOTYPE.asChar);
                 }
             }
          } else {
@@ -334,13 +334,13 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     protected InferredType extCreate(IFunctionCall messageSend) {
         InferredType type = null;
-        if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.ext)
-                && CharOperation.equals(messageSend.getSelector(), Constants.create) && messageSend.getArguments() != null && messageSend.getArguments().length > 0) {
+        if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asChar)
+                && CharOperation.equals(messageSend.getSelector(), Constants.CREATE.asChar) && messageSend.getArguments() != null && messageSend.getArguments().length > 0) {
 
             if (getArgValue(messageSend.getArguments()[0]) != null) {
                 type = addType(getArgValue(messageSend.getArguments()[0]));
             } else {
-                type = addType(Constants.baseClass);
+                type = addType(Constants.BASE_CLASS.asChar);
             }
 
             if (messageSend.getArguments().length > 1 && type != null && messageSend.getArguments()[1] instanceof IObjectLiteral) {
@@ -388,9 +388,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtDefine(IFunctionCall messageSend) {
-        if (((CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.define))
-                || (CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext) && CharOperation.equals(messageSend.getSelector(), Constants.attrExtend)) || CharOperation
-                    .equals(messageSend.getSelector(), Constants.attrOverride)) && passNumber == 1) {
+        if (((CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.EXT.asChar) && CharOperation.equals(messageSend.getSelector(), Constants.DEFINE.asChar))
+                || (CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.EXT.asChar) && CharOperation.equals(messageSend.getSelector(), Constants.ATTR_EXTEND.asChar)) || CharOperation
+                    .equals(messageSend.getSelector(), Constants.ATTR_OVERRIDE.asChar)) && passNumber == 1) {
             return true;
         }
 
@@ -407,7 +407,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (args == null) {
             return null;
         }
-        if (!CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext)) {
+        if (!CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.EXT.asChar)) {
             final char[] className = getFullName(messageSend.getReceiver());
             if (className == null || className.length == 0) {
                 return null;
@@ -422,7 +422,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 newType.setNameStart(messageSend.sourceStart());
                 newType.isAnonymous = false;
             }
-        } else if (CharOperation.equals(messageSend.getSelector(), Constants.attrOverride)) {
+        } else if (CharOperation.equals(messageSend.getSelector(), Constants.ATTR_OVERRIDE.asChar)) {
             char[] name = null;
             if (args[0] instanceof IStringLiteral) {
                 name = getFieldName(args[0]);
@@ -440,7 +440,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             newType = addType(name, true);
             newType.setNameStart(getNameStart(args[0]));
             newType.isAnonymous = false;
-            newType.inferenceStyle = "override";
+            newType.inferenceStyle = Constants.ATTR_OVERRIDE.asString;
             args = Arrays.copyOfRange(args, 1, args.length);
 
         } else if (getArgValue(args[0]) != null) {
@@ -463,7 +463,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             newType = checkOverride(newType, args);
 
         } else if (args[0] instanceof INullLiteral) {
-            newType = createAnonymousType(Constants.extendedClass, null);
+            newType = createAnonymousType(Constants.EXTENDED_CLASS.asChar, null);
             args = Arrays.copyOfRange(args, 1, args.length);
 
             newType = checkOverride(newType, args);
@@ -479,10 +479,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         newType.setIsDefinition(true);
         newType.bits = ASTNode.TYPE_DECLARATION;
         if (newType.inferenceStyle == null) {
-        	newType.inferenceStyle = "define";
+        	newType.inferenceStyle = Constants.DEFINE.asString;
         }
-        if (!newType.inferenceStyle.equals("override")) {
-            newType.setSuperType(addType(Constants.baseClass));
+        if (!newType.inferenceStyle.equals(Constants.ATTR_OVERRIDE.asString)) {
+            newType.setSuperType(addType(Constants.BASE_CLASS.asChar));
         }
 
 
@@ -492,7 +492,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             return newType;
         }
         if (args.length > 1 && getDefinedFunction(args[1]) != null) {
-            InferredMethod addMethod = newType.addMethod(Constants.postConstructor,
+            InferredMethod addMethod = newType.addMethod(Constants.POST_CONSTRUCTOR.asChar,
                     getDefinedFunction(args[1]), args[1].sourceStart());
             addMethod.bits &= ClassFileConstants.AccPrivate;
         }
@@ -543,7 +543,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                         continue;
                     }
 
-                    if (CharOperation.equals(getFieldName(field.getFieldName()), Constants.attrOverride, true)) {
+                    if (CharOperation.equals(getFieldName(field.getFieldName()), Constants.ATTR_OVERRIDE.asChar, true)) {
                         found = getArgValue(field.getInitializer());
                         //nameStart = field.getInitializer().sourceStart() + 1;
                         break;
@@ -554,7 +554,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     final InferredType newType = addType(found, true);
                     newType.isAnonymous = false;
                     type.addSynonym(newType);
-                    type.inferenceStyle = "override";
+                    type.inferenceStyle = Constants.ATTR_OVERRIDE.asString;
 
                     return newType;
                 }
@@ -668,26 +668,26 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     continue;
                 }
                 final char[] fieldName = getFieldName(field.getFieldName());
-                if (CharOperation.equals(fieldName, Constants.attrExtend)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_EXTEND.asChar)) {
                     typeParent = getArgValue(field.getInitializer());
                     addAttribute(newType, field, false);
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrSingleton)) {
+                if (CharOperation.equals(fieldName,Constants.ATTR_SINGLETON.asChar)) {
                     singleton = true;
                     addAttribute(newType, field, false);
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrRequires) || CharOperation.equals(fieldName, Constants.attrUses)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_REQUIRES.asChar) || CharOperation.equals(fieldName, Constants.ATTR_USES.asChar)) {
                     addImports(newType, field);
                     addAttribute(newType, field, false);
                     continue;
                 }
 
                 if (getDefinedFunction(field.getInitializer()) != null) {
-                    if (CharOperation.equals(fieldName, Constants.attrConstructor)) {
+                    if (CharOperation.equals(fieldName, Constants.ATTR_CONSTRUCTOR.asChar)) {
                         hasConstructor = true;
                     }
 
@@ -695,7 +695,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrStatics) || CharOperation.equals(fieldName, Constants.attrInheritableStatics)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_STATICS.asChar) || CharOperation.equals(fieldName, Constants.ATTR_STATICS.asChar)) {
                     if (field.getInitializer() instanceof IObjectLiteral) {
                         addStatics(newType, (IObjectLiteral) field.getInitializer());
                     }
@@ -703,19 +703,19 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrAlternateClassName)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_ALTERNATE_CLASS_NAME.asChar)) {
                     addAttribute(newType, field, false);
                     alternateClassName(newType, field.getInitializer());
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrAlias)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_ALIAS.asChar)) {
                     addAttribute(newType, field, false);
                     aliases(newType, field.getInitializer());
                     continue;
                 }
 
-                if (CharOperation.equals(fieldName, Constants.attrMixins)) {
+                if (CharOperation.equals(fieldName, Constants.ATTR_MIXINS.asChar)) {
                     mixins(newType, field);
                     continue;
                 }
@@ -735,7 +735,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (!singleton && !hasConstructor && newType.findMethod(newType.getName(), emptyDeclaration) == null) {
             newType.addConstructorMethod(newType.getName(), emptyDeclaration, newType.getNameStart());
         }
-        if (typeParent != null && !CharOperation.equals(newType.getName(), Constants.BASE_CLASS_NAME.asArray()) && !newType.inferenceStyle.equals("override")) {
+        if (typeParent != null && !CharOperation.equals(newType.getName(), Constants.BASE_CLASS_NAME.asChar) && !newType.inferenceStyle.equals(Constants.ATTR_OVERRIDE.asString)) {
         	InferredType addType = addType(typeParent);
         	if (addType != null && addType.getNameStart() == 0) {
 	        	addType.setNameStart(1);
@@ -776,7 +776,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         char[] fieldName = getFieldName(field.getFieldName());
         boolean isConstructor = false;
 
-        if (CharOperation.equals(fieldName, Constants.attrConstructor)) {
+        if (CharOperation.equals(fieldName, Constants.ATTR_CONSTRUCTOR.asChar)) {
             fieldName = newType.getName();
             isConstructor = true;
         }
@@ -994,7 +994,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
     @Override
     protected boolean isPossibleClassName(char[] name) {
-        return CharOperation.equals(name, Constants.ext) || (name != null && CharOperation.indexOf(Constants.extDot, name, true) == 0);
+        return CharOperation.equals(name, Constants.EXT.asChar) || (name != null && CharOperation.indexOf(Constants.EXT_DOT.asChar, name, true) == 0);
     }
 
     @Override
@@ -1086,7 +1086,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
      * @param newType
      */
     private void isSingleton(InferredType newType) {
-        newType.inferenceStyle = "singleton";
+        newType.inferenceStyle = Constants.ATTR_SINGLETON.asString;
         newType.bits = InferredType.IsInferredType;
 
         if (newType.attributes != null && newType.attributes.length > 0) {
@@ -1110,7 +1110,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     protected InferredType extAlias(IFunctionCall messageSend) {
-        if (CharOperation.equals(messageSend.getSelector(), Constants.attrAlias) && messageSend.getArguments() != null) {
+        if (CharOperation.equals(messageSend.getSelector(), Constants.ATTR_ALIAS.asChar) && messageSend.getArguments() != null) {
             return getFunctionByAlias(messageSend.getArguments());
         }
 
@@ -1167,8 +1167,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         if (expression instanceof IFunctionCall) {
             final IFunctionCall messageSend = (IFunctionCall) expression;
-            if (CharOperation.equals(messageSend.getSelector(), Constants.attrAlias)
-                    && (messageSend.getReceiver() == null || CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.ext))) {
+            if (CharOperation.equals(messageSend.getSelector(), Constants.ATTR_ALIAS.asChar)
+                    && (messageSend.getReceiver() == null || CharOperation.equals(getFullName(messageSend.getReceiver()), Constants.EXT.asChar))) {
 
                 final char[][] arr = readFunctionAlias(messageSend.getArguments());
                 if (arr != null) {
@@ -1268,7 +1268,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     }
 
     private boolean isExtApp(IFunctionCall messageSend) {
-    	if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asArray()) && (CharOperation.equals(messageSend.getSelector(), Constants.APPLICATION.asArray()))) {
+    	if (messageSend.getReceiver() != null && CharOperation.equals(getFieldName(messageSend.getReceiver()), Constants.EXT.asChar) && (CharOperation.equals(messageSend.getSelector(), Constants.APPLICATION.asChar))) {
             return true;
         }
 
@@ -1279,7 +1279,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     	if (functionCall.getArguments() != null && functionCall.getArguments().length > 0) {
     		InferredType typeOf = getTypeOf(functionCall.getArguments()[0]);
     		if (typeOf != null) {
-    			typeOf.setSuperType(addType(Constants.APPLICATION_CLASS.asArray()));
+    			typeOf.setSuperType(addType(Constants.APPLICATION_CLASS.asChar));
     			typeOf.isObjectLiteral = false;
     		}
     	}
@@ -1291,16 +1291,16 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (passNumber != 2) {
             return super.visit(type);
         }
-        if (CharOperation.equals(type.getName(), Constants.ext)) {
-            this.addType(Constants.ext, true);
+        if (CharOperation.equals(type.getName(), Constants.EXT.asChar)) {
+            this.addType(Constants.EXT.asChar, true);
         }
         /**
          * TODO Do it always if scope exists
          * TODO Support for advance listeners
          */
-        final InferredAttribute listenersAttribute = type.findAttribute(Constants.attrListeners);
+        final InferredAttribute listenersAttribute = type.findAttribute(Constants.ATTR_LISTENERS.asChar);
         if (listenersAttribute != null && listenersAttribute.type != null) {
-            final InferredAttribute scope = listenersAttribute.type.findAttribute(Constants.attrScope);
+            final InferredAttribute scope = listenersAttribute.type.findAttribute(Constants.ATTR_SCOPE.asChar);
             if (scope != null && scope.type != null && listenersAttribute.type.methods != null) {
                 final Iterator iterator = listenersAttribute.type.methods.iterator();
                 while (iterator.hasNext()) {
@@ -1316,7 +1316,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             type.isAnonymous = true;
         }
 
-        final InferredAttribute singleton = type.findAttribute(Constants.attrSingleton);
+        final InferredAttribute singleton = type.findAttribute(Constants.ATTR_SINGLETON.asChar);
         if (singleton != null && singleton.isStatic) {
             if (type.methods != null) {
                 final Iterator iterator = type.methods.iterator();
