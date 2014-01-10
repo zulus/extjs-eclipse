@@ -8,3 +8,5 @@ Read more on [Project page](http://zulus.github.com/extjs-eclipse) and [Wiki](ht
 ## Attention
 
 WTP 3.5.1 was released with some BC breaks and bugs. If you want using it with this plugin, p2-dev repo will be required!
+
+see [#12](https://github.com/zulus/extjs-eclipse/issues/12)
