@@ -627,38 +627,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private InferredType buildType(InferredType newType, IObjectLiteral init) {
         char[] typeParent = null;
 
-        if (init.getInferredType() != null) {
-        	/*newType.mixin(init.getInferredType(), true);
-        	removeType(init.getInferredType());*/
-
-        	final InferredType tmp = init.getInferredType();
-        	tmp.sourceStart = newType.sourceStart;
-        	tmp.sourceEnd = newType.sourceEnd;
-        	tmp.inferenceProviderID = inferenceProvider.getID();
-        	tmp.setNameStart(newType.getNameStart());
-        	tmp.inferenceStyle = newType.inferenceStyle;
-        	tmp.mixins = newType.mixins;
-        	tmp.superClass = newType.superClass;
-        	if (newType.getSynonyms() != null) {
-	        	for (InferredType t : newType.getSynonyms()) {
-	        		tmp.addSynonym(t);
-	        	}
-        	}
-        	final boolean rename = !newType.isAnonymous;
-        	final char[] name = newType.getName();
-
-        	tmp.setIsDefinition(true);
-        	tmp.setSuperType(null);
-        	removeType(newType);
-        	newType = tmp;
-        	if (rename) {
-        		renameType(tmp, name);
-        		tmp.setIsGlobal(true);
-        		tmp.isAnonymous = false;
-        		tmp.setIsDefinition(true);
-        	}
-        }
-
         boolean singleton = false;
         boolean hasConstructor = false;
         init.setInferredType(newType);

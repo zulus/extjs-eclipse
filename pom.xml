@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.w3des</groupId>
     <artifactId>net.w3des.extjs</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.1.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>net.w3des.extjs :: parent</name>
     <description>net.w3des.extjs parent</description>
@@ -37,11 +37,6 @@
             <id>kepler</id>
             <layout>p2</layout>
             <url>http://download.eclipse.org/releases/kepler</url>
-        </repository>
-        <repository>
-            <id>wtp-dev</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/webtools/downloads/drops/R3.5.2/M-3.5.2-20131121055605/repository</url>
         </repository>
     </repositories>
 
