@@ -109,7 +109,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
-      <import feature="org.eclipse.wst.jsdt.feature" version="1.5.1" match="greaterOrEqual"/>
+      <import feature="org.eclipse.wst.jsdt.feature" version="1.5.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin
