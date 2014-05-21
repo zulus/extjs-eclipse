@@ -271,6 +271,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
          } else {
             left = getTypeOf(args[0]);
         }
+        if (args[0] instanceof IThisReference) {
+        	left = inferredGlobal;
+        }
 
         if (left == null || left == getFunctionType() || left.superClass == getFunctionType()) {
             if (args[0] instanceof ISingleNameReference) {
@@ -286,6 +289,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             right = vr.getInferredType();
         } else {
             right = getTypeOf(args[1]);
+        }
+        
+        if (args[1] instanceof IThisReference) {
+        	right = inferredGlobal;
         }
 
         if (right == null && args[1] instanceof ISingleNameReference) {
@@ -582,6 +589,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     return getFunctionType();
                 }
             }
+        }
+        if (expression instanceof ILocalDeclaration) {
+        	handleLocalDeclarationExpressionType((ILocalDeclaration) expression);
         }
 
         return super.getTypeOf(expression);
