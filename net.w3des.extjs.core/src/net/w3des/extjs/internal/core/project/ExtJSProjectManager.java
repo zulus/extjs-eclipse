@@ -352,8 +352,11 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
                     continue; // ignore other containers
                 }
                 // TODO allow exclude
-                if (entry.getPath().isPrefixOf(resource.getFullPath().removeFirstSegments(1))
-                        || entry.getPath().equals(resource.getFullPath().removeFirstSegments(1))) {
+                IPath fullPath = resource.getFullPath();
+                IPath noFirst = fullPath.removeFirstSegments(1);
+                if (entry.getPath().isPrefixOf(fullPath)
+                        || entry.getPath().equals(fullPath) || entry.getPath().isPrefixOf(noFirst)
+                        || entry.getPath().equals(noFirst)) {
                     return true;
                 }
             }

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core.infer;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -61,8 +62,10 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
+    private final static String contextFieldName = "currentContext"; //$NON-NLS-1$
+    private final static String currentTypeFieldName = "currentType"; //$NON-NLS-1$
     private File file;
-
+    
     @Override
     public void doInfer() {
         file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
@@ -169,6 +172,9 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 addType.sourceStart = assignmentExpression.sourceStart();
                 addType.sourceEnd = assignmentExpression.sourceEnd();
             }
+            if (type != null && passNumber == 1) {
+            	return false;
+            }
         } else if (extCreate(messageSend) != null && assignmentExpression != null) {
             assignmentExpression.setInferredType(extCreate(messageSend));
 
@@ -271,9 +277,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
          } else {
             left = getTypeOf(args[0]);
         }
-        if (args[0] instanceof IThisReference) {
-        	left = inferredGlobal;
-        }
 
         if (left == null || left == getFunctionType() || left.superClass == getFunctionType()) {
             if (args[0] instanceof ISingleNameReference) {
@@ -291,10 +294,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             right = getTypeOf(args[1]);
         }
         
-        if (args[1] instanceof IThisReference) {
-        	right = inferredGlobal;
-        }
-
         if (right == null && args[1] instanceof ISingleNameReference) {
             right = this.findDefinedType(getFieldName(args[1]));
         } else if (right == null && args[1] instanceof IFieldReference) {
@@ -421,6 +420,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             }
             newType = findDefinedType(className);
             if (passNumber == 2 && newType != null) {
+            	setCurrentType(newType);
                 return newType;
             }
 
@@ -441,6 +441,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
             newType = findDefinedType(name);
             if (passNumber == 2 && newType != null) {
+            	setCurrentType(newType);
                 return newType;
             }
 
@@ -455,6 +456,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
             newType = findDefinedType(name);
             if (passNumber == 2 && newType != null) {
+            	setCurrentType(newType);
                 return newType;
             } else if (name.length == 0) {
                 return null;
@@ -477,7 +479,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         } else {
             return null;
         }
-        this.inferredGlobal = newType;
+        setCurrentType(newType);
+        
         if (passNumber == 2) {
             return newType;
         }
@@ -524,6 +527,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     }
                 }
             }
+            args[0].traverse(this);
         } else if (args[0] instanceof IFunctionCall) {
             for (final IReturnStatement ret : checkInternalFunction(args[0])) {
                 if (ret.getExpression() instanceof IObjectLiteral) {
@@ -532,8 +536,14 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                     buildType(newType, (IObjectLiteral) getVariable(ret.getExpression()).getInitialization());
                 }
             }
+            args[0].traverse(this);
         } else if (getVariable(args[0]).getInitialization() instanceof IObjectLiteral) {
             buildType(newType, (IObjectLiteral) getVariable(args[0]).getInitialization());
+        } else {
+        	args[0].traverse(this);
+        }
+        for (int i = 1; i<args.length; i++) {
+        	args[i].traverse(this);
         }
 
         return newType;
@@ -793,7 +803,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (declaration.getInferredType() == null) {
         	declaration.setInferredType(getReturnType(declaration.getJsDoc()));
         }
-
+        
+        field.traverse(this);
 
         return method;
     }
@@ -866,9 +877,10 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (attr.type == null) {
             attr.type = getTypeOf(field.getInitializer());
         }
-
+        
         handleAttributeDeclaration(attr, field.getInitializer());
-
+        field.traverse(this);
+        
         return attr;
     }
 
@@ -907,6 +919,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
                 }
             }
         }
+        
+        field.traverse(this);
     }
 
     /**
@@ -1313,4 +1327,51 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 
         return super.visit(type);
     }
+	
+	private InferredType getCurrentType() {
+		try {
+			Field field = this.getClass().getSuperclass().getDeclaredField(contextFieldName);
+			field.setAccessible(true);
+			Object context = field.get(this);
+			if (context == null) {
+				return null;
+			}
+			field = context.getClass().getDeclaredField(currentTypeFieldName);
+			field.setAccessible(true);
+			return (InferredType) field.get(context);
+			
+		} catch (NoSuchFieldException e) {
+			ExtJSCore.error(e);
+		} catch (SecurityException e) {
+			
+		} catch (IllegalArgumentException e) {
+			ExtJSCore.error(e);
+		} catch (IllegalAccessException e) {
+			ExtJSCore.error(e);
+		}
+		return null;
+	}
+	
+	private void setCurrentType(InferredType type) {
+		try {
+			Field field = this.getClass().getSuperclass().getDeclaredField(contextFieldName);
+			field.setAccessible(true);
+			Object context = field.get(this);
+			if (context == null) {
+				return;
+			}
+			field = context.getClass().getDeclaredField(currentTypeFieldName);
+			field.setAccessible(true);
+			field.set(context, type);
+			
+		} catch (NoSuchFieldException e) {
+			ExtJSCore.error(e);
+		} catch (SecurityException e) {
+			
+		} catch (IllegalArgumentException e) {
+			ExtJSCore.error(e);
+		} catch (IllegalAccessException e) {
+			ExtJSCore.error(e);
+		}
+	}
 }
