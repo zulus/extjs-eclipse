@@ -10,10 +10,10 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core.project.ecore;
 
-import net.w3des.extjs.core.api.ILayout;
+import net.w3des.extjs.core.api.IWidget;
 import net.w3des.extjs.core.model.basic.Widget;
 
-public class WidgetImpl extends AliasImpl<Widget> implements ILayout {
+public class WidgetImpl extends AliasImpl<Widget> implements IWidget {
 
 	public WidgetImpl(Widget alias) {
 		super(alias);

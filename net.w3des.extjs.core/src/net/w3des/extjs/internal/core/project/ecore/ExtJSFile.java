@@ -49,15 +49,17 @@ public class ExtJSFile implements IExtJSFile {
 	@Override
 	public Collection<IAlias> getAliases() {
 		final List<IAlias> result = new ArrayList<IAlias>();
-		for (final Alias alias : this.file.getAliases()) {
-			// wrap content
-			if (alias instanceof Widget) result.add(new WidgetImpl((Widget) alias));
-			else if (alias instanceof Feature) result.add(new FeatureImpl((Feature) alias));
-			else if (alias instanceof Layout) result.add(new LayoutImpl((Layout) alias));
-			else if (alias instanceof Plugin) result.add(new PluginImpl((Plugin) alias));
-			else result.add(new AliasImpl<Alias>(alias));
+		if (this.file != null) {
+			for (final Alias alias : this.file.getAliases()) {
+				// wrap content
+				if (alias instanceof Widget) result.add(new WidgetImpl((Widget) alias));
+				else if (alias instanceof Feature) result.add(new FeatureImpl((Feature) alias));
+				else if (alias instanceof Layout) result.add(new LayoutImpl((Layout) alias));
+				else if (alias instanceof Plugin) result.add(new PluginImpl((Plugin) alias));
+				else result.add(new AliasImpl<Alias>(alias));
+			}
 		}
-		return null;
+		return result;
 	}
 
 }

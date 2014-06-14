@@ -30,9 +30,11 @@ public class ExtJSProjectImpl implements IExtJSProject {
 	@Override
 	public Collection<IExtJSFile> getFiles() {
 		final List<IExtJSFile> result = new ArrayList<IExtJSFile>();
-		for (final File file : this.project.getFiles()) {
-			// wrap contents
-			result.add(new ExtJSFile(file));
+		if (this.project != null) {
+			for (final File file : this.project.getFiles()) {
+				// wrap contents
+				result.add(new ExtJSFile(file));
+			}
 		}
 		return result;
 	}
