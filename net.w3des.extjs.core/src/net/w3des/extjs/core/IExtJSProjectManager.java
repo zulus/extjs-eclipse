@@ -10,16 +10,16 @@
  ******************************************************************************/
 package net.w3des.extjs.core;
 
-import net.w3des.extjs.core.model.basic.ExtJSProject;
-import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSProject;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
 public interface IExtJSProjectManager {
-    public ExtJSProject createProject(IProject project);
+    public IExtJSProject createProject(IProject project);
 
-    public ExtJSProject createProject(IProject project, boolean force);
+    public IExtJSProject createProject(IProject project, boolean force);
 
     public void deleteProject(IProject project);
 
@@ -27,9 +27,9 @@ public interface IExtJSProjectManager {
 
     public boolean onBuildPath(IResource resource);
 
-    public ExtJSProject[] getProjects();
+    public IExtJSProject[] getProjects();
 
-    public File getFile(String file);
+    public IExtJSFile getFile(String file);
 
     public void save();
 }

@@ -12,10 +12,10 @@ package net.w3des.extjs.ui.completion;
 
 import java.util.List;
 
-import net.w3des.extjs.core.model.basic.Alias;
-import net.w3des.extjs.core.model.basic.ExtJSProject;
-import net.w3des.extjs.core.model.basic.File;
-import net.w3des.extjs.core.model.basic.Widget;
+import net.w3des.extjs.core.api.IAlias;
+import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.IWidget;
 import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,12 +30,12 @@ public class WidgetCompletion extends AliasCompletion {
     @Override
     protected void computeCompletionProposals(boolean inString, String start, List<ICompletionProposal> proposals,
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
-        final ExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
+        final IExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
 
-        for (final File f : project.getFiles()) {
-            for (final Alias a : f.getAliases()) {
+        for (final IExtJSFile f : project.getFiles()) {
+            for (final IAlias a : f.getAliases()) {
 
-                if (a instanceof Widget && a.getName().startsWith(start)) {
+                if (a instanceof IWidget && a.getName().startsWith(start)) {
                     proposals.add(createTextProposal(inString, aliasImage(a), a.getName(),
                             context.getInvocationOffset(), start, null, null));
 

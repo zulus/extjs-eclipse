@@ -12,13 +12,13 @@ package net.w3des.extjs.ui.completion;
 
 import java.util.List;
 
-import net.w3des.extjs.core.model.basic.Alias;
-import net.w3des.extjs.core.model.basic.ExtJSProject;
-import net.w3des.extjs.core.model.basic.Feature;
-import net.w3des.extjs.core.model.basic.File;
-import net.w3des.extjs.core.model.basic.Layout;
-import net.w3des.extjs.core.model.basic.Plugin;
-import net.w3des.extjs.core.model.basic.Widget;
+import net.w3des.extjs.core.api.IAlias;
+import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.IFeature;
+import net.w3des.extjs.core.api.ILayout;
+import net.w3des.extjs.core.api.IPlugin;
+import net.w3des.extjs.core.api.IWidget;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.SharedImages;
 
@@ -39,10 +39,10 @@ public class AliasCompletion extends AbstractCompletion {
     @Override
     protected void computeCompletionProposals(boolean inString, String start, List<ICompletionProposal> proposals,
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
-        final ExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
+        final IExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
 
-        for (final File f : project.getFiles()) {
-            for (final Alias a : f.getAliases()) {
+        for (final IExtJSFile f : project.getFiles()) {
+            for (final IAlias a : f.getAliases()) {
 
                 if (a.getRawName().startsWith(start)) {
                     proposals.add(createTextProposal(inString, aliasImage(a), a.getRawName(),
@@ -53,14 +53,14 @@ public class AliasCompletion extends AbstractCompletion {
         }
     }
 
-    public static Image aliasImage(Alias item) {
-        if (item instanceof Widget) {
+    public static Image aliasImage(IAlias item) {
+        if (item instanceof IWidget) {
             return SharedImages.getImage(SharedImages.OBJ16.WIDGET);
-        } else if (item instanceof Plugin) {
+        } else if (item instanceof IPlugin) {
             return SharedImages.getImage(SharedImages.OBJ16.PLUGIN);
-        } else if (item instanceof Layout) {
+        } else if (item instanceof ILayout) {
             return SharedImages.getImage(SharedImages.OBJ16.LAYOUT);
-        } else if (item instanceof Feature) {
+        } else if (item instanceof IFeature) {
             return SharedImages.getImage(SharedImages.OBJ16.FEATURE);
         }
 

@@ -12,7 +12,7 @@ package net.w3des.extjs.ui.handler;
 
 import javax.inject.Named;
 
-import net.w3des.extjs.core.model.basic.ExtJSProject;
+import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.internal.core.WorkspaceHelper;
 import net.w3des.extjs.ui.ExtJSUI;
@@ -34,9 +34,9 @@ public class RefreshJS {
         final IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
         final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
         try {
-            ExtJSProject pr = ExtJSCore.getProjectManager().createProject(project);
+            IExtJSProject pr = ExtJSCore.getProjectManager().createProject(project);
             if (pr != null && pr.getFiles().size() > 0) {
-                pr.getFiles().clear();
+                pr.clearIndex();
             }
             WorkspaceHelper.refreshJavaScriptProject(JavaScriptCore.create(project), monitor);
         } catch (JavaScriptModelException e) {

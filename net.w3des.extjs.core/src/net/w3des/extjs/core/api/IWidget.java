@@ -8,8 +8,8 @@
  * Contributors:
  *      w3des.net - initial API and implementation
  ******************************************************************************/
-package net.w3des.extjs.core;
+package net.w3des.extjs.core.api;
 
-public interface IExtJSProject {
+public interface IWidget extends IAlias {
 
 }

@@ -11,6 +11,7 @@
 package net.w3des.extjs.internal.core.project;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,11 +23,15 @@ import java.util.Map.Entry;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSProjectManager;
+import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
 import net.w3des.extjs.core.model.basic.File;
 import net.w3des.extjs.internal.core.ExtJSCore;
+import net.w3des.extjs.internal.core.project.ecore.ExtJSFile;
+import net.w3des.extjs.internal.core.project.ecore.ExtJSProjectImpl;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -62,14 +67,14 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     }
 
     @Override
-    public ExtJSProject createProject(final IProject project) {
+    public IExtJSProject createProject(final IProject project) {
         return createProject(project, false);
     }
 
     @Override
-    public ExtJSProject createProject(final IProject project, final boolean force) {
+    public IExtJSProject createProject(final IProject project, final boolean force) {
         if (projects.containsKey(project)) {
-            return projects.get(project);
+            return new ExtJSProjectImpl(projects.get(project));
         }
 
         if (isExtJSProject(project)) {
@@ -77,7 +82,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
             extProject.setName(project.getName());
 
             projects.put(project, extProject);
-            return projects.get(project);
+            return new ExtJSProjectImpl(projects.get(project));
         }
 
         if (force) {
@@ -98,7 +103,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
                 ExtJSCore.error(e);
             }
 
-            return projects.get(project);
+            return new ExtJSProjectImpl(projects.get(project));
         }
 
         return null;
@@ -184,8 +189,13 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     }
 
     @Override
-    public ExtJSProject[] getProjects() {
-        return projects.values().toArray(new ExtJSProject[projects.size()]);
+    public IExtJSProject[] getProjects() {
+    	final List<IExtJSProject> result = new ArrayList<IExtJSProject>();
+    	for (final ExtJSProject prj : this.projects.values()) {
+    		// wrap content
+    		result.add(new ExtJSProjectImpl(prj));
+    	}
+        return result.toArray(new IExtJSProject[result.size()]);
     }
 
     public void activate() {
@@ -295,7 +305,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     }
 
     @Override
-    public File getFile(String filePath) {
+    public IExtJSFile getFile(String filePath) {
         File file = null;
         if (files.containsKey(filePath)) {
             file = files.get(filePath);
@@ -317,9 +327,9 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
         }
 
-        return file;
+        return new ExtJSFile(file);
     }
-
+    
     private boolean inProject(IProject project, String filePath) {
         final IJavaScriptProject pr = JavaScriptCore.create(project);
         final IPath path = new Path(filePath);

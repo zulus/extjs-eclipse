@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.internal.core.Constants;
 import net.w3des.extjs.internal.core.ExtJSCore;
 
@@ -64,7 +64,7 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
     private final static String contextFieldName = "currentContext"; //$NON-NLS-1$
     private final static String currentTypeFieldName = "currentType"; //$NON-NLS-1$
-    private File file;
+    private IExtJSFile file;
     
     @Override
     public void doInfer() {
