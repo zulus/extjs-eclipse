@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core;
 
+import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.IExtJSProjectManager;
 
 import org.eclipse.core.resources.ISaveParticipant;
@@ -106,6 +107,11 @@ public class ExtJSCore extends Plugin {
 
     public static void info(Throwable e) {
         plugin.getLog().log(new Status(IStatus.INFO, PLUGIN_ID, IStatus.OK, e.getLocalizedMessage(), e));
+    }
+    
+    public static IExtJSLibraryManager getLibraryManager() {
+        final ServiceReference<?> serviceReference = plugin.getBundle().getBundleContext().getServiceReference(IExtJSLibraryManager.class.getName());
+        return (IExtJSLibraryManager) plugin.getBundle().getBundleContext().getService(serviceReference);
     }
 
     public static IExtJSProjectManager getProjectManager() {

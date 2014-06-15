@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.w3des.extjs.core.api.IExtJSFile;
-import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
@@ -99,7 +99,7 @@ public class ECoreStorageImpl implements IIndexStorage {
 	}
 
 	@Override
-	public IExtJSProject getProject(IProject prj, boolean forceCreation) {
+	public IExtJSIndex getProject(IProject prj, boolean forceCreation) {
 		if (!this.projects.containsKey(prj) && forceCreation) {
             final ExtJSProject extProject = ExtJSFactory.eINSTANCE.createExtJSProject();
             extProject.setName(prj.getName());
@@ -107,7 +107,7 @@ public class ECoreStorageImpl implements IIndexStorage {
             projects.put(prj, extProject);
 		}
 		final ExtJSProject extProject = this.projects.get(prj);
-		return extProject == null ? null : new ExtJSProjectImpl(extProject);
+		return extProject == null ? null : new ExtJSProjectImpl(prj, extProject);
 	}
 
 	@Override
@@ -135,13 +135,13 @@ public class ECoreStorageImpl implements IIndexStorage {
 	}
 
 	@Override
-	public IExtJSProject[] getProjects() {
-    	final List<IExtJSProject> result = new ArrayList<IExtJSProject>();
-    	for (final ExtJSProject prj : this.projects.values()) {
+	public IExtJSIndex[] getProjects() {
+    	final List<IExtJSIndex> result = new ArrayList<IExtJSIndex>();
+    	for (final Map.Entry<IProject, ExtJSProject> entry : this.projects.entrySet()) {
     		// wrap content
-    		result.add(new ExtJSProjectImpl(prj));
+    		result.add(new ExtJSProjectImpl(entry.getKey(), entry.getValue()));
     	}
-        return result.toArray(new IExtJSProject[result.size()]);
+        return result.toArray(new IExtJSIndex[result.size()]);
 	}
 
     private Resource createResource() {

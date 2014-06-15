@@ -11,7 +11,7 @@
 package net.w3des.extjs.internal.core.project;
 
 import net.w3des.extjs.core.api.IExtJSFile;
-import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.IExtJSIndex;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -41,7 +41,7 @@ public interface IIndexStorage {
 	 * @param forceCreation {@code true} to create the project if it does not exist; {@code false} to return {@code null} instead
 	 * @return the project or {@code null} if it was not found
 	 */
-	IExtJSProject getProject(IProject prj, boolean forceCreation);
+	IExtJSIndex getProject(IProject prj, boolean forceCreation);
 
 	/**
 	 * Destroys the index for given eclipse project
@@ -65,7 +65,7 @@ public interface IIndexStorage {
 	 * Returns the available projects
 	 * @return
 	 */
-	IExtJSProject[] getProjects();
+	IExtJSIndex[] getProjects();
 
 	/**
 	 * Saves the index

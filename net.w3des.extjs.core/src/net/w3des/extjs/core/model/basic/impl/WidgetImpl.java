@@ -17,22 +17,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class WidgetImpl extends AliasImpl implements Widget {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected WidgetImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.WIDGET;
-    }
+		return ExtJSPackage.Literals.WIDGET;
+	}
 
 } //WidgetImpl

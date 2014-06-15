@@ -14,17 +14,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+
 import net.w3des.extjs.core.api.IExtJSFile;
-import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.model.basic.ExtJSProject;
 import net.w3des.extjs.core.model.basic.File;
 
-public class ExtJSProjectImpl implements IExtJSProject {
+public class ExtJSProjectImpl implements IExtJSIndex {
 	
 	private ExtJSProject project;
+	private IProject eclipseProject;
 
-	public ExtJSProjectImpl(ExtJSProject project) {
+	public ExtJSProjectImpl(IProject eclipseProject, ExtJSProject project) {
 		this.project = project;
+		this.eclipseProject = eclipseProject;
 	}
 
 	@Override
@@ -42,6 +46,11 @@ public class ExtJSProjectImpl implements IExtJSProject {
 	@Override
 	public void clearIndex() {
 		this.project.getFiles().clear();
+	}
+
+	@Override
+	public IProject getProject() {
+		return this.eclipseProject;
 	}
 
 }

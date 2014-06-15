@@ -37,88 +37,88 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class FileImpl extends MinimalEObjectImpl.Container implements File {
     /**
-     * The cached value of the '{@link #getAliases() <em>Aliases</em>}' containment reference list.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getAliases() <em>Aliases</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getAliases()
-     * @generated
-     * @ordered
-     */
+	 * @see #getAliases()
+	 * @generated
+	 * @ordered
+	 */
     protected EList<Alias> aliases;
 
     /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String NAME_EDEFAULT = null;
     /**
-     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected String name = NAME_EDEFAULT;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected FileImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.FILE;
-    }
+		return ExtJSPackage.Literals.FILE;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public EList<Alias> getAliases() {
-        if (aliases == null) {
-            aliases = new EObjectContainmentEList<Alias>(Alias.class, this, ExtJSPackage.FILE__ALIASES);
-        }
-        return aliases;
-    }
+		if (aliases == null) {
+			aliases = new EObjectContainmentEList<Alias>(Alias.class, this, ExtJSPackage.FILE__ALIASES);
+		}
+		return aliases;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String getName() {
-        return name;
-    }
+		return name;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void setName(String newName) {
-        final String oldName = name;
-        name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.FILE__NAME, oldName, name));
-    }
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.FILE__NAME, oldName, name));
+	}
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -175,121 +175,121 @@ public class FileImpl extends MinimalEObjectImpl.Container implements File {
     }
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-        switch (featureID) {
-            case ExtJSPackage.FILE__ALIASES:
-                return ((InternalEList<?>)getAliases()).basicRemove(otherEnd, msgs);
-        }
-        return super.eInverseRemove(otherEnd, featureID, msgs);
-    }
+		switch (featureID) {
+			case ExtJSPackage.FILE__ALIASES:
+				return ((InternalEList<?>)getAliases()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ExtJSPackage.FILE__ALIASES:
-                return getAliases();
-            case ExtJSPackage.FILE__NAME:
-                return getName();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ExtJSPackage.FILE__ALIASES:
+				return getAliases();
+			case ExtJSPackage.FILE__NAME:
+				return getName();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ExtJSPackage.FILE__ALIASES:
-                getAliases().clear();
-                getAliases().addAll((Collection<? extends Alias>)newValue);
-                return;
-            case ExtJSPackage.FILE__NAME:
-                setName((String)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ExtJSPackage.FILE__ALIASES:
+				getAliases().clear();
+				getAliases().addAll((Collection<? extends Alias>)newValue);
+				return;
+			case ExtJSPackage.FILE__NAME:
+				setName((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.FILE__ALIASES:
-                getAliases().clear();
-                return;
-            case ExtJSPackage.FILE__NAME:
-                setName(NAME_EDEFAULT);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.FILE__ALIASES:
+				getAliases().clear();
+				return;
+			case ExtJSPackage.FILE__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.FILE__ALIASES:
-                return aliases != null && !aliases.isEmpty();
-            case ExtJSPackage.FILE__NAME:
-                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.FILE__ALIASES:
+				return aliases != null && !aliases.isEmpty();
+			case ExtJSPackage.FILE__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ExtJSPackage.FILE___CLEAN_ALIASES:
-                cleanAliases();
-                return null;
-            case ExtJSPackage.FILE___ADD_ALIAS__STRING_INT_INT_STRING:
-                addAlias((String)arguments.get(0), (Integer)arguments.get(1), (Integer)arguments.get(2), (String)arguments.get(3));
-                return null;
-        }
-        return super.eInvoke(operationID, arguments);
-    }
+		switch (operationID) {
+			case ExtJSPackage.FILE___CLEAN_ALIASES:
+				cleanAliases();
+				return null;
+			case ExtJSPackage.FILE___ADD_ALIAS__STRING_INT_INT_STRING:
+				addAlias((String)arguments.get(0), (Integer)arguments.get(1), (Integer)arguments.get(2), (String)arguments.get(3));
+				return null;
+		}
+		return super.eInvoke(operationID, arguments);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        final StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
-        result.append(name);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (name: ");
+		result.append(name);
+		result.append(')');
+		return result.toString();
+	}
 
 } //FileImpl

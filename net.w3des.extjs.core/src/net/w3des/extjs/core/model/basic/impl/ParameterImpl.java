@@ -29,243 +29,243 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  */
 public class ParameterImpl extends MinimalEObjectImpl.Container implements Parameter {
     /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String NAME_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected String name = NAME_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getType() <em>Type</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getType()
-     * @generated
-     * @ordered
-     */
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String TYPE_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getType()
-     * @generated
-     * @ordered
-     */
+	 * @see #getType()
+	 * @generated
+	 * @ordered
+	 */
     protected String type = TYPE_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getDescription()
-     * @generated
-     * @ordered
-     */
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String DESCRIPTION_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getDescription()
-     * @generated
-     * @ordered
-     */
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
     protected String description = DESCRIPTION_EDEFAULT;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected ParameterImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.PARAMETER;
-    }
+		return ExtJSPackage.Literals.PARAMETER;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getName() {
-        return name;
-    }
+		return name;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setName(String newName) {
-        String oldName = name;
-        name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__NAME, oldName, name));
-    }
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__NAME, oldName, name));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getType() {
-        return type;
-    }
+		return type;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setType(String newType) {
-        String oldType = type;
-        type = newType;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__TYPE, oldType, type));
-    }
+		String oldType = type;
+		type = newType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__TYPE, oldType, type));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getDescription() {
-        return description;
-    }
+		return description;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setDescription(String newDescription) {
-        String oldDescription = description;
-        description = newDescription;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__DESCRIPTION, oldDescription, description));
-    }
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.PARAMETER__DESCRIPTION, oldDescription, description));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ExtJSPackage.PARAMETER__NAME:
-                return getName();
-            case ExtJSPackage.PARAMETER__TYPE:
-                return getType();
-            case ExtJSPackage.PARAMETER__DESCRIPTION:
-                return getDescription();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ExtJSPackage.PARAMETER__NAME:
+				return getName();
+			case ExtJSPackage.PARAMETER__TYPE:
+				return getType();
+			case ExtJSPackage.PARAMETER__DESCRIPTION:
+				return getDescription();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ExtJSPackage.PARAMETER__NAME:
-                setName((String)newValue);
-                return;
-            case ExtJSPackage.PARAMETER__TYPE:
-                setType((String)newValue);
-                return;
-            case ExtJSPackage.PARAMETER__DESCRIPTION:
-                setDescription((String)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ExtJSPackage.PARAMETER__NAME:
+				setName((String)newValue);
+				return;
+			case ExtJSPackage.PARAMETER__TYPE:
+				setType((String)newValue);
+				return;
+			case ExtJSPackage.PARAMETER__DESCRIPTION:
+				setDescription((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.PARAMETER__NAME:
-                setName(NAME_EDEFAULT);
-                return;
-            case ExtJSPackage.PARAMETER__TYPE:
-                setType(TYPE_EDEFAULT);
-                return;
-            case ExtJSPackage.PARAMETER__DESCRIPTION:
-                setDescription(DESCRIPTION_EDEFAULT);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.PARAMETER__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case ExtJSPackage.PARAMETER__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
+			case ExtJSPackage.PARAMETER__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.PARAMETER__NAME:
-                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ExtJSPackage.PARAMETER__TYPE:
-                return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
-            case ExtJSPackage.PARAMETER__DESCRIPTION:
-                return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.PARAMETER__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case ExtJSPackage.PARAMETER__TYPE:
+				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+			case ExtJSPackage.PARAMETER__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
-        result.append(name);
-        result.append(", type: ");
-        result.append(type);
-        result.append(", description: ");
-        result.append(description);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (name: ");
+		result.append(name);
+		result.append(", type: ");
+		result.append(type);
+		result.append(", description: ");
+		result.append(description);
+		result.append(')');
+		return result.toString();
+	}
 
 } //ParameterImpl

@@ -17,22 +17,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class PluginImpl extends AliasImpl implements Plugin {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected PluginImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.PLUGIN;
-    }
+		return ExtJSPackage.Literals.PLUGIN;
+	}
 
 } //PluginImpl

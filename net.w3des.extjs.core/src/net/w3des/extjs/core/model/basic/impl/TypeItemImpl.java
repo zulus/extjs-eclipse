@@ -29,243 +29,243 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  */
 public abstract class TypeItemImpl extends MinimalEObjectImpl.Container implements TypeItem {
     /**
-     * The default value of the '{@link #getSourceStart() <em>Source Start</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getSourceStart() <em>Source Start</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getSourceStart()
-     * @generated
-     * @ordered
-     */
+	 * @see #getSourceStart()
+	 * @generated
+	 * @ordered
+	 */
     protected static final int SOURCE_START_EDEFAULT = 0;
 
     /**
-     * The cached value of the '{@link #getSourceStart() <em>Source Start</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getSourceStart() <em>Source Start</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getSourceStart()
-     * @generated
-     * @ordered
-     */
+	 * @see #getSourceStart()
+	 * @generated
+	 * @ordered
+	 */
     protected int sourceStart = SOURCE_START_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getSourceEnd() <em>Source End</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getSourceEnd() <em>Source End</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getSourceEnd()
-     * @generated
-     * @ordered
-     */
+	 * @see #getSourceEnd()
+	 * @generated
+	 * @ordered
+	 */
     protected static final int SOURCE_END_EDEFAULT = 0;
 
     /**
-     * The cached value of the '{@link #getSourceEnd() <em>Source End</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getSourceEnd() <em>Source End</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getSourceEnd()
-     * @generated
-     * @ordered
-     */
+	 * @see #getSourceEnd()
+	 * @generated
+	 * @ordered
+	 */
     protected int sourceEnd = SOURCE_END_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getTypeName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getTypeName()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String TYPE_NAME_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getTypeName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getTypeName()
+	 * @generated
+	 * @ordered
+	 */
     protected String typeName = TYPE_NAME_EDEFAULT;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected TypeItemImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.TYPE_ITEM;
-    }
+		return ExtJSPackage.Literals.TYPE_ITEM;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getSourceStart() {
-        return sourceStart;
-    }
+		return sourceStart;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setSourceStart(int newSourceStart) {
-        int oldSourceStart = sourceStart;
-        sourceStart = newSourceStart;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__SOURCE_START, oldSourceStart, sourceStart));
-    }
+		int oldSourceStart = sourceStart;
+		sourceStart = newSourceStart;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__SOURCE_START, oldSourceStart, sourceStart));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getSourceEnd() {
-        return sourceEnd;
-    }
+		return sourceEnd;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setSourceEnd(int newSourceEnd) {
-        int oldSourceEnd = sourceEnd;
-        sourceEnd = newSourceEnd;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__SOURCE_END, oldSourceEnd, sourceEnd));
-    }
+		int oldSourceEnd = sourceEnd;
+		sourceEnd = newSourceEnd;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__SOURCE_END, oldSourceEnd, sourceEnd));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getTypeName() {
-        return typeName;
-    }
+		return typeName;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setTypeName(String newTypeName) {
-        String oldTypeName = typeName;
-        typeName = newTypeName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__TYPE_NAME, oldTypeName, typeName));
-    }
+		String oldTypeName = typeName;
+		typeName = newTypeName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.TYPE_ITEM__TYPE_NAME, oldTypeName, typeName));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ExtJSPackage.TYPE_ITEM__SOURCE_START:
-                return getSourceStart();
-            case ExtJSPackage.TYPE_ITEM__SOURCE_END:
-                return getSourceEnd();
-            case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
-                return getTypeName();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ExtJSPackage.TYPE_ITEM__SOURCE_START:
+				return getSourceStart();
+			case ExtJSPackage.TYPE_ITEM__SOURCE_END:
+				return getSourceEnd();
+			case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
+				return getTypeName();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ExtJSPackage.TYPE_ITEM__SOURCE_START:
-                setSourceStart((Integer)newValue);
-                return;
-            case ExtJSPackage.TYPE_ITEM__SOURCE_END:
-                setSourceEnd((Integer)newValue);
-                return;
-            case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
-                setTypeName((String)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ExtJSPackage.TYPE_ITEM__SOURCE_START:
+				setSourceStart((Integer)newValue);
+				return;
+			case ExtJSPackage.TYPE_ITEM__SOURCE_END:
+				setSourceEnd((Integer)newValue);
+				return;
+			case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
+				setTypeName((String)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.TYPE_ITEM__SOURCE_START:
-                setSourceStart(SOURCE_START_EDEFAULT);
-                return;
-            case ExtJSPackage.TYPE_ITEM__SOURCE_END:
-                setSourceEnd(SOURCE_END_EDEFAULT);
-                return;
-            case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
-                setTypeName(TYPE_NAME_EDEFAULT);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.TYPE_ITEM__SOURCE_START:
+				setSourceStart(SOURCE_START_EDEFAULT);
+				return;
+			case ExtJSPackage.TYPE_ITEM__SOURCE_END:
+				setSourceEnd(SOURCE_END_EDEFAULT);
+				return;
+			case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
+				setTypeName(TYPE_NAME_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.TYPE_ITEM__SOURCE_START:
-                return sourceStart != SOURCE_START_EDEFAULT;
-            case ExtJSPackage.TYPE_ITEM__SOURCE_END:
-                return sourceEnd != SOURCE_END_EDEFAULT;
-            case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
-                return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.TYPE_ITEM__SOURCE_START:
+				return sourceStart != SOURCE_START_EDEFAULT;
+			case ExtJSPackage.TYPE_ITEM__SOURCE_END:
+				return sourceEnd != SOURCE_END_EDEFAULT;
+			case ExtJSPackage.TYPE_ITEM__TYPE_NAME:
+				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (sourceStart: ");
-        result.append(sourceStart);
-        result.append(", sourceEnd: ");
-        result.append(sourceEnd);
-        result.append(", typeName: ");
-        result.append(typeName);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (sourceStart: ");
+		result.append(sourceStart);
+		result.append(", sourceEnd: ");
+		result.append(sourceEnd);
+		result.append(", typeName: ");
+		result.append(typeName);
+		result.append(')');
+		return result.toString();
+	}
 
 } //TypeItemImpl

@@ -35,8 +35,8 @@ public class RefreshJS {
         final IProject project = ((IResource) adaptable.getAdapter(IResource.class)).getProject();
         try {
             IExtJSProject pr = ExtJSCore.getProjectManager().createProject(project);
-            if (pr != null && pr.getFiles().size() > 0) {
-                pr.clearIndex();
+            if (pr != null && pr.getIndex().getFiles().size() > 0) {
+                pr.getIndex().clearIndex();
             }
             WorkspaceHelper.refreshJavaScriptProject(JavaScriptCore.create(project), monitor);
         } catch (JavaScriptModelException e) {

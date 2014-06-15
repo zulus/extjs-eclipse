@@ -34,6 +34,7 @@ public class SaveParticipant implements ISaveParticipant {
         switch (context.getKind()) {
         case ISaveContext.FULL_SAVE:
             ExtJSCore.getProjectManager().save();
+            ExtJSCore.getLibraryManager().save();
         }
     }
 

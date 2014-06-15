@@ -18,22 +18,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class FeatureImpl extends AliasImpl implements Feature {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected FeatureImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.FEATURE;
-    }
+		return ExtJSPackage.Literals.FEATURE;
+	}
 
 } //FeatureImpl

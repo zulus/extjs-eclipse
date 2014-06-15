@@ -34,188 +34,188 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class ExtJSProjectImpl extends MinimalEObjectImpl.Container implements ExtJSProject {
     /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String NAME_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getName()
-     * @generated
-     * @ordered
-     */
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
     protected String name = NAME_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getFiles() <em>Files</em>}' containment reference list.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getFiles() <em>Files</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getFiles()
-     * @generated
-     * @ordered
-     */
+	 * @see #getFiles()
+	 * @generated
+	 * @ordered
+	 */
     protected EList<File> files;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected ExtJSProjectImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.EXT_JS_PROJECT;
-    }
+		return ExtJSPackage.Literals.EXT_JS_PROJECT;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String getName() {
-        return name;
-    }
+		return name;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void setName(String newName) {
-        String oldName = name;
-        name = newName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.EXT_JS_PROJECT__NAME, oldName, name));
-    }
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.EXT_JS_PROJECT__NAME, oldName, name));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public EList<File> getFiles() {
-        if (files == null) {
-            files = new EObjectContainmentEList<File>(File.class, this, ExtJSPackage.EXT_JS_PROJECT__FILES);
-        }
-        return files;
-    }
+		if (files == null) {
+			files = new EObjectContainmentEList<File>(File.class, this, ExtJSPackage.EXT_JS_PROJECT__FILES);
+		}
+		return files;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-        switch (featureID) {
-            case ExtJSPackage.EXT_JS_PROJECT__FILES:
-                return ((InternalEList<?>)getFiles()).basicRemove(otherEnd, msgs);
-        }
-        return super.eInverseRemove(otherEnd, featureID, msgs);
-    }
+		switch (featureID) {
+			case ExtJSPackage.EXT_JS_PROJECT__FILES:
+				return ((InternalEList<?>)getFiles()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ExtJSPackage.EXT_JS_PROJECT__NAME:
-                return getName();
-            case ExtJSPackage.EXT_JS_PROJECT__FILES:
-                return getFiles();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ExtJSPackage.EXT_JS_PROJECT__NAME:
+				return getName();
+			case ExtJSPackage.EXT_JS_PROJECT__FILES:
+				return getFiles();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ExtJSPackage.EXT_JS_PROJECT__NAME:
-                setName((String)newValue);
-                return;
-            case ExtJSPackage.EXT_JS_PROJECT__FILES:
-                getFiles().clear();
-                getFiles().addAll((Collection<? extends File>)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ExtJSPackage.EXT_JS_PROJECT__NAME:
+				setName((String)newValue);
+				return;
+			case ExtJSPackage.EXT_JS_PROJECT__FILES:
+				getFiles().clear();
+				getFiles().addAll((Collection<? extends File>)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.EXT_JS_PROJECT__NAME:
-                setName(NAME_EDEFAULT);
-                return;
-            case ExtJSPackage.EXT_JS_PROJECT__FILES:
-                getFiles().clear();
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.EXT_JS_PROJECT__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case ExtJSPackage.EXT_JS_PROJECT__FILES:
+				getFiles().clear();
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ExtJSPackage.EXT_JS_PROJECT__NAME:
-                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ExtJSPackage.EXT_JS_PROJECT__FILES:
-                return files != null && !files.isEmpty();
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ExtJSPackage.EXT_JS_PROJECT__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case ExtJSPackage.EXT_JS_PROJECT__FILES:
+				return files != null && !files.isEmpty();
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
-        result.append(name);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (name: ");
+		result.append(name);
+		result.append(')');
+		return result.toString();
+	}
 
 } //ExtJSProjectImpl

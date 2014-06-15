@@ -18,22 +18,22 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class LayoutImpl extends AliasImpl implements Layout {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected LayoutImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExtJSPackage.Literals.LAYOUT;
-    }
+		return ExtJSPackage.Literals.LAYOUT;
+	}
 
 } //LayoutImpl

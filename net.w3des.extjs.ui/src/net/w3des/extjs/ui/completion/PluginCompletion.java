@@ -32,7 +32,7 @@ public class PluginCompletion extends AliasCompletion {
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
         final IExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
 
-        for (final IExtJSFile f : project.getFiles()) {
+        for (final IExtJSFile f : project.getIndex().getFiles()) {
             for (final IAlias a : f.getAliases()) {
 
                 if (a instanceof IPlugin && a.getName().startsWith(start)) {

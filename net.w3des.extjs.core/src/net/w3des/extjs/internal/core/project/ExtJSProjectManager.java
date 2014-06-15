@@ -11,12 +11,15 @@
 package net.w3des.extjs.internal.core.project;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSProjectManager;
 import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.internal.core.project.ecore.ECoreStorageImpl;
@@ -43,10 +46,23 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
 	/** the underlying index storage */
     private IIndexStorage storage;
-
+    
+    private Map<IProject, ProjectImpl> projects = new HashMap<IProject, ProjectImpl>();
+    
 	public ExtJSProjectManager() {
     	this.storage = new ECoreStorageImpl();
     }
+	
+	private IExtJSProject convert(IExtJSIndex index) {
+		if (this.projects.containsKey(index.getProject())) {
+			final ProjectImpl result = this.projects.get(index.getProject());
+			result.updateIndex(index);
+			return result;
+		}
+		final ProjectImpl result = new ProjectImpl(index);
+		this.projects.put(index.getProject(), result);
+		return result;
+	}
 
     @Override
     public IExtJSProject createProject(final IProject project) {
@@ -56,15 +72,15 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
     @Override
     public IExtJSProject createProject(final IProject project, final boolean force) {
     	if (this.storage.hasProject(project)) {
-            return this.storage.getProject(project, false);
+            return convert(this.storage.getProject(project, false));
         }
 
         if (isExtJSProject(project)) {
-        	return this.storage.getProject(project, true);
+        	return convert(this.storage.getProject(project, true));
         }
 
         if (force) {
-        	final IExtJSProject extProject = this.storage.getProject(project, true);
+        	final IExtJSProject extProject = convert(this.storage.getProject(project, true));
             final IProgressMonitor monitor = new NullProgressMonitor();
 
             try {
@@ -115,6 +131,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
         }
 
         this.storage.removeProject(project);
+        this.projects.remove(project);
     }
 
     @Override
@@ -126,8 +143,20 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
                 event.getDelta().accept(new IResourceDeltaVisitor() {
                     @Override
                     public boolean visit(IResourceDelta delta) throws CoreException {
-                        if (delta.getResource() instanceof IFile && delta.getKind() == IResourceDelta.REMOVED) {
-                        	ExtJSProjectManager.this.storage.notifyFileRemoval((IFile) delta.getResource());
+                        if (delta.getResource() instanceof IFile) {
+                        	switch (delta.getKind()) {
+                        	case IResourceDelta.REMOVED:
+                        		ExtJSProjectManager.this.storage.notifyFileRemoval((IFile) delta.getResource());
+                        		// fall through to flush properties on deleted props file
+                        	case IResourceDelta.ADDED:
+                        	case IResourceDelta.CHANGED:
+                        		if (ProjectImpl.PROPS_PATH.equals(delta.getResource().getProjectRelativePath())) {
+                        			final ProjectImpl prj = ExtJSProjectManager.this.projects.get(delta.getResource().getProject());
+                        			if (prj != null) {
+                        				prj.readProperties();
+                        			}
+                        		}
+                			}
                         }
 
                         return true;
@@ -148,6 +177,7 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
         case IResourceChangeEvent.PRE_DELETE:
         case IResourceChangeEvent.PRE_CLOSE:
         	this.storage.removeProject(project);
+        	this.projects.remove(project);
             break;
         case IResourceChangeEvent.POST_CHANGE:
         	this.storage.updateProjectName(project);
@@ -157,7 +187,12 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
     @Override
     public IExtJSProject[] getProjects() {
-    	return this.storage.getProjects();
+    	final IExtJSIndex indices[] = this.storage.getProjects();
+    	final IExtJSProject result[] = new IExtJSProject[indices.length];
+    	for (int i = result.length - 1; i >= 0; i--) {
+    		result[i] = convert(indices[i]);
+    	}
+    	return result;
     }
 
     public void activate() {
