@@ -34,6 +34,12 @@ public interface IExtJSProject {
 	IProject getProject();
 	
 	/**
+	 * Refresh the extjs library classpath containers
+	 * @throws CoreException
+	 */
+	void refreshLibContainer() throws CoreException;
+	
+	/**
 	 * Returns the current project version
 	 * @return
 	 * @throws CoreException

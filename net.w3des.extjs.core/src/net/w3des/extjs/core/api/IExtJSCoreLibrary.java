@@ -12,6 +12,8 @@ package net.w3des.extjs.core.api;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
+
 /**
  * Special extension to extjs libraries representing the extjs SDK
  * 
@@ -22,15 +24,17 @@ public interface IExtJSCoreLibrary extends IExtJSLibrary {
 	/**
 	 * Returns the available locales
 	 * @return
+	 * @throws CoreException 
 	 */
-	Locale[] getAvailableLocales();
+	Locale[] getAvailableLocales() throws CoreException;
 	
 	/**
 	 * Returns additional sources for given locale
 	 * @param locale
 	 * @return
+	 * @throws CoreException 
 	 */
-	ILibrarySource[] getLocaleSources(Locale locale);
+	ILibrarySource[] getLocaleSources(Locale locale) throws CoreException;
 	
 	/**
 	 * Returns the major version number detected from folder/archive

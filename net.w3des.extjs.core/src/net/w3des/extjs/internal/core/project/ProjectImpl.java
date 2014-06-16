@@ -1,6 +1,13 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2013 w3des.net and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *  
+ * Contributors:
+ *      w3des.net - initial API and implementation
+ ******************************************************************************/
 package net.w3des.extjs.internal.core.project;
 
 import java.io.ByteArrayInputStream;
@@ -19,6 +26,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -27,6 +35,10 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 /**
  * Implementation of the extjs project
@@ -122,8 +134,39 @@ public class ProjectImpl implements IExtJSProject {
 		return this.projectProps.getProperty(KEY_ENVNAME);
 	}
 	
-	private void refreshLibContainer() {
-		// TODO
+	public void refreshLibContainer() throws CoreException {
+        final IJavaScriptProject jsProject = JavaScriptCore.create(this.getProject());
+        
+        final String envName = this.getEnvironmentName() == null ? ExtJSCore.getLibraryManager().getDefaultEnvName(this.getVersion()) : this.getEnvironmentName();
+        this.removeCPC(jsProject, new Path(ExtJSCore.JSCPC_ENV_ID), new NullProgressMonitor());
+        this.addCPC(jsProject, new Path(ExtJSCore.JSCPC_ENV_ID).append(envName), new NullProgressMonitor());
+        
+        this.removeCPC(jsProject, new Path(ExtJSCore.JSCPC_LIB_ID), new NullProgressMonitor());
+        for (final String name : this.getLibraryNames()) {
+        	this.addCPC(jsProject, new Path(ExtJSCore.JSCPC_LIB_ID).append(name), new NullProgressMonitor());
+        }
+	}
+
+	private void addCPC(IJavaScriptProject jsProject, IPath path, IProgressMonitor monitor) throws JavaScriptModelException {
+		final List<IIncludePathEntry> entries = Arrays.asList(jsProject.getRawIncludepath());
+		for (final IIncludePathEntry entry : entries) {
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && path.equals(entry.getPath())) {
+				return;
+			}
+		}
+		entries.add(JavaScriptCore.newContainerEntry(path));
+		jsProject.setRawIncludepath(entries.toArray(new IIncludePathEntry[entries.size()]), monitor);
+	}
+
+	private void removeCPC(IJavaScriptProject jsProject, IPath path, IProgressMonitor monitor) throws JavaScriptModelException {
+		final List<IIncludePathEntry> entries = Arrays.asList(jsProject.getRawIncludepath());
+		for (final IIncludePathEntry entry : entries) {
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && path.isPrefixOf(entry.getPath())) {
+				entries.remove(entry);
+				jsProject.setRawIncludepath(entries.toArray(new IIncludePathEntry[entries.size()]), monitor);
+				return;
+			}
+		}
 	}
 
 	@Override

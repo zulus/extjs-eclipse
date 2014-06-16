@@ -129,4 +129,15 @@
         <super type="org.eclipse.wst.jsdt.core.problem" />
         <persistent value="true"/>
     </extension>
+    <extension
+          point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+       <JsGlobalScopeContainerInitializer
+             class="net.w3des.extjs.internal.core.jscpc.EnvContainerInitializer"
+             id="net.w3des.extjs.core.EnvContainer">
+       </JsGlobalScopeContainerInitializer>
+       <JsGlobalScopeContainerInitializer
+             class="net.w3des.extjs.internal.core.jscpc.LibContainerInitializer"
+             id="net.w3des.extjs.core.LibContainer">
+       </JsGlobalScopeContainerInitializer>
+    </extension>
 </plugin>

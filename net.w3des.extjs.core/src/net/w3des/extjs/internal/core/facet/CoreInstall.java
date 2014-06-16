@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core.facet;
 
+import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.internal.core.WorkspaceHelper;
 
@@ -28,7 +29,9 @@ public class CoreInstall implements IDelegate {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-        ExtJSCore.getProjectManager().createProject(project, true);
+        
+        final IExtJSProject extjsProject = ExtJSCore.getProjectManager().createProject(project, true);
+        extjsProject.refreshLibContainer();
 
         try {
             WorkspaceHelper.refreshJavaScriptProject(JavaScriptCore.create(project), monitor);

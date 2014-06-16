@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013 w3des.net and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *  
+ * Contributors:
+ *      w3des.net - initial API and implementation
+ ******************************************************************************/
 package net.w3des.extjs.internal.core.project.ecore;
 
 import java.util.ArrayList;
@@ -14,6 +24,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.Library;
@@ -74,8 +85,11 @@ public class LibImpl implements IExtJSLibrary {
 		return result.toArray(new IProjectFacetVersion[result.size()]);
 	}
 	
-	private void refreshLibContainer() {
-		// TODO
+	private void refreshLibContainer() throws CoreException {
+		// TODO refresh only the projects that are affected
+		for (final IExtJSProject project : ExtJSCore.getProjectManager().getProjects()) {
+			project.refreshLibContainer();
+		}
 	}
 	
 	@Override

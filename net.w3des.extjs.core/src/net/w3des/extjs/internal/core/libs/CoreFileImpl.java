@@ -8,45 +8,39 @@
  * Contributors:
  *      w3des.net - initial API and implementation
  ******************************************************************************/
-package net.w3des.extjs.internal.core.project.ecore;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+package net.w3des.extjs.internal.core.libs;
 
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.core.api.LibrarySourceType;
-import net.w3des.extjs.core.model.basic.LibrarySource;
 
-public class FolderImpl implements ILibrarySource {
+import org.eclipse.core.runtime.IPath;
 
-	private LibrarySource source;
+public class CoreFileImpl implements ILibrarySource {
 
-	public FolderImpl(LibrarySource source) {
-		this.source = source;
-	}
-	
-	public LibrarySource getSource() {
-		return this.source;
+	private IPath fullPath;
+
+	public CoreFileImpl(IPath fullPath) {
+		this.fullPath = fullPath;
 	}
 
 	@Override
 	public LibrarySourceType getSourceType() {
-		return LibrarySourceType.FOLDER;
+		return LibrarySourceType.JAVASCRIPT_FILE;
 	}
 
 	@Override
 	public IPath getFullPath() {
-		return new Path(this.source.getPath());
+		return this.fullPath;
 	}
 
 	@Override
 	public String[] getExclusions() {
-		return this.source.getExclusions().toArray(new String[this.source.getExclusions().size()]);
+		return new String[0];
 	}
 
 	@Override
 	public String[] getInclusions() {
-		return this.source.getInclusions().toArray(new String[this.source.getInclusions().size()]);
+		return new String[0];
 	}
 
 }

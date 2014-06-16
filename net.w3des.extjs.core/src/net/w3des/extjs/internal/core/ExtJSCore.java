@@ -31,6 +31,9 @@ public class ExtJSCore extends Plugin {
 
     public static final String FACET_EXT = "wst.jsdt.extjs.core"; //$NON-NLS-1$
     public static final String FACET_CMD = "wst.jsdt.extjs.cmd"; //$NON-NLS-1$
+    
+    public static final String JSCPC_ENV_ID = "net.w3des.extjs.core.EnvContainer"; //$NON-NLS-1$
+    public static final String JSCPC_LIB_ID = "net.w3des.extjs.core.LibContainer"; //$NON-NLS-1$
 
     // The shared instance
     private static ExtJSCore plugin;

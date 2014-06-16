@@ -87,8 +87,9 @@ public interface IExtJSLibrary {
 	/**
 	 * Returns the library sources
 	 * @return library sources
+	 * @throws CoreException 
 	 */
-	ILibrarySource[] getSources();
+	ILibrarySource[] getSources() throws CoreException;
 	
 	/**
 	 * Removes all sources

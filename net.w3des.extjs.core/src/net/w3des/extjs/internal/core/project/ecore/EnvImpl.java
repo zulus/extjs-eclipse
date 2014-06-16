@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013 w3des.net and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *  
+ * Contributors:
+ *      w3des.net - initial API and implementation
+ ******************************************************************************/
 package net.w3des.extjs.internal.core.project.ecore;
 
 import java.io.File;
@@ -8,6 +18,7 @@ import java.util.List;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.core.model.basic.ExecutionEnvironment;
 import net.w3des.extjs.core.model.basic.LibrarySourceType;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -70,8 +81,11 @@ public class EnvImpl implements IExtJSEnvironment {
 		return result.toArray(new IProjectFacetVersion[result.size()]);
 	}
 	
-	private void refreshLibContainer() {
-		// TODO
+	private void refreshLibContainer() throws CoreException {
+		// TODO refresh only the projects that are affected
+		for (final IExtJSProject project : ExtJSCore.getProjectManager().getProjects()) {
+			project.refreshLibContainer();
+		}
 	}
 
 	@Override
@@ -112,9 +126,9 @@ public class EnvImpl implements IExtJSEnvironment {
 		if (this.env.getCoreType() == null) return null;
 		switch (this.env.getCoreType()) {
 		case FOLDER:
-			return new CoreFolderLibrary(this.env.getCorePath());
+			return new CoreFolderLibrary(this.getName(), this.env.getCorePath());
 		case ZIP_FILE:
-			return new CoreZipLibrary(this.env.getCorePath());
+			return new CoreZipLibrary(this.getName(), this.env.getCorePath());
 		default:
 			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core type"));
 		}
@@ -122,22 +136,22 @@ public class EnvImpl implements IExtJSEnvironment {
 
 	@Override
 	public void checkCoreZip(File zipFile) throws CoreException {
-		new CoreZipLibrary(zipFile.getAbsolutePath()).check();
+		new CoreZipLibrary(this.getName(), zipFile.getAbsolutePath()).check();
 	}
 
 	@Override
 	public void checkCoreZip(IFile zipFile) throws CoreException {
-		new CoreZipLibrary(zipFile.getLocation().toOSString()).check();
+		new CoreZipLibrary(this.getName(), zipFile.getLocation().toOSString()).check();
 	}
 
 	@Override
 	public void checkCoreFolder(File folder) throws CoreException {
-		new CoreFolderLibrary(folder.getAbsolutePath()).check();
+		new CoreFolderLibrary(this.getName(), folder.getAbsolutePath()).check();
 	}
 
 	@Override
 	public void checkCoreFolder(IFolder folder) throws CoreException {
-		new CoreFolderLibrary(folder.getLocation().toOSString()).check();
+		new CoreFolderLibrary(this.getName(), folder.getLocation().toOSString()).check();
 	}
 
 	@Override
