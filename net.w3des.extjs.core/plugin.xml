@@ -39,6 +39,16 @@
                 <requires facet="wst.jsdt.web" version="1.0" />
            </constraint>
         </project-facet-version>
+        <project-facet-version
+              facet="wst.jsdt.extjs.core"
+              version="5.0">
+           <constraint>
+              <requires
+                    facet="wst.jsdt.web"
+                    version="1.0">
+              </requires>
+           </constraint>
+        </project-facet-version>
 
         <project-facet id="wst.jsdt.extjs.cmd">
             <label>Sencha CMD&#174;</label>
