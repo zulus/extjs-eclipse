@@ -123,7 +123,7 @@ public class EnvImpl implements IExtJSEnvironment {
 
 	@Override
 	public IExtJSCoreLibrary getCore() throws CoreException {
-		if (this.env.getCoreType() == null) return null;
+		if (this.env.getCorePath() == null || this.env.getCorePath() == null) return null;
 		switch (this.env.getCoreType()) {
 		case FOLDER:
 			return new CoreFolderLibrary(this.getName(), this.env.getCorePath());

@@ -13,6 +13,7 @@ package net.w3des.extjs.internal.core.project;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -115,9 +116,9 @@ public class ProjectImpl implements IExtJSProject {
 				this.projectProps.store(sw, "");
 				sw.flush();
 				if (file.exists()) {
-					file.create(new ByteArrayInputStream(sw.toString().getBytes()), true, new NullProgressMonitor());
-				} else {
 					file.setContents(new ByteArrayInputStream(sw.toString().getBytes()), true, false, new NullProgressMonitor());
+				} else {
+					file.create(new ByteArrayInputStream(sw.toString().getBytes()), true, new NullProgressMonitor());
 				}
 			} catch (IOException ex) {
 				throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Problems writing extjs project properties", ex));
@@ -148,7 +149,7 @@ public class ProjectImpl implements IExtJSProject {
 	}
 
 	private void addCPC(IJavaScriptProject jsProject, IPath path, IProgressMonitor monitor) throws JavaScriptModelException {
-		final List<IIncludePathEntry> entries = Arrays.asList(jsProject.getRawIncludepath());
+		final List<IIncludePathEntry> entries = new ArrayList<IIncludePathEntry>(Arrays.asList(jsProject.getRawIncludepath()));
 		for (final IIncludePathEntry entry : entries) {
 			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && path.equals(entry.getPath())) {
 				return;
@@ -159,7 +160,7 @@ public class ProjectImpl implements IExtJSProject {
 	}
 
 	private void removeCPC(IJavaScriptProject jsProject, IPath path, IProgressMonitor monitor) throws JavaScriptModelException {
-		final List<IIncludePathEntry> entries = Arrays.asList(jsProject.getRawIncludepath());
+		final List<IIncludePathEntry> entries = new ArrayList<IIncludePathEntry>(Arrays.asList(jsProject.getRawIncludepath()));
 		for (final IIncludePathEntry entry : entries) {
 			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && path.isPrefixOf(entry.getPath())) {
 				entries.remove(entry);
@@ -198,7 +199,7 @@ public class ProjectImpl implements IExtJSProject {
 	@Override
 	public void addLibrary(String name) throws CoreException {
 		if (name == null || name.length() == 0) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "invalid name"));
-		final List<String> libs = Arrays.asList(this.getLibraryNames());
+		final List<String> libs = new ArrayList<String>(Arrays.asList(this.getLibraryNames()));
 		if (libs.contains(name)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "project already contains given library"));
 		libs.add(name);
 		this.projectProps.setProperty(KEY_LIBS, this.join(libs.toArray(new String[libs.size()]), ":"));
@@ -209,7 +210,7 @@ public class ProjectImpl implements IExtJSProject {
 	@Override
 	public void removeLibrary(String name) throws CoreException {
 		if (name == null || name.length() == 0) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "invalid name"));
-		final List<String> libs = Arrays.asList(this.getLibraryNames());
+		final List<String> libs = new ArrayList<String>(Arrays.asList(this.getLibraryNames()));
 		if (!libs.contains(name)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "project does not contain given library"));
 		libs.remove(name);
 		this.projectProps.setProperty(KEY_LIBS, this.join(libs.toArray(new String[libs.size()]), ":"));

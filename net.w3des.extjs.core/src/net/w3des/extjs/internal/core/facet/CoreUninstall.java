@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core.facet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class CoreUninstall implements IDelegate {
     }
 
 	private void removeCPC(IJavaScriptProject jsProject, IPath path, IProgressMonitor monitor) throws JavaScriptModelException {
-		final List<IIncludePathEntry> entries = Arrays.asList(jsProject.getRawIncludepath());
+		final List<IIncludePathEntry> entries = new ArrayList<IIncludePathEntry>(Arrays.asList(jsProject.getRawIncludepath()));
 		for (final IIncludePathEntry entry : entries) {
 			if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && path.isPrefixOf(entry.getPath())) {
 				entries.remove(entry);

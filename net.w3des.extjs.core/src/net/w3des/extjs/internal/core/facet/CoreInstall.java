@@ -31,6 +31,7 @@ public class CoreInstall implements IDelegate {
         }
         
         final IExtJSProject extjsProject = ExtJSCore.getProjectManager().createProject(project, true);
+        extjsProject.setEnvironmentName(ExtJSCore.getLibraryManager().getDefaultEnvName(version));
         extjsProject.refreshLibContainer();
 
         try {

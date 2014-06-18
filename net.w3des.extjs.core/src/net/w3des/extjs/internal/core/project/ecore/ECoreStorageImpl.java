@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
@@ -32,6 +33,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -62,7 +64,7 @@ public class ECoreStorageImpl implements IIndexStorage {
                         final ExtJSProject extProject = (ExtJSProject) o;
                         final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(extProject.getName());
                         try {
-                            if (project != null && ExtJSCore.getProjectManager().isExtJSProject(project)) {
+                            if (project != null && isExtJSProject(project)) {
                                 projects.put(project, extProject);
                                 final Iterator<File> iterator = extProject.getFiles().iterator();
                                 while (iterator.hasNext()) {
@@ -92,6 +94,19 @@ public class ECoreStorageImpl implements IIndexStorage {
             ExtJSCore.error(e);
         }
 	}
+
+    boolean isExtJSProject(final IProject project) {
+        try {
+            if (project.isAccessible()) {
+                return project.hasNature(ExtJSNature.NATURE_ID);
+            }
+
+            return false;
+        } catch (final CoreException e) {
+            ExtJSCore.error(e);
+            return false;
+        }
+    }
 
 	@Override
 	public boolean hasProject(IProject project) {
