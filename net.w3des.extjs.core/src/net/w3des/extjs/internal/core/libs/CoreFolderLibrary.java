@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -460,5 +461,10 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
             return result.toArray(new String[result.size()]);
         }
     }
+
+	@Override
+	public boolean isCompatible(IProjectFacetVersion version) {
+		return Arrays.asList(this.getCompatibleVersionNames()).contains(version.getVersionString());
+	}
 
 }

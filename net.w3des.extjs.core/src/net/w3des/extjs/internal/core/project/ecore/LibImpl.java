@@ -221,4 +221,9 @@ public class LibImpl implements IExtJSLibrary {
 		return new ZipImpl(source);
 	}
 
+	@Override
+	public boolean isCompatible(IProjectFacetVersion version) {
+		return this.lib.getVersions().contains(version.getVersionString());
+	}
+
 }

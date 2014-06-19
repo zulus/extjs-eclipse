@@ -150,4 +150,14 @@
              id="net.w3des.extjs.core.LibContainer">
        </JsGlobalScopeContainerInitializer>
     </extension>
+    <extension
+          id="net.w3des.extjs.core.builder.extJSBuilder"
+          name="ExtJS Builder"
+          point="org.eclipse.core.resources.builders">
+       <builder>
+          <run
+                class="net.w3des.extjs.core.builder.ExtJSBuilder">
+          </run>
+       </builder>
+    </extension>
 </plugin>

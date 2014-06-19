@@ -11,6 +11,8 @@
 package net.w3des.extjs.internal.core.validation.problem;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 
 public class ValidationProblem extends CategorizedProblem {
 
@@ -26,6 +28,9 @@ public class ValidationProblem extends CategorizedProblem {
 	private int sourceLine;
 	private ProblemSeverity severity;
 	
+	private String[] extraAttributeNames = CharOperation.NO_STRINGS;
+	private Object[] extraAttributes = DefaultProblem.EMPTY_VALUES;
+	
 	public ValidationProblem(int id, int category, ProblemSeverity severity, String message, String[] arguments, char[] fileName, int sourceStart, int sourceEnd, int lineNumber) {
 		this.id = id;
 		this.category = category;
@@ -36,6 +41,20 @@ public class ValidationProblem extends CategorizedProblem {
 		this.sourceEnd = sourceEnd;
 		this.sourceLine = lineNumber;
 		this.severity = severity;
+	}
+	
+	public ValidationProblem(int id, int category, ProblemSeverity severity, String message, String[] arguments, String[] extraAttributeNames, Object[] extraAttributes, char[] fileName, int sourceStart, int sourceEnd, int lineNumber) {
+		this.id = id;
+		this.category = category;
+		this.message = message;
+		this.arguments = arguments;
+		this.fileName = fileName;
+		this.sourceStart = sourceStart;
+		this.sourceEnd = sourceEnd;
+		this.sourceLine = lineNumber;
+		this.severity = severity;
+		this.extraAttributeNames = extraAttributeNames;
+		this.extraAttributes = extraAttributes;
 	}
 	
 	public ProblemSeverity getSeverity() {
@@ -110,6 +129,16 @@ public class ValidationProblem extends CategorizedProblem {
 	@Override
 	public String getMarkerType() {
 		return MARKER_TYPE;
+	}
+
+	@Override
+	public String[] getExtraMarkerAttributeNames() {
+		return this.extraAttributeNames;
+	}
+
+	@Override
+	public Object[] getExtraMarkerAttributeValues() {
+		return this.extraAttributes;
 	}
 
 }

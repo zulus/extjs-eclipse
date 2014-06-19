@@ -13,6 +13,7 @@ package net.w3des.extjs.internal.core.libs;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -477,5 +478,10 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
             return result.toArray(new String[result.size()]);
         }
     }
+
+	@Override
+	public boolean isCompatible(IProjectFacetVersion version) {
+		return Arrays.asList(this.getCompatibleVersionNames()).contains(version.getVersionString());
+	}
 
 }

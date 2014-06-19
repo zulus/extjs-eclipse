@@ -49,6 +49,13 @@ public interface IExtJSLibrary {
 	// *** version compatibility
 	
 	/**
+	 * Checks for version compatibility
+	 * @param version
+	 * @return
+	 */
+	boolean isCompatible(IProjectFacetVersion version);
+	
+	/**
 	 * Returns the extjs versions being compatible to this build environment; should only be used to analyze problems on {@link #getCompatibleVersions()}
 	 * @return version names (only major and minor version number, f.e. "4.1")
 	 */
