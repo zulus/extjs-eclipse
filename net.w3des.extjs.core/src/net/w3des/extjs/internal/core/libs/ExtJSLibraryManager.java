@@ -63,6 +63,20 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 
 	@Override
 	public String getDefaultEnvName(IProjectFacetVersion version) {
+		if (version == null) {
+    		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+    		IProjectFacetVersion result = null;
+    		// find latest version
+    		for (final IProjectFacetVersion version2 : facet.getVersions()) {
+    			if (result == null) {
+    				result = version2;
+    			}
+    			else if (result.compareTo(version2) < 0) {
+    				result = version2;
+    			}
+    		}
+    		return this.getDefaultEnvName(result);
+		}
 		return "core-" + version.getVersionString();
 	}
 
