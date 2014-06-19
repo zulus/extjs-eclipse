@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.ILibrarySource;
@@ -71,8 +72,11 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
     
 	private String name;
 
+	private String corePath;
+
 	public CoreZipLibrary(String name, String corePath) throws CoreException {
 		this.name = name;
+		this.corePath = corePath;
 		try {
 			this.baseUri = "jar:" + new File(corePath).toURI().toURL().toString() + "!";
 			this.zip = new ZipFile(corePath);
@@ -482,6 +486,16 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
 		return Arrays.asList(this.getCompatibleVersionNames()).contains(version.getVersionString());
+	}
+
+	@Override
+	public CoreType getCoreType() {
+		return CoreType.ZIP;
+	}
+
+	@Override
+	public String getPath() {
+		return this.corePath;
 	}
 
 }

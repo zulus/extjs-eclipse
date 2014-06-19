@@ -69,12 +69,11 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 	}
 
 	@Override
-	public IExtJSEnvironment getEnv(String name, boolean forceCreation,
-			boolean createBuiltin) {
+	public IExtJSEnvironment getEnv(String name, boolean forceCreation) {
 		if (!this.environments.containsKey(name) && forceCreation) {
 			final ExecutionEnvironment env = ExtJSFactory.eINSTANCE.createExecutionEnvironment();
 			env.setName(name);
-			env.setBuiltin(createBuiltin);
+			env.setBuiltin(false);
 			
 			environments.put(name, env);
 		}
@@ -195,6 +194,29 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 	public void notifyNameChange(Library lib, String oldName, String name) {
 		this.libraries.remove(oldName);
 		this.libraries.put(name, lib);
+	}
+
+	@Override
+	public IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion) {
+		if (!this.environments.containsKey(name)) {
+			final ExecutionEnvironment env = ExtJSFactory.eINSTANCE.createExecutionEnvironment();
+			env.setName(name);
+			env.setBuiltin(true);
+			env.getVersions().add(compatibleVersion);
+			
+			environments.put(name, env);
+		}
+		final ExecutionEnvironment env = environments.get(name);
+		return env == null ? null : new EnvImpl(this, env);
+	}
+
+	@Override
+	public void overwriteVersion(String envName, String versionString) {
+		final ExecutionEnvironment env = this.environments.get(envName);
+		if (env != null && env.isBuiltin()) {
+			env.getVersions().clear();
+			env.getVersions().add(versionString);
+		}
 	}
 
 }

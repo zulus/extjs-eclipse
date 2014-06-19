@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.w3des.extjs.core.IExtJSLibraryManager;
+import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
@@ -47,7 +48,10 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
     		for (final IProjectFacetVersion version : facet.getVersions()) {
     			final String envName = this.getDefaultEnvName(version);
     			if (!this.storage.hasEnv(envName)) {
-    				this.storage.getEnv(envName, true, true);
+    				this.storage.createBuiltinEnv(envName, version.getVersionString());
+    			}
+    			else {
+    				this.storage.overwriteVersion(envName, version.getVersionString());
     			}
     		}
     	}
@@ -82,7 +86,7 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 
 	@Override
 	public IExtJSEnvironment getEnv(String name) {
-		return this.storage.getEnv(name, false, false);
+		return this.storage.getEnv(name, false);
 	}
 
 	@Override
@@ -105,14 +109,14 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 		for (final IProjectFacetVersion version : versions) {
 			if (!version.getProjectFacet().equals(facet)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version"));
 		}
-		final IExtJSEnvironment result = this.storage.getEnv(name, true, false);
+		final IExtJSEnvironment result = this.storage.getEnv(name, true);
 		result.setCompatibleVersions(versions);
 		return result;
 	}
 
 	@Override
 	public void removeUserEnv(IExtJSEnvironment env) throws CoreException {
-		final IExtJSEnvironment result = this.storage.getEnv(env.getName(), false, false);
+		final IExtJSEnvironment result = this.storage.getEnv(env.getName(), false);
 		if (result == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Unknown environment"));
 		if (result.isBuiltin()) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Cannot remove builtin environment"));
 		this.storage.removeEnv(result.getName());
@@ -149,6 +153,25 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 		if (result == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Unknown library"));
 		if (result.isBuiltin()) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Cannot remove builtin library"));
 		this.storage.removeLibrary(result.getName());
+	}
+
+	@Override
+	public IExtJSCoreLibrary checkCore(CoreType type, String path)
+			throws CoreException {
+		IExtJSCoreLibrary lib = null;
+		switch (type) {
+		default:
+		case NONE:
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core library"));
+		case FOLDER:
+			final CoreFolderLibrary folderLib = new CoreFolderLibrary("test", path);
+			folderLib.check();
+			return folderLib;
+		case ZIP:
+			final CoreZipLibrary zipLib = new CoreZipLibrary("test", path);
+			zipLib.check();
+			return zipLib;
+		}
 	}
 
 }

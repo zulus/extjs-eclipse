@@ -185,6 +185,32 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 								null,
 								null, -1, -1, -1));
 					}
+					// check env libraries
+					for (final String libName : env.getLibraryNames()) {
+						final IExtJSLibrary lib = ExtJSCore.getLibraryManager().getLibrary(libName);
+						if (lib == null) {
+							addProblem(getProject(), new ValidationProblem(
+									ProblemIdentifier.LIB_MISSING,
+									ValidationProblem.CAT_BUILDPATH,
+									ProblemSeverity.ERROR,
+									NLS.bind("missing library {0}", new Object[]{libName}),
+									null,
+									new String[]{ProblemAttributes.KEY_LIBRARYNAME},
+									new Object[]{libName},
+									null, -1, -1, -1));
+						}
+						else if (!lib.isCompatible(prj.getVersion())) {
+							addProblem(getProject(), new ValidationProblem(
+									ProblemIdentifier.LIB_INCOMPATIBLE_VERSION,
+									ValidationProblem.CAT_BUILDPATH,
+									ProblemSeverity.ERROR,
+									NLS.bind("incompatible library {0}", new Object[]{libName}),
+									null,
+									new String[]{ProblemAttributes.KEY_LIBRARYNAME},
+									new Object[]{libName},
+									null, -1, -1, -1));
+						}
+					}
 				}
 			}
 			
@@ -196,7 +222,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 							ProblemIdentifier.LIB_MISSING,
 							ValidationProblem.CAT_BUILDPATH,
 							ProblemSeverity.ERROR,
-							NLS.bind("missing library '{0}'", new Object[]{libName}),
+							NLS.bind("missing library {0}", new Object[]{libName}),
 							null,
 							new String[]{ProblemAttributes.KEY_LIBRARYNAME},
 							new Object[]{libName},
@@ -207,7 +233,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 							ProblemIdentifier.LIB_INCOMPATIBLE_VERSION,
 							ValidationProblem.CAT_BUILDPATH,
 							ProblemSeverity.ERROR,
-							NLS.bind("incompatible library '{0}'", new Object[]{libName}),
+							NLS.bind("incompatible library {0}", new Object[]{libName}),
 							null,
 							new String[]{ProblemAttributes.KEY_LIBRARYNAME},
 							new Object[]{libName},
@@ -225,7 +251,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 								ProblemIdentifier.PRJ_INCOMPATIBLE_VERSION,
 								ValidationProblem.CAT_BUILDPATH,
 								ProblemSeverity.ERROR,
-								NLS.bind("incompatible referenced project '{0}'", new Object[]{ref.getName()}),
+								NLS.bind("incompatible referenced project {0}", new Object[]{ref.getName()}),
 								null,
 								new String[]{ProblemAttributes.KEY_PROJECTNAME},
 								new Object[]{ref.getName()},

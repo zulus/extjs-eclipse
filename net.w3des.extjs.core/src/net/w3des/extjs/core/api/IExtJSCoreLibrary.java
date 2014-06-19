@@ -22,6 +22,12 @@ import org.eclipse.core.runtime.CoreException;
 public interface IExtJSCoreLibrary extends IExtJSLibrary {
 	
 	/**
+	 * Returns the library core type
+	 * @return
+	 */
+	CoreType getCoreType();
+	
+	/**
 	 * Returns the available locales
 	 * @return
 	 * @throws CoreException 
@@ -53,5 +59,11 @@ public interface IExtJSCoreLibrary extends IExtJSLibrary {
 	 * @return
 	 */
 	int getFixVersion();
+
+	/**
+	 * The main path
+	 * @return
+	 */
+	String getPath();
 
 }

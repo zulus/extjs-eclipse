@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.core;
 
+import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
@@ -93,6 +94,15 @@ public interface IExtJSLibraryManager {
 	 * @throws CoreException thrown if the environment is invalid or builtin
 	 */
 	void removeUserEnv(IExtJSEnvironment env) throws CoreException;
+	
+	/**
+	 * Returns the extjs core library and checks for valid paths.
+	 * @param type the extjs type
+	 * @param path the path to be used
+	 * @return extjs core library
+	 * @throws CoreException thrown if the path or type is invalid
+	 */
+	IExtJSCoreLibrary checkCore(CoreType type, String path) throws CoreException;
 	
 	// user libraries
 	

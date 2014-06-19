@@ -127,4 +127,24 @@
    <extension id="net.w3des.extjs.ui.fragment" point="org.eclipse.e4.workbench.model">
       <fragment uri="model/fragment.e4xmi"></fragment>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
+            id="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
+            name="ExtJS">
+      </page>
+      <page
+            category="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
+            class="net.w3des.extjs.ui.preferences.ExtJSEnvironmentPreferencePage"
+            id="net.w3des.extjs.ui.preferences.ExtJSEnvironmentPreferencePage"
+            name="Build Environments (SDK)">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="net.w3des.extjs.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 </plugin>

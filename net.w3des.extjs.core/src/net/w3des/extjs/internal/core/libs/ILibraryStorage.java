@@ -33,7 +33,15 @@ public interface ILibraryStorage {
 	 * @param forceCreation {@code true} to create the environment if it does not exist; {@code false} to return {@code null} instead
 	 * @return the environment or {@code null} if it was not found
 	 */
-	IExtJSEnvironment getEnv(String name, boolean forceCreation, boolean createBuiltin);
+	IExtJSEnvironment getEnv(String name, boolean forceCreation);
+	
+	/**
+	 * Returns the environment; creates it on demand
+	 * @param name the environment name
+	 * @param compatibleVersion the version this env is compatible to
+	 * @return the environment or {@code null} if it was not found
+	 */
+	IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion);
 
 	/**
 	 * Destroys the index for given environment
@@ -55,6 +63,13 @@ public interface ILibraryStorage {
 	 * @return the library or {@code null} if it was not found
 	 */
 	IExtJSLibrary getLib(String name, boolean forceCreation, boolean createBuiltin);
+
+	/**
+	 * Overwrites the versions of a builtin library
+	 * @param envName
+	 * @param versionString
+	 */
+	void overwriteVersion(String envName, String versionString);
 
 	/**
 	 * Destroys the index for given library

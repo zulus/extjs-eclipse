@@ -30,7 +30,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.ui.workbench,
  org.eclipse.e4.ui.model.workbench,
  org.eclipse.e4.core.contexts,
- org.eclipse.e4.ui.services
+ org.eclipse.e4.ui.services,
+ org.eclipse.ui.workbench.texteditor;bundle-version="3.8.101"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: net.w3des.extjs.ui

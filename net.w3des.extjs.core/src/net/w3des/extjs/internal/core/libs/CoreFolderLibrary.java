@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.ILibrarySource;
@@ -465,6 +466,16 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
 		return Arrays.asList(this.getCompatibleVersionNames()).contains(version.getVersionString());
+	}
+
+	@Override
+	public CoreType getCoreType() {
+		return CoreType.FOLDER;
+	}
+
+	@Override
+	public String getPath() {
+		return this.mainFolder.getAbsolutePath();
 	}
 
 }
