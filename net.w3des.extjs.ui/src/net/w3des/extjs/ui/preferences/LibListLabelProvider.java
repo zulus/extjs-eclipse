@@ -10,37 +10,46 @@
  ******************************************************************************/
 package net.w3des.extjs.ui.preferences;
 
-import net.w3des.extjs.core.api.IExtJSEnvironment;
+import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.ui.SharedImages;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.ui.ISharedImages;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
-public class EnvListLabelProvider extends LabelProvider {
+public class LibListLabelProvider extends LabelProvider {
 	
 	private ISharedImages fSharedImages;
 	
 	
-	public EnvListLabelProvider() {
+	public LibListLabelProvider() {
 		fSharedImages= JavaScriptUI.getSharedImages();
 	}
 	
 	public String getText(Object element) {
-		if (element instanceof IEnvListElement) {
-			return ((IEnvListElement) element).getName();
+		if (element instanceof ILibListElement) {
+			return ((ILibListElement) element).getName();
 		}
 		return super.getText(element);
 	}	
 		
 	public Image getImage(Object element) {
-		if (element instanceof EnvElement) {
-			final IExtJSEnvironment environment = ((EnvElement) element).getEnvironment();
-			return (environment != null && environment.isBuiltin()) ? SharedImages.getImage(SharedImages.OBJ16.EXT) : SharedImages.getImage(SharedImages.OBJ16.CMD);
-		} else if (element instanceof EnvLibElement) {
-			return  fSharedImages.getImage(ISharedImages.IMG_OBJS_LIBRARY);
-		} else if (element instanceof EnvVersionElement) {
+		if (element instanceof LibElement) {
+			final IExtJSLibrary lib = ((LibElement) element).getLibrary();
+			return (lib != null && lib.isBuiltin()) ? SharedImages.getImage(SharedImages.OBJ16.EXT) : fSharedImages.getImage(ISharedImages.IMG_OBJS_LIBRARY);
+		} else if (element instanceof LibSourceElement) {
+			switch (((LibSourceElement) element).getType()) {
+			case JAVASCRIPT_FILE:
+				return fSharedImages.getImage(ISharedImages.IMG_OBJS_CFILE);
+			case FOLDER:
+				return PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJ_FOLDER);
+			case ZIP:
+				return fSharedImages.getImage(ISharedImages.IMG_OBJS_EXTERNAL_ARCHIVE);
+			}
+			return null;
+		} else if (element instanceof LibVersionElement) {
 			return  fSharedImages.getImage(ISharedImages.IMG_OBJS_ENUM);
 		}
 		return null;

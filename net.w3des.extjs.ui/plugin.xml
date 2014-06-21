@@ -140,11 +140,24 @@
             id="net.w3des.extjs.ui.preferences.ExtJSEnvironmentPreferencePage"
             name="Build Environments (SDK)">
       </page>
+      <page
+            category="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
+            class="net.w3des.extjs.ui.preferences.ExtJSLibraryPreferencePage"
+            id="net.w3des.extjs.ui.preferences.ExtJSLibraryPreferencePage"
+            name="Libraries">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="net.w3des.extjs.ui.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="net.w3des.extjs.ui.quickfix.MarkerResolutionGenerator"
+            markerType="net.w3des.extjs.validation.problem">
+      </markerResolutionGenerator>
    </extension>
 </plugin>
