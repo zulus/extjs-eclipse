@@ -13,6 +13,12 @@ package net.w3des.extjs.internal.core.validation.problem;
 public class ProblemAttributes {
 	
 	/**
+	 * Name of core version
+	 * @see ProblemIdentifier#ENV_MISSING_CORE
+	 */
+	public static final String KEY_CORE_VERSION = "extjs-version";
+	
+	/**
 	 * Name of the library
 	 * @see ProblemIdentifier#LIB_INCOMPATIBLE_VERSION
 	 * @see ProblemIdentifier#LIB_MISSING

@@ -123,7 +123,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 			}
 		);
 		if (problem.getExtraMarkerAttributeNames() != null && problem.getExtraMarkerAttributeNames().length > 0) {
-			marker.setAttributes(problem.getArguments(), problem.getExtraMarkerAttributeValues());
+			marker.setAttributes(problem.getExtraMarkerAttributeNames(), problem.getExtraMarkerAttributeValues());
 		}
 	}
 	
@@ -173,6 +173,8 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 								ProblemSeverity.ERROR,
 								"missing extjs core lib (sdk)",
 								null,
+								new String[]{ProblemAttributes.KEY_CORE_VERSION},
+								new Object[]{prj.getVersion().getVersionString()},
 								null, -1, -1, -1));
 					}
 					else if (!coreLib.isCompatible(prj.getVersion())) {
