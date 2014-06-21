@@ -73,6 +73,27 @@
         <action type="VERSION_CHANGE" facet="wst.jsdt.extjs.core">
             <delegate class="net.w3des.extjs.internal.core.facet.CoreInstall"></delegate>
         </action>
+        <project-facet
+              id="wst.jsdt.extjs.touch">
+           <label>
+              Sencha Touch
+           </label>
+           <description>
+              Sencha Touch core facet
+           </description>
+           <member
+                 category="wst.jsdt.extjs.category">
+           </member>
+        </project-facet>
+        <project-facet-version
+              facet="wst.jsdt.extjs.touch"
+              version="2.3">
+           <constraint>
+              <requires
+                    facet="wst.jsdt.web">
+              </requires>
+           </constraint>
+        </project-facet-version>
     </extension>
     <extension point="org.eclipse.wst.common.project.facet.core.presets">
         <static-preset id="net.w3des.extjs.core.facet.preset">
