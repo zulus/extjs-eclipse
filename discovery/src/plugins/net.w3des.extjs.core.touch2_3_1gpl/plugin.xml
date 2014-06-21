@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="net.w3des.extjs.core.runtimelib">
+      <runtime
+            facet_id="wst.jsdt.extjs.touch"
+            facet_version="2.3"
+            zip="sdk/sencha-touch-2.3.1-gpl.zip">
+      </runtime>
+   </extension>
+
+</plugin>

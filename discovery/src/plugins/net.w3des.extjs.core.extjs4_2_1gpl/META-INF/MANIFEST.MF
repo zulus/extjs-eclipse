@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Extjs4_2_1gpl
+Bundle-SymbolicName: net.w3des.extjs.core.extjs4_2_1gpl;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: net.w3des.extjs.core;bundle-version="0.1.6"

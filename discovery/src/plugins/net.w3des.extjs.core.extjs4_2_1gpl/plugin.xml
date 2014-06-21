@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="net.w3des.extjs.core.runtimelib">
+      <runtime
+            facet_id="wst.jsdt.extjs.core"
+            facet_version="4.2"
+            zip="sdk/ext-4.2.1-gpl.zip">
+      </runtime>
+   </extension>
+
+</plugin>

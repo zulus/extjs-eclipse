@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2013 w3des.net and others.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+   
+  Contributors:
+       w3des.net - initial API and implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>net.w3des.extjs-discovery</artifactId>
+        <groupId>net.w3des</groupId>
+        <version>0.1.6-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>net.w3des.extjs.core.extjs5_0_0gpl</artifactId>
+    <packaging>eclipse-plugin</packaging>
+    <name>net.w3des.extjs :: extjs 5.0.0</name>
+    <description>net.w3des.extjs SDK ExtJS 5.0.0</description>
+    
+    <build>
+    	<plugins>
+    		<plugin>
+			    <groupId>org.codehaus.mojo</groupId>
+			    <artifactId>wagon-maven-plugin</artifactId>
+			    <version>1.0-beta-3</version>
+			    <executions>
+			        <execution>
+			            <id>download-extjs</id>
+			            <phase>process-resources</phase>
+			            <goals>
+			                <goal>download-single</goal>
+			            </goals>
+			            <configuration>
+			                <url>http://cdn.sencha.io</url>
+			                <fromFile>ext/gpl/ext-5.0.0-gpl.zip</fromFile>
+			                <toDir>${project.build.directory}/sdk</toDir>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
+		</plugins>
+    </build>
+</project>

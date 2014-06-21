@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.mylyn.discovery.core.connectorDiscovery">
+    <connectorCategory
+          description="Sencha ExtJS Runtime from sencha.com (GPL)"
+          id="net.w3des.extjs.core.discovery.extjs-runtime"
+          name="Sencha.com"
+          relevance="50">
+    </connectorCategory>
+    <connectorCategory
+          description="Sencha Touch Runtime from sencha.com (GPL)"
+          id="net.w3des.extjs.core.discovery.touch-runtime"
+          name="Sencha.com"
+          relevance="50">
+    </connectorCategory>
+    
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_0_7gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.0"
+          license="GPL 3.0"
+          name="ExtJS 4.0.7 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_1_0gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.1"
+          license="GPL 3.0"
+          name="ExtJS 4.1.0 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_1_1gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.1"
+          license="GPL 3.0"
+          name="ExtJS 4.1.1 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_1_1agpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.1"
+          license="GPL 3.0"
+          name="ExtJS 4.1.1a gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_2_0gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.2"
+          license="GPL 3.0"
+          name="ExtJS 4.2.0 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext4_2_1gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-4.2"
+          license="GPL 3.0"
+          name="ExtJS 4.2.1 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.extjs-runtime"
+          id="net.w3des.extjs.core.ext5_0_0gpl.feature.feature.group"
+          kind="extjs-sdk,extjs-sdk-5.0"
+          license="GPL 3.0"
+          name="ExtJS 5.0.0 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.touch-runtime"
+          id="net.w3des.extjs.core.touch2_3_0gpl.feature.feature.group"
+          kind="sencha-touch-sdk,sencha-touch-sdk-2.3"
+          license="GPL 3.0"
+          name="Sencha Touch 2.3.0 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.touch-runtime"
+          id="net.w3des.extjs.core.touch2_3_1gpl.feature.feature.group"
+          kind="sencha-touch-sdk,sencha-touch-sdk-2.3"
+          license="GPL 3.0"
+          name="Sencha Touch 2.3.1 gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+    <connectorDescriptor
+          categoryId="net.w3des.extjs.core.discovery.touch-runtime"
+          id="net.w3des.extjs.core.touch2_3_1agpl.feature.feature.group"
+          kind="sencha-touch-sdk,sencha-touch-sdk-2.3"
+          license="GPL 3.0"
+          name="Sencha Touch 2.3.1a gpl"
+          provider="sencha.com"
+          siteUrl="http://dl.bintray.com/mepeisen/extjs-eclipse/">
+    </connectorDescriptor>
+	</extension>
+</plugin>
