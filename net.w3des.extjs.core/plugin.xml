@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="net.w3des.extjs.core.runtimelib" name="ExtJS SDK" schema="schema/net.w3des.extjs.core.runtimelib.exsd"/>
     <!-- inference extjs class -->
     <extension
         point="org.eclipse.wst.jsdt.core.inferrenceSupport"
