@@ -73,8 +73,6 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
 	        super.doInfer();
     	} finally {
     		file = null;
-    		inferredGlobal = null;
-    		inferenceProvider = null;
     	}
         //inferredGlobal = null;
     }
