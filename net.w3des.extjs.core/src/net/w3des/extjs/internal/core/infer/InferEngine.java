@@ -61,17 +61,21 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
  */
 @SuppressWarnings("restriction")
 public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
-    private final static MethodDeclaration emptyDeclaration = new MethodDeclaration(null);
     private final static String contextFieldName = "currentContext"; //$NON-NLS-1$
     private final static String currentTypeFieldName = "currentType"; //$NON-NLS-1$
     private IExtJSFile file;
     
     @Override
     public void doInfer() {
-        file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
-        file.cleanAliases();
-        super.doInfer();
-        file = null;
+    	try {
+	        file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
+	        file.cleanAliases();
+	        super.doInfer();
+    	} finally {
+    		file = null;
+    		inferredGlobal = null;
+    		inferenceProvider = null;
+    	}
         //inferredGlobal = null;
     }
 
@@ -720,8 +724,8 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
         if (singleton) {
             isSingleton(newType);
         }
-        if (!singleton && !hasConstructor && newType.findMethod(newType.getName(), emptyDeclaration) == null) {
-            newType.addConstructorMethod(newType.getName(), emptyDeclaration, newType.getNameStart());
+        if (!singleton && !hasConstructor && newType.findMethod(newType.getName(), new MethodDeclaration(null)) == null) {
+            newType.addConstructorMethod(newType.getName(), new MethodDeclaration(null), newType.getNameStart());
         }
         if (typeParent != null && !CharOperation.equals(newType.getName(), Constants.BASE_CLASS_NAME.asChar) && !newType.inferenceStyle.equals(Constants.ATTR_OVERRIDE.asString)) {
         	InferredType addType = addType(typeParent);
