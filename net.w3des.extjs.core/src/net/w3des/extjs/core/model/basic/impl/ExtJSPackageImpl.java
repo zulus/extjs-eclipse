@@ -513,6 +513,15 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getExecutionEnvironment_Facet() {
+		return (EAttribute)executionEnvironmentEClass.getEStructuralFeatures().get(6);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getLibrary() {
 		return libraryEClass;
 	}
@@ -551,6 +560,15 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 	 */
 	public EReference getLibrary_Sources() {
 		return (EReference)libraryEClass.getEStructuralFeatures().get(3);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLibrary_SenchaTouchVersions() {
+		return (EAttribute)libraryEClass.getEStructuralFeatures().get(4);
 	}
 
 				/**
@@ -688,12 +706,14 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 		createEAttribute(executionEnvironmentEClass, EXECUTION_ENVIRONMENT__CORE_PATH);
 		createEAttribute(executionEnvironmentEClass, EXECUTION_ENVIRONMENT__CORE_TYPE);
 		createEAttribute(executionEnvironmentEClass, EXECUTION_ENVIRONMENT__LIBRARIES);
+		createEAttribute(executionEnvironmentEClass, EXECUTION_ENVIRONMENT__FACET);
 
 		libraryEClass = createEClass(LIBRARY);
 		createEAttribute(libraryEClass, LIBRARY__NAME);
 		createEAttribute(libraryEClass, LIBRARY__BUILTIN);
 		createEAttribute(libraryEClass, LIBRARY__VERSIONS);
 		createEReference(libraryEClass, LIBRARY__SOURCES);
+		createEAttribute(libraryEClass, LIBRARY__SENCHA_TOUCH_VERSIONS);
 
 		librarySourceEClass = createEClass(LIBRARY_SOURCE);
 		createEAttribute(librarySourceEClass, LIBRARY_SOURCE__TYPE);
@@ -794,12 +814,14 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 		initEAttribute(getExecutionEnvironment_CorePath(), ecorePackage.getEString(), "corePath", null, 0, 1, ExecutionEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExecutionEnvironment_CoreType(), this.getLibrarySourceType(), "coreType", null, 0, 1, ExecutionEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExecutionEnvironment_Libraries(), ecorePackage.getEString(), "libraries", null, 0, -1, ExecutionEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getExecutionEnvironment_Facet(), ecorePackage.getEString(), "facet", null, 0, 1, ExecutionEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(libraryEClass, Library.class, "Library", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLibrary_Name(), ecorePackage.getEString(), "name", null, 0, 1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLibrary_Builtin(), ecorePackage.getEBoolean(), "builtin", null, 0, 1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLibrary_Versions(), ecorePackage.getEString(), "versions", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getLibrary_Sources(), this.getLibrarySource(), null, "sources", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLibrary_SenchaTouchVersions(), ecorePackage.getEString(), "senchaTouchVersions", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(librarySourceEClass, LibrarySource.class, "LibrarySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLibrarySource_Type(), this.getLibrarySourceType(), "type", null, 0, 1, LibrarySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

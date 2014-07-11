@@ -13,6 +13,7 @@ package net.w3des.extjs.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.common.DialogField;
@@ -62,7 +63,7 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 	
 	private List<Object> selectedVersions = new ArrayList<Object>();
 
-	public EnvDialog(Shell parent, List<Object> existingLibraries, EnvElement env) {
+	public EnvDialog(Shell parent, List<Object> existingLibraries, EnvElement env, IProjectFacet facet) {
 		super(parent);
 		setTitle("New ExtJS execution environment");
 		
@@ -73,7 +74,6 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 		fNameField.setLabelText("Name"); 
 		
 		fVersionsField = new ListDialogField(new VersionAdapter(), new String[]{}, new VersionLabelProvider());
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
 		this.fVersionsField.setElements(facet.getVersions());
 		this.fVersionsField.setLabelText("Versions");
 		fVersionsField.setDialogFieldListener(this);
@@ -105,7 +105,7 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 			final List<IProjectFacetVersion> selection = new ArrayList<IProjectFacetVersion>();
 			for (final Object v : env.getChildren()) {
 				if (v instanceof EnvVersionElement) {
-					selection.add(facet.getVersion(v.toString()));
+					selection.add(facet.getVersion(v.toString().split("/")[1]));
 				}
 			}
 			fVersionsField.selectElements(new StructuredSelection(selection));
@@ -215,7 +215,8 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 	public String[] getSelectedVersions() {
 		final List<String> versions = new ArrayList<String>();
 		for (final Object sel : this.selectedVersions) {
-			versions.add(((IProjectFacetVersion) sel).getVersionString());
+			final IProjectFacetVersion fv = (IProjectFacetVersion) sel;
+			versions.add((fv.getProjectFacet().equals(ExtJSNature.getExtjsFacet()) ? "extjs/" : "touch/") + fv.getVersionString());
 		}
 		return versions.toArray(new String[versions.size()]);
 	}

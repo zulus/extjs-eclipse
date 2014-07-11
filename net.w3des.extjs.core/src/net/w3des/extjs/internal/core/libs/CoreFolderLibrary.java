@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSIndex;
@@ -32,7 +33,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
-import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 public class CoreFolderLibrary implements IExtJSCoreLibrary {
     
@@ -103,15 +103,17 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 	}
 
 	@Override
-	public String[] getCompatibleVersionNames() {
-		return new String[]{this.handler.getLibraryVersion()};
+	public String[] getCompatibleVersionNames(IProjectFacet facet) {
+		if (facet.equals(ExtJSNature.getExtjsFacet())) {
+			return new String[]{this.handler.getLibraryVersion()};
+		}
+		return new String[0];
 	}
 
 	@Override
-	public IProjectFacetVersion[] getCompatibleVersions() throws CoreException {
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+	public IProjectFacetVersion[] getCompatibleVersions(IProjectFacet facet) throws CoreException {
 		final List<IProjectFacetVersion> result = new ArrayList<IProjectFacetVersion>();
-		for (final String version : this.getCompatibleVersionNames()) {
+		for (final String version : this.getCompatibleVersionNames(facet)) {
 			final IProjectFacetVersion v = facet.getVersion(version);
 			if (v == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
 			result.add(v);
@@ -132,7 +134,7 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 	}
 
 	@Override
-	public void setCompatibleVersions(IProjectFacetVersion[] versions)
+	public void setCompatibleVersions(IProjectFacet facet, IProjectFacetVersion[] versions)
 			throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Cannot change builtin library"));
 	}
@@ -465,7 +467,7 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
-		return Arrays.asList(this.getCompatibleVersionNames()).contains(version.getVersionString());
+		return Arrays.asList(this.getCompatibleVersionNames(version.getProjectFacet())).contains(version.getVersionString());
 	}
 
 	@Override

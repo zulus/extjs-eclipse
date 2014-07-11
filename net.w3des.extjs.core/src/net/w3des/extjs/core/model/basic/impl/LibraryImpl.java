@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibraryImpl#isBuiltin <em>Builtin</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibraryImpl#getVersions <em>Versions</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibraryImpl#getSources <em>Sources</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibraryImpl#getSenchaTouchVersions <em>Sencha Touch Versions</em>}</li>
  * </ul>
  * </p>
  *
@@ -99,6 +100,16 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 	 * @ordered
 	 */
 	protected EList<LibrarySource> sources;
+
+	/**
+	 * The cached value of the '{@link #getSenchaTouchVersions() <em>Sencha Touch Versions</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSenchaTouchVersions()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> senchaTouchVersions;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -190,6 +201,18 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<String> getSenchaTouchVersions() {
+		if (senchaTouchVersions == null) {
+			senchaTouchVersions = new EDataTypeUniqueEList<String>(String.class, this, ExtJSPackage.LIBRARY__SENCHA_TOUCH_VERSIONS);
+		}
+		return senchaTouchVersions;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -215,6 +238,8 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 				return getVersions();
 			case ExtJSPackage.LIBRARY__SOURCES:
 				return getSources();
+			case ExtJSPackage.LIBRARY__SENCHA_TOUCH_VERSIONS:
+				return getSenchaTouchVersions();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -242,6 +267,10 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 				getSources().clear();
 				getSources().addAll((Collection<? extends LibrarySource>)newValue);
 				return;
+			case ExtJSPackage.LIBRARY__SENCHA_TOUCH_VERSIONS:
+				getSenchaTouchVersions().clear();
+				getSenchaTouchVersions().addAll((Collection<? extends String>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -266,6 +295,9 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 			case ExtJSPackage.LIBRARY__SOURCES:
 				getSources().clear();
 				return;
+			case ExtJSPackage.LIBRARY__SENCHA_TOUCH_VERSIONS:
+				getSenchaTouchVersions().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -286,6 +318,8 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 				return versions != null && !versions.isEmpty();
 			case ExtJSPackage.LIBRARY__SOURCES:
 				return sources != null && !sources.isEmpty();
+			case ExtJSPackage.LIBRARY__SENCHA_TOUCH_VERSIONS:
+				return senchaTouchVersions != null && !senchaTouchVersions.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -306,6 +340,8 @@ public class LibraryImpl extends MinimalEObjectImpl.Container implements Library
 		result.append(builtin);
 		result.append(", versions: ");
 		result.append(versions);
+		result.append(", senchaTouchVersions: ");
+		result.append(senchaTouchVersions);
 		result.append(')');
 		return result.toString();
 	}

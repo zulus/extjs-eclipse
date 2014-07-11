@@ -13,11 +13,13 @@ package net.w3des.extjs.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 
 /**
  * @author mepeisen
@@ -52,8 +54,11 @@ public class EnvElement implements IEnvListElement {
 		for (final String libName : env.getLibraryNames()) {
 			this.children.add(new EnvLibElement(this, libName, false));
 		}
-		for (final String versionName : env.getCompatibleVersionNames()) {
-			this.children.add(new EnvVersionElement(this, versionName, false));
+		for (final String versionName : env.getCompatibleVersionNames(ExtJSNature.getExtjsFacet())) {
+			this.children.add(new EnvVersionElement(this, "extjs/" + versionName, false));
+		}
+		for (final String versionName : env.getCompatibleVersionNames(ExtJSNature.getSenchaTouchFacet())) {
+			this.children.add(new EnvVersionElement(this, "touch/" + versionName, false));
 		}
 		this.allChildren.addAll(this.children);
 		try {
@@ -203,6 +208,21 @@ public class EnvElement implements IEnvListElement {
 				this.children.add(v);
 			}
 		}
+	}
+
+	public boolean isOfType(IProjectFacet facet) {
+		if (this.env != null) {
+			return this.env.isOfType(facet);
+		}
+		final String prefix = facet.equals(ExtJSNature.getExtjsFacet()) ? "extjs/" : "touch/";
+		for (final Object child : this.getChildren()) {
+			if (child instanceof EnvVersionElement) {
+				if (((EnvVersionElement) child).getName().startsWith(prefix)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link net.w3des.extjs.core.model.basic.Library#isBuiltin <em>Builtin</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.Library#getVersions <em>Versions</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.Library#getSources <em>Sources</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.Library#getSenchaTouchVersions <em>Sencha Touch Versions</em>}</li>
  * </ul>
  * </p>
  *
@@ -109,5 +110,21 @@ public interface Library extends EObject {
 	 * @generated
 	 */
 	EList<LibrarySource> getSources();
+
+	/**
+	 * Returns the value of the '<em><b>Sencha Touch Versions</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.String}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Sencha Touch Versions</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Sencha Touch Versions</em>' attribute list.
+	 * @see net.w3des.extjs.core.model.basic.ExtJSPackage#getLibrary_SenchaTouchVersions()
+	 * @model
+	 * @generated
+	 */
+	EList<String> getSenchaTouchVersions();
 
 } // Library

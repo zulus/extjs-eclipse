@@ -34,20 +34,35 @@ public interface IExtJSProject {
 	IProject getProject();
 	
 	/**
+	 * Checks if the project is of given type
+	 * @param type
+	 * @return
+	 * @throws CoreException 
+	 */
+	boolean isOfType(ProjectType type) throws CoreException;
+	
+	/**
 	 * Refresh the extjs library classpath containers
 	 * @throws CoreException
 	 */
 	void refreshLibContainer() throws CoreException;
 	
 	/**
-	 * Returns the current project version
+	 * Returns the current project version of extjs facet
 	 * @return
 	 * @throws CoreException
 	 */
 	IProjectFacetVersion getVersion() throws CoreException;
 	
 	/**
-	 * Changes the project version
+	 * Returns the current project version of touch facet
+	 * @return
+	 * @throws CoreException
+	 */
+	IProjectFacetVersion getTouchVersion() throws CoreException;
+	
+	/**
+	 * Changes the project version (either extjs or touch facet)
 	 * @param version
 	 * @throws CoreException
 	 */

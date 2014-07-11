@@ -197,11 +197,12 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 	}
 
 	@Override
-	public IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion) {
+	public IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion, String facet) {
 		if (!this.environments.containsKey(name)) {
 			final ExecutionEnvironment env = ExtJSFactory.eINSTANCE.createExecutionEnvironment();
 			env.setName(name);
 			env.setBuiltin(true);
+			env.setFacet(facet);
 			env.getVersions().add(compatibleVersion);
 			
 			environments.put(name, env);
@@ -211,9 +212,10 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 	}
 
 	@Override
-	public void overwriteVersion(String envName, String versionString) {
+	public void overwriteVersion(String envName, String versionString, String facet) {
 		final ExecutionEnvironment env = this.environments.get(envName);
 		if (env != null && env.isBuiltin()) {
+			env.setFacet(facet);
 			env.getVersions().clear();
 			env.getVersions().add(versionString);
 		}

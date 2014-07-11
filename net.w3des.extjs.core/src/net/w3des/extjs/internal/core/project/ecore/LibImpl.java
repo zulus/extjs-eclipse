@@ -22,6 +22,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.IExtJSProject;
@@ -69,15 +70,20 @@ public class LibImpl implements IExtJSLibrary {
 	}
 
 	@Override
-	public String[] getCompatibleVersionNames() {
-		return this.lib.getVersions().toArray(new String[this.lib.getVersions().size()]);
+	public String[] getCompatibleVersionNames(IProjectFacet facet) {
+		if (facet.equals(ExtJSNature.getExtjsFacet())) {
+			return this.lib.getVersions().toArray(new String[this.lib.getVersions().size()]);
+		}
+		if (facet.equals(ExtJSNature.getExtjsFacet())) {
+			return this.lib.getSenchaTouchVersions().toArray(new String[this.lib.getSenchaTouchVersions().size()]);
+		}
+		return new String[0];
 	}
 
 	@Override
-	public IProjectFacetVersion[] getCompatibleVersions() throws CoreException {
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+	public IProjectFacetVersion[] getCompatibleVersions(IProjectFacet facet) throws CoreException {
 		final List<IProjectFacetVersion> result = new ArrayList<IProjectFacetVersion>();
-		for (final String version : this.getCompatibleVersionNames()) {
+		for (final String version : this.getCompatibleVersionNames(facet)) {
 			final IProjectFacetVersion v = facet.getVersion(version);
 			if (v == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
 			result.add(v);
@@ -95,33 +101,50 @@ public class LibImpl implements IExtJSLibrary {
 	@Override
 	public void addCompatibleVersion(IProjectFacetVersion version)
 			throws CoreException {
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
-		if (!facet.equals(version.getProjectFacet())) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
-		final List<IProjectFacetVersion> versions = Arrays.asList(this.getCompatibleVersions());
+		final IProjectFacet facet1 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		final IProjectFacet facet2 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+		if (!facet1.equals(version.getProjectFacet()) && !facet2.equals(version.getProjectFacet())) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
+		final List<IProjectFacetVersion> versions = Arrays.asList(this.getCompatibleVersions(version.getProjectFacet()));
 		if (versions.contains(version)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Version already added"));
-		this.lib.getVersions().add(version.getVersionString());
+		if (facet1.equals(version.getProjectFacet())) {
+			this.lib.getVersions().add(version.getVersionString());
+		}
+		else if (facet2.equals(version.getProjectFacet())) {
+			this.lib.getSenchaTouchVersions().add(version.getVersionString());
+		}
 		this.refreshLibContainer();
 	}
 
 	@Override
 	public void removeCompatibleVersion(IProjectFacetVersion version)
 			throws CoreException {
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
-		if (!facet.equals(version.getProjectFacet())) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
-		final List<IProjectFacetVersion> versions = Arrays.asList(this.getCompatibleVersions());
+		final IProjectFacet facet1 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		final IProjectFacet facet2 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		if (!facet1.equals(version.getProjectFacet()) && !facet2.equals(version.getProjectFacet())) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
+		final List<IProjectFacetVersion> versions = Arrays.asList(this.getCompatibleVersions(version.getProjectFacet()));
 		if (!versions.contains(version)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Version not in list"));
-		this.lib.getVersions().remove(version.getVersionString());
+		if (facet1.equals(version.getProjectFacet())) {
+			this.lib.getVersions().remove(version.getVersionString());
+		}
+		else if (facet2.equals(version.getProjectFacet())) {
+			this.lib.getSenchaTouchVersions().remove(version.getVersionString());
+		}
 		this.refreshLibContainer();
 	}
 
 	@Override
-	public void setCompatibleVersions(IProjectFacetVersion[] versions)
+	public void setCompatibleVersions(IProjectFacet facet, IProjectFacetVersion[] versions)
 			throws CoreException {
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
 		if (versions == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
 		for (final IProjectFacetVersion version : versions) if (!version.getProjectFacet().equals(facet)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid version detected"));
-		this.lib.getVersions().clear();
-		for (final IProjectFacetVersion version : versions) this.lib.getVersions().add(version.getVersionString());
+		if (facet.equals(ExtJSNature.getExtjsFacet())) {
+			this.lib.getVersions().clear();
+			for (final IProjectFacetVersion version : versions) this.lib.getVersions().add(version.getVersionString());
+		}
+		else if (facet.equals(ExtJSNature.getSenchaTouchFacet())) {
+			this.lib.getSenchaTouchVersions().clear();
+			for (final IProjectFacetVersion version : versions) this.lib.getSenchaTouchVersions().add(version.getVersionString());
+		}
 		this.refreshLibContainer();
 	}
 

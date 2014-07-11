@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getCorePath <em>Core Path</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getCoreType <em>Core Type</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getLibraries <em>Libraries</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getFacet <em>Facet</em>}</li>
  * </ul>
  * </p>
  *
@@ -166,5 +167,31 @@ public interface ExecutionEnvironment extends EObject {
 	 * @generated
 	 */
 	EList<String> getLibraries();
+
+	/**
+	 * Returns the value of the '<em><b>Facet</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Facet</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Facet</em>' attribute.
+	 * @see #setFacet(String)
+	 * @see net.w3des.extjs.core.model.basic.ExtJSPackage#getExecutionEnvironment_Facet()
+	 * @model
+	 * @generated
+	 */
+	String getFacet();
+
+	/**
+	 * Sets the value of the '{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getFacet <em>Facet</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Facet</em>' attribute.
+	 * @see #getFacet()
+	 * @generated
+	 */
+	void setFacet(String value);
 
 } // ExecutionEnvironment

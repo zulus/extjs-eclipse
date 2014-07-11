@@ -13,6 +13,7 @@ package net.w3des.extjs.internal.core.jscpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
@@ -94,7 +95,14 @@ public class EnvContainerInitializer extends JsGlobalScopeContainerInitializer {
             if (env != null) {
             	try {
 	            	if (env.getCore() == null) {
-	            		for (final IProjectFacetVersion version : env.getCompatibleVersions()) {
+	            		for (final IProjectFacetVersion version : env.getCompatibleVersions(ExtJSNature.getExtjsFacet())) {
+	            			final IExtJSCoreLibrary coreLib = manager.getDefaultCoreLib(version);
+	            			if (coreLib != null) {
+	            				addLib(result, coreLib);
+	            				break;
+	            			}
+	            		}
+	            		for (final IProjectFacetVersion version : env.getCompatibleVersions(ExtJSNature.getSenchaTouchFacet())) {
 	            			final IExtJSCoreLibrary coreLib = manager.getDefaultCoreLib(version);
 	            			if (coreLib != null) {
 	            				addLib(result, coreLib);

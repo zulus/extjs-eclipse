@@ -30,6 +30,7 @@ public class ExtJSCore extends Plugin {
     public static final String PLUGIN_ID = "net.w3des.extjs.core"; //$NON-NLS-1$
 
     public static final String FACET_EXT = "wst.jsdt.extjs.core"; //$NON-NLS-1$
+    public static final String FACET_TOUCH = "wst.jsdt.extjs.touch"; //$NON-NLS-1$
     public static final String FACET_CMD = "wst.jsdt.extjs.cmd"; //$NON-NLS-1$
     
     public static final String JSCPC_ENV_ID = "net.w3des.extjs.core.EnvContainer"; //$NON-NLS-1$

@@ -13,6 +13,7 @@ package net.w3des.extjs.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.core.api.LibrarySourceType;
@@ -53,8 +54,11 @@ public class LibElement implements ILibListElement {
 		catch (CoreException ex) {
 			ExtJSCore.error(ex);
 		}
-		for (final String versionName : lib.getCompatibleVersionNames()) {
-			this.children.add(new LibVersionElement(this, versionName, false));
+		for (final String versionName : lib.getCompatibleVersionNames(ExtJSNature.getExtjsFacet())) {
+			this.children.add(new LibVersionElement(this, "extjs/" + versionName, false));
+		}
+		for (final String versionName : lib.getCompatibleVersionNames(ExtJSNature.getSenchaTouchFacet())) {
+			this.children.add(new LibVersionElement(this, "touch/" + versionName, false));
 		}
 		this.allChildren.addAll(this.children);
 	}

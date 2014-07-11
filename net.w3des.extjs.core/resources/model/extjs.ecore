@@ -55,6 +55,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="coreType" eType="#//LibrarySourceType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="libraries" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="facet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Library">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -63,6 +64,8 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sources" upperBound="-1"
         eType="#//LibrarySource" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="senchaTouchVersions" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LibrarySource">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//LibrarySourceType"/>

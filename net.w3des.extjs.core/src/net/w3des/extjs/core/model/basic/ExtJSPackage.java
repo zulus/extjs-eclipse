@@ -791,13 +791,22 @@ public interface ExtJSPackage extends EPackage {
 	int EXECUTION_ENVIRONMENT__LIBRARIES = 5;
 
 				/**
+	 * The feature id for the '<em><b>Facet</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTION_ENVIRONMENT__FACET = 6;
+
+				/**
 	 * The number of structural features of the '<em>Execution Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTION_ENVIRONMENT_FEATURE_COUNT = 6;
+	int EXECUTION_ENVIRONMENT_FEATURE_COUNT = 7;
 
 				/**
 	 * The number of operations of the '<em>Execution Environment</em>' class.
@@ -855,13 +864,22 @@ public interface ExtJSPackage extends EPackage {
 	int LIBRARY__SOURCES = 3;
 
 				/**
+	 * The feature id for the '<em><b>Sencha Touch Versions</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIBRARY__SENCHA_TOUCH_VERSIONS = 4;
+
+				/**
 	 * The number of structural features of the '<em>Library</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_FEATURE_COUNT = 4;
+	int LIBRARY_FEATURE_COUNT = 5;
 
 				/**
 	 * The number of operations of the '<em>Library</em>' class.
@@ -1318,6 +1336,17 @@ public interface ExtJSPackage extends EPackage {
 	EAttribute getExecutionEnvironment_Libraries();
 
 				/**
+	 * Returns the meta object for the attribute '{@link net.w3des.extjs.core.model.basic.ExecutionEnvironment#getFacet <em>Facet</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Facet</em>'.
+	 * @see net.w3des.extjs.core.model.basic.ExecutionEnvironment#getFacet()
+	 * @see #getExecutionEnvironment()
+	 * @generated
+	 */
+	EAttribute getExecutionEnvironment_Facet();
+
+				/**
 	 * Returns the meta object for class '{@link net.w3des.extjs.core.model.basic.Library <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1370,6 +1399,17 @@ public interface ExtJSPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getLibrary_Sources();
+
+				/**
+	 * Returns the meta object for the attribute list '{@link net.w3des.extjs.core.model.basic.Library#getSenchaTouchVersions <em>Sencha Touch Versions</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Sencha Touch Versions</em>'.
+	 * @see net.w3des.extjs.core.model.basic.Library#getSenchaTouchVersions()
+	 * @see #getLibrary()
+	 * @generated
+	 */
+	EAttribute getLibrary_SenchaTouchVersions();
 
 				/**
 	 * Returns the meta object for class '{@link net.w3des.extjs.core.model.basic.LibrarySource <em>Library Source</em>}'.
@@ -1763,6 +1803,14 @@ public interface ExtJSPackage extends EPackage {
 		EAttribute EXECUTION_ENVIRONMENT__LIBRARIES = eINSTANCE.getExecutionEnvironment_Libraries();
 
 								/**
+		 * The meta object literal for the '<em><b>Facet</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EXECUTION_ENVIRONMENT__FACET = eINSTANCE.getExecutionEnvironment_Facet();
+
+								/**
 		 * The meta object literal for the '{@link net.w3des.extjs.core.model.basic.impl.LibraryImpl <em>Library</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1803,6 +1851,14 @@ public interface ExtJSPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LIBRARY__SOURCES = eINSTANCE.getLibrary_Sources();
+
+								/**
+		 * The meta object literal for the '<em><b>Sencha Touch Versions</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LIBRARY__SENCHA_TOUCH_VERSIONS = eINSTANCE.getLibrary_SenchaTouchVersions();
 
 								/**
 		 * The meta object literal for the '{@link net.w3des.extjs.core.model.basic.impl.LibrarySourceImpl <em>Library Source</em>}' class.

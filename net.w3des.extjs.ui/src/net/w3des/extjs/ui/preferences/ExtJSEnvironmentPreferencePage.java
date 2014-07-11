@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -50,11 +51,12 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 
 	private TreeListDialogField fEnvList;
 	
-	private static final int IDX_NEW = 0;
-	private static final int IDX_EDIT = 1;
-	private static final int IDX_ADD_VERSION = 2;
-	private static final int IDX_ADD_LIBRARY = 3;
-	private static final int IDX_REMOVE = 4;
+	private static final int IDX_NEW_EXTJS = 0;
+	private static final int IDX_NEW_TOUCH = 1;
+	private static final int IDX_EDIT = 2;
+	private static final int IDX_ADD_VERSION = 3;
+	private static final int IDX_ADD_LIBRARY = 4;
+	private static final int IDX_REMOVE = 5;
 	
 	private List<EnvElement> removedEnvironments = new ArrayList<EnvElement>();
 
@@ -65,7 +67,8 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 		
 		EnvAdapter adapter= new EnvAdapter();
 		String[] buttonLabels= new String[] {
-				"new", 
+				"new extjs", 
+				"new sencha touch",
 				"edit", 
 				"add version", 
 				"add library", 
@@ -155,8 +158,10 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 	}
 	
 	protected void doCustomButtonPressed(TreeListDialogField field, int index) {
-		if (index == IDX_NEW) {
-			doAddNew();
+		if (index == IDX_NEW_EXTJS) {
+			doAddNew(ExtJSNature.getExtjsFacet());
+		} else if (index == IDX_NEW_TOUCH) {
+			doAddNew(ExtJSNature.getSenchaTouchFacet());
 		} else if (index == IDX_ADD_VERSION) {
 			doAddVersion(field.getSelectedElements());
 		} else if (index == IDX_ADD_LIBRARY) {
@@ -194,8 +199,8 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 		}
 	}
 	
-	private void doAddNew() {
-		final EnvDialog dialog = new EnvDialog(getShell(), this.fEnvList.getElements(), null);
+	private void doAddNew(IProjectFacet facet) {
+		final EnvDialog dialog = new EnvDialog(getShell(), this.fEnvList.getElements(), null, facet);
 		if (dialog.open() == Window.OK) {
 			final EnvElement element = new EnvElement(dialog.getName(), dialog.getSelectedVersions());
 			switch (dialog.getCoreType()) {
@@ -215,7 +220,8 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 	}
 
 	private void editEnvElement(EnvElement element) {
-		final EnvDialog dialog = new EnvDialog(getShell(), this.fEnvList.getElements(), element);
+		final IProjectFacet facet = element.isOfType(ExtJSNature.getExtjsFacet()) ? ExtJSNature.getExtjsFacet() : ExtJSNature.getSenchaTouchFacet();
+		final EnvDialog dialog = new EnvDialog(getShell(), this.fEnvList.getElements(), element, facet);
 		if (dialog.open() == Window.OK) {
 			element.setName(dialog.getName());
 			element.setVersions(dialog.getSelectedVersions());
@@ -250,14 +256,14 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 				final EnvElement parent = ((EnvLibElement) curr).getParent();
 				((EnvLibElement) curr).delete();
 				parent.remove((EnvLibElement) curr);
-				this.fEnvList.removeElement(curr);
+				this.fEnvList.refresh(parent);
 				selectionAfter = parent;
 			}
 			else if (curr instanceof EnvVersionElement) {
-				final EnvElement parent = ((EnvLibElement) curr).getParent();
+				final EnvElement parent = ((EnvVersionElement) curr).getParent();
 				((EnvVersionElement) curr).delete();
 				parent.remove((EnvVersionElement) curr);
-				this.fEnvList.removeElement(curr);
+				this.fEnvList.refresh(parent);
 				selectionAfter = parent;
 			}
 		}
@@ -275,14 +281,22 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 	private void doAddVersion(List<Object> list) {
 		if (canAddVersion(list)) {
 			final EnvElement env = (EnvElement) list.get(0);
-			final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+			final IProjectFacet facetExtjs = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+			final IProjectFacet facetTouch = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+			final IProjectFacet facet;
+			
+			if (env.isOfType(facetExtjs))
+				facet = facetExtjs;
+			else
+				facet = facetTouch;
+			
 			final List<IProjectFacetVersion> facets = new ArrayList<IProjectFacetVersion>(facet.getVersions());
 			final List<String> newVersions = new ArrayList<String>();
 			for (final Object child : env.getChildren())
 			{
 				if (child instanceof EnvVersionElement)
 				{
-					facets.remove(facet.getVersion(((EnvVersionElement) child).getName()));
+					facets.remove(facet.getVersion(((EnvVersionElement) child).getName().split("/")[1]));
 					newVersions.add(((EnvVersionElement) child).getName());
 				}
 			}

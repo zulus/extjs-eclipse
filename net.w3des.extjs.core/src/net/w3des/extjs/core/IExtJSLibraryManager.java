@@ -74,6 +74,19 @@ public interface IExtJSLibraryManager {
 	IExtJSCoreLibrary getDefaultCoreLib(IProjectFacetVersion version);
 	
 	/**
+	 * Returns the builtin core libraries
+	 * @return builtin core libraries
+	 */
+	IExtJSCoreLibrary[] getBuiltinCoreLibraries();
+	
+	/**
+	 * Sets the default core library for given version
+	 * @param version
+	 * @param coreLib
+	 */
+	void setDefaultCoreLib(IProjectFacetVersion version, IExtJSCoreLibrary coreLib);
+	
+	/**
 	 * returns the known environments
 	 * @return environments
 	 */

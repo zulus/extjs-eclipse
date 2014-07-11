@@ -239,14 +239,14 @@ public class ExtJSLibraryPreferencePage extends PreferencePage implements IWorkb
 				final LibElement parent = ((LibSourceElement) curr).getParent();
 				((LibSourceElement) curr).delete();
 				parent.remove((LibSourceElement) curr);
-				this.fLibList.removeElement(curr);
+				this.fLibList.refresh(parent);
 				selectionAfter = parent;
 			}
 			else if (curr instanceof LibVersionElement) {
 				final LibElement parent = ((LibVersionElement) curr).getParent();
 				((LibVersionElement) curr).delete();
 				parent.remove((LibVersionElement) curr);
-				this.fLibList.removeElement(curr);
+				this.fLibList.refresh(parent);
 				selectionAfter = parent;
 			}
 		}
@@ -264,15 +264,25 @@ public class ExtJSLibraryPreferencePage extends PreferencePage implements IWorkb
 	private void doAddVersion(List<Object> list) {
 		if (canAddVersion(list)) {
 			final LibElement env = (LibElement) list.get(0);
-			final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
-			final List<IProjectFacetVersion> facets = new ArrayList<IProjectFacetVersion>(facet.getVersions());
+			final IProjectFacet facet1 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+			final IProjectFacet facet2 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+			final List<IProjectFacetVersion> facets = new ArrayList<IProjectFacetVersion>();
+			facets.addAll(facet1.getVersions());
+			facets.addAll(facet2.getVersions());
 			final List<String> newVersions = new ArrayList<String>();
 			for (final Object child : env.getChildren())
 			{
 				if (child instanceof LibVersionElement)
 				{
-					facets.remove(facet.getVersion(((LibVersionElement) child).getName()));
-					newVersions.add(((LibVersionElement) child).getName());
+					final String[] vn = ((LibVersionElement) child).getName().split("/");
+					if (vn[0].equals("extjs")) {
+						facets.remove(facet1.getVersion(vn[1]));
+						newVersions.add(((LibVersionElement) child).getName());
+					}
+					else if (vn[0].equals("touch")) {
+						facets.remove(facet2.getVersion(vn[1]));
+						newVersions.add(((LibVersionElement) child).getName());
+					}
 				}
 			}
 			final ChooseVersionDialog dialog = new ChooseVersionDialog(getShell(), facets);

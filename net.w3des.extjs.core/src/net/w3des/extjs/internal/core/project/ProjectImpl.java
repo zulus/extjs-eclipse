@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.ProjectType;
 import net.w3des.extjs.internal.core.ExtJSCore;
 
 import org.eclipse.core.resources.IFile;
@@ -251,12 +252,41 @@ public class ProjectImpl implements IExtJSProject {
 	}
 
 	@Override
+	public IProjectFacetVersion getTouchVersion() throws CoreException {
+		final IFacetedProject fProject = ProjectFacetsManager.create(this.getProject());
+		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+		if (fProject != null && facet != null) {
+			return fProject.getInstalledVersion(facet);
+		}
+		return null;
+	}
+
+	@Override
 	public void setVersion(IProjectFacetVersion version) throws CoreException {
 		final IFacetedProject fProject = ProjectFacetsManager.create(this.getProject());
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
-		if (fProject != null && facet != null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid project"));
-		if (!version.getProjectFacet().equals(facet)) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid project facet version"));
+		final IProjectFacet facet1 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		final IProjectFacet facet2 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+		if (fProject == null) throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid project"));
+		if (!version.getProjectFacet().equals(facet1) && !version.getProjectFacet().equals(facet2))
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid project facet version"));
 		fProject.installProjectFacet(version, null, new NullProgressMonitor());
+	}
+
+	@Override
+	public boolean isOfType(ProjectType type) throws CoreException {
+		final IFacetedProject fProject = ProjectFacetsManager.create(this.getProject());
+		final IProjectFacet facetExt = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		final IProjectFacet facetTouch = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+		switch (type)
+		{
+		case ExtJsAndSenchaTouch:
+			return fProject.hasProjectFacet(facetExt) && fProject.hasProjectFacet(facetTouch);
+		case SenchaExtJS:
+			return fProject.hasProjectFacet(facetExt);
+		case SenchaTouch:
+			return fProject.hasProjectFacet(facetTouch);
+		}
+		return false;
 	}
 
 }

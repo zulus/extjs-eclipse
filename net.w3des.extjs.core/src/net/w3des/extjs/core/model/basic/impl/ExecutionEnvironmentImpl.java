@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.ExecutionEnvironmentImpl#getCorePath <em>Core Path</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.ExecutionEnvironmentImpl#getCoreType <em>Core Type</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.ExecutionEnvironmentImpl#getLibraries <em>Libraries</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.impl.ExecutionEnvironmentImpl#getFacet <em>Facet</em>}</li>
  * </ul>
  * </p>
  *
@@ -137,6 +138,26 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 	 * @ordered
 	 */
 	protected EList<String> libraries;
+
+	/**
+	 * The default value of the '{@link #getFacet() <em>Facet</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacet()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String FACET_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getFacet() <em>Facet</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFacet()
+	 * @generated
+	 * @ordered
+	 */
+	protected String facet = FACET_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -270,6 +291,27 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getFacet() {
+		return facet;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFacet(String newFacet) {
+		String oldFacet = facet;
+		facet = newFacet;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExtJSPackage.EXECUTION_ENVIRONMENT__FACET, oldFacet, facet));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -285,6 +327,8 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 				return getCoreType();
 			case ExtJSPackage.EXECUTION_ENVIRONMENT__LIBRARIES:
 				return getLibraries();
+			case ExtJSPackage.EXECUTION_ENVIRONMENT__FACET:
+				return getFacet();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -318,6 +362,9 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 				getLibraries().clear();
 				getLibraries().addAll((Collection<? extends String>)newValue);
 				return;
+			case ExtJSPackage.EXECUTION_ENVIRONMENT__FACET:
+				setFacet((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -348,6 +395,9 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 			case ExtJSPackage.EXECUTION_ENVIRONMENT__LIBRARIES:
 				getLibraries().clear();
 				return;
+			case ExtJSPackage.EXECUTION_ENVIRONMENT__FACET:
+				setFacet(FACET_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -372,6 +422,8 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 				return coreType != CORE_TYPE_EDEFAULT;
 			case ExtJSPackage.EXECUTION_ENVIRONMENT__LIBRARIES:
 				return libraries != null && !libraries.isEmpty();
+			case ExtJSPackage.EXECUTION_ENVIRONMENT__FACET:
+				return FACET_EDEFAULT == null ? facet != null : !FACET_EDEFAULT.equals(facet);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -398,6 +450,8 @@ public class ExecutionEnvironmentImpl extends MinimalEObjectImpl.Container imple
 		result.append(coreType);
 		result.append(", libraries: ");
 		result.append(libraries);
+		result.append(", facet: ");
+		result.append(facet);
 		result.append(')');
 		return result.toString();
 	}

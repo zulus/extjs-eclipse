@@ -39,9 +39,10 @@ public interface ILibraryStorage {
 	 * Returns the environment; creates it on demand
 	 * @param name the environment name
 	 * @param compatibleVersion the version this env is compatible to
+	 * @param facet the facet to be used
 	 * @return the environment or {@code null} if it was not found
 	 */
-	IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion);
+	IExtJSEnvironment createBuiltinEnv(String name, String compatibleVersion, String facet);
 
 	/**
 	 * Destroys the index for given environment
@@ -65,11 +66,12 @@ public interface ILibraryStorage {
 	IExtJSLibrary getLib(String name, boolean forceCreation, boolean createBuiltin);
 
 	/**
-	 * Overwrites the versions of a builtin library
+	 * Overwrites the versions of a builtin library and activates it
 	 * @param envName
 	 * @param versionString
+	 * @param facet
 	 */
-	void overwriteVersion(String envName, String versionString);
+	void overwriteVersion(String envName, String versionString, String facet);
 
 	/**
 	 * Destroys the index for given library

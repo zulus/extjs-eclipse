@@ -12,6 +12,7 @@ package net.w3des.extjs.core.api;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -57,16 +58,18 @@ public interface IExtJSLibrary {
 	
 	/**
 	 * Returns the extjs versions being compatible to this build environment; should only be used to analyze problems on {@link #getCompatibleVersions()}
+	 * @param facet extjs or senchatouch
 	 * @return version names (only major and minor version number, f.e. "4.1")
 	 */
-	String[] getCompatibleVersionNames();
+	String[] getCompatibleVersionNames(IProjectFacet facet);
 	
 	/**
 	 * Returns the compatible versions as facets
+	 * @param facet extjs or senchatouch
 	 * @return
 	 * @throws CoreException thrown if there is an unknown version name this extjs-plugin does not support; indicates problems on plugin dependencies.
 	 */
-	IProjectFacetVersion[] getCompatibleVersions() throws CoreException;
+	IProjectFacetVersion[] getCompatibleVersions(IProjectFacet facet) throws CoreException;
 	
 	/**
 	 * Adds a compatible extjs version
@@ -84,10 +87,11 @@ public interface IExtJSLibrary {
 	
 	/**
 	 * Replaces the compatible versions
+	 * @param facet extjs or senchatouch
 	 * @param versions the new version names (only major and minor version number, f.e. "4.1")
 	 * @throws CoreException thrown for invalid versions or if the library is builtin
 	 */
-	void setCompatibleVersions(IProjectFacetVersion[] versions) throws CoreException;
+	void setCompatibleVersions(IProjectFacet facet, IProjectFacetVersion[] versions) throws CoreException;
 	
 	// *** contents
 	

@@ -13,6 +13,7 @@ package net.w3des.extjs.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.common.DialogField;
 import net.w3des.extjs.ui.common.IDialogFieldListener;
@@ -75,7 +76,8 @@ public class ChooseVersionDialog extends StatusDialog implements IDialogFieldLis
 	public String[] getSelectedVersions() {
 		final List<String> versions = new ArrayList<String>();
 		for (final Object sel : selection) {
-			versions.add(((IProjectFacetVersion) sel).getVersionString());
+			final IProjectFacetVersion fv = (IProjectFacetVersion) sel;
+			versions.add((fv.getProjectFacet().equals(ExtJSNature.getExtjsFacet()) ? "extjs/" : "touch/") + fv.getVersionString());
 		}
 		return versions.toArray(new String[versions.size()]);
 	}

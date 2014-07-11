@@ -13,6 +13,7 @@ package net.w3des.extjs.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.common.DialogField;
 import net.w3des.extjs.ui.common.IDialogFieldListener;
@@ -60,8 +61,12 @@ public class LibDialog extends StatusDialog implements IDialogFieldListener {
 		fNameField.setLabelText("Name"); 
 		
 		fVersionsField = new ListDialogField(new VersionAdapter(), new String[]{}, new VersionLabelProvider());
-		final IProjectFacet facet = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
-		this.fVersionsField.setElements(facet.getVersions());
+		final List<IProjectFacetVersion> versionsList = new ArrayList<IProjectFacetVersion>();
+		final IProjectFacet facet1 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_EXT);
+		versionsList.addAll(facet1.getVersions());
+		final IProjectFacet facet2 = ProjectFacetsManager.getProjectFacet(ExtJSCore.FACET_TOUCH);
+		versionsList.addAll(facet2.getVersions());
+		this.fVersionsField.setElements(versionsList);
 		this.fVersionsField.setLabelText("Versions");
 		fVersionsField.setDialogFieldListener(this);
 		
@@ -76,7 +81,13 @@ public class LibDialog extends StatusDialog implements IDialogFieldListener {
 			final List<IProjectFacetVersion> selection = new ArrayList<IProjectFacetVersion>();
 			for (final Object v : env.getChildren()) {
 				if (v instanceof EnvVersionElement) {
-					selection.add(facet.getVersion(v.toString()));
+					final String[] vn = v.toString().split("/");
+					if (vn[0].equals("extjs")) {
+						selection.add(facet1.getVersion(vn[1]));
+					}
+					else if (vn[0].equals("touch")) {
+						selection.add(facet2.getVersion(vn[1]));
+					}
 				}
 			}
 			fVersionsField.selectElements(new StructuredSelection(selection));
@@ -140,7 +151,8 @@ public class LibDialog extends StatusDialog implements IDialogFieldListener {
 	public String[] getSelectedVersions() {
 		final List<String> versions = new ArrayList<String>();
 		for (final Object sel : this.selectedVersions) {
-			versions.add(((IProjectFacetVersion) sel).getVersionString());
+			final IProjectFacetVersion fv = (IProjectFacetVersion) sel;
+			versions.add((fv.getProjectFacet().equals(ExtJSNature.getExtjsFacet()) ? "extjs/" : "touch/") + fv.getVersionString());
 		}
 		return versions.toArray(new String[versions.size()]);
 	}

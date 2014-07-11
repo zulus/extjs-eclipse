@@ -17,6 +17,7 @@ import net.w3des.extjs.core.IExtJSLibraryManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -48,20 +49,30 @@ public interface IExtJSEnvironment {
 	// *** version compatibility
 	
 	/**
+	 * Returns true if this environment is of given type
+	 * @param facet
+	 * @return
+	 */
+	boolean isOfType(IProjectFacet facet);
+	
+	/**
 	 * Returns the extjs versions being compatible to this build environment; should only be used to analyze problems on {@link #getCompatibleVersions()}
+	 * @param facet extjs or senchatouch
 	 * @return version names (only major and minor version number, f.e. "4.1")
 	 */
-	String[] getCompatibleVersionNames();
+	String[] getCompatibleVersionNames(IProjectFacet facet);
 	
 	/**
 	 * Returns the compatible versions as facets
+	 * @param facet extjs or senchatouch
 	 * @return
 	 * @throws CoreException thrown if there is an unknown version name this extjs-plugin does not support; indicates problems on plugin dependencies.
 	 */
-	IProjectFacetVersion[] getCompatibleVersions() throws CoreException;
+	IProjectFacetVersion[] getCompatibleVersions(IProjectFacet facet) throws CoreException;
 	
 	/**
 	 * Adds a compatible extjs version
+	 * @param facet extjs or senchatouch
 	 * @param version version name (only major and minor version number, f.e. "4.1")
 	 * @throws CoreException thrown for invalid versions or if the environment is builtin
 	 */
@@ -76,10 +87,11 @@ public interface IExtJSEnvironment {
 	
 	/**
 	 * Replaces the compatible versions
+	 * @param facet extjs or senchatouch
 	 * @param versions the new version names (only major and minor version number, f.e. "4.1")
 	 * @throws CoreException thrown for invalid versions or if the environment is builtin
 	 */
-	void setCompatibleVersions(IProjectFacetVersion[] versions) throws CoreException;
+	void setCompatibleVersions(IProjectFacet facet, IProjectFacetVersion[] versions) throws CoreException;
 	
 	// *** core (extjs sdk)
 	
