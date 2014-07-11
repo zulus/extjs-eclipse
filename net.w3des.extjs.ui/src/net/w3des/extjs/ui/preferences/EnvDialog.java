@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
-import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 
@@ -62,10 +61,12 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 	private static final int IX_EXTERNAL_ZIP = 2;
 	
 	private List<Object> selectedVersions = new ArrayList<Object>();
+	private IProjectFacet facet;
 
 	public EnvDialog(Shell parent, List<Object> existingLibraries, EnvElement env, IProjectFacet facet) {
 		super(parent);
 		setTitle("New ExtJS execution environment");
+		this.facet = facet;
 		
 		fExistingLibraries= existingLibraries;
 		
@@ -189,7 +190,7 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 		
 		if (fCoreTypeField.isSelected(IX_EXTERNAL_FOLDER)) {
 			try {
-				ExtJSCore.getLibraryManager().checkCore(CoreType.FOLDER, fPathField.getText());
+				ExtJSCore.getLibraryManager().checkCore(CoreType.FOLDER, fPathField.getText(), this.facet);
 			}
 			catch (CoreException ex) {
 				return ex.getStatus();
@@ -198,7 +199,7 @@ public class EnvDialog extends StatusDialog implements IDialogFieldListener {
 		
 		if (fCoreTypeField.isSelected(IX_EXTERNAL_ZIP)) {
 			try {
-				ExtJSCore.getLibraryManager().checkCore(CoreType.ZIP, fPathField.getText());
+				ExtJSCore.getLibraryManager().checkCore(CoreType.ZIP, fPathField.getText(), this.facet);
 			}
 			catch (CoreException ex) {
 				return ex.getStatus();

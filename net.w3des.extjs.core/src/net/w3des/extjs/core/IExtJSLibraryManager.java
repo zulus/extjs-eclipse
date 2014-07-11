@@ -16,6 +16,7 @@ import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -112,10 +113,11 @@ public interface IExtJSLibraryManager {
 	 * Returns the extjs core library and checks for valid paths.
 	 * @param type the extjs type
 	 * @param path the path to be used
+	 * @param facet the facet to be used
 	 * @return extjs core library
 	 * @throws CoreException thrown if the path or type is invalid
 	 */
-	IExtJSCoreLibrary checkCore(CoreType type, String path) throws CoreException;
+	IExtJSCoreLibrary checkCore(CoreType type, String path, IProjectFacet facet) throws CoreException;
 	
 	// user libraries
 	

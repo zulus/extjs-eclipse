@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
@@ -104,7 +105,7 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
    				final String name = getCoreLibName(version, new Path(fname));
    				final Bundle bundle = Platform.getBundle(pluginName);
    				final URL url = FileLocator.resolve(bundle.getEntry(fname));
-   				final CoreZipLibrary lib = new CoreZipLibrary(name, url.toString());
+   				final IExtJSCoreLibrary lib = facet == facet1 ? (new CoreZipLibrary(name, url.toString())) : (new CoreTouchZipLibrary(name, url.toString()));
    				this.coreLibs.put(name, lib);
    				if (!this.defaultCoreLibs.containsKey(version)) {
    					this.defaultCoreLibs.put(version, lib);
@@ -276,20 +277,40 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 	}
 
 	@Override
-	public IExtJSCoreLibrary checkCore(CoreType type, String path)
+	public IExtJSCoreLibrary checkCore(CoreType type, String path, IProjectFacet facet)
 			throws CoreException {
 		switch (type) {
 		default:
 		case NONE:
 			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core library"));
 		case FOLDER:
-			final CoreFolderLibrary folderLib = new CoreFolderLibrary("test", path);
-			folderLib.check();
-			return folderLib;
+			if (facet.equals(ExtJSNature.getExtjsFacet()))
+			{
+				final CoreFolderLibrary folderLib = new CoreFolderLibrary("test", path);
+				folderLib.check();
+				return folderLib;
+			}
+			if (facet.equals(ExtJSNature.getSenchaTouchFacet()))
+			{
+				final CoreTouchFolderLibrary folderLib = new CoreTouchFolderLibrary("test", path);
+				folderLib.check();
+				return folderLib;
+			}
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core library"));
 		case ZIP:
-			final CoreZipLibrary zipLib = new CoreZipLibrary("test", path);
-			zipLib.check();
-			return zipLib;
+			if (facet.equals(ExtJSNature.getExtjsFacet()))
+			{
+				final CoreZipLibrary zipLib = new CoreZipLibrary("test", path);
+				zipLib.check();
+				return zipLib;
+			}
+			if (facet.equals(ExtJSNature.getSenchaTouchFacet()))
+			{
+				final CoreTouchZipLibrary zipLib = new CoreTouchZipLibrary("test", path);
+				zipLib.check();
+				return zipLib;
+			}
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core library"));
 		}
 	}
 
