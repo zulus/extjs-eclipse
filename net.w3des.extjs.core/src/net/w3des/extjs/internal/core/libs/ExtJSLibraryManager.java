@@ -105,7 +105,17 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
    				final String name = getCoreLibName(version, new Path(fname));
    				final Bundle bundle = Platform.getBundle(pluginName);
    				final URL url = FileLocator.resolve(bundle.getEntry(fname));
-   				final IExtJSCoreLibrary lib = facet == facet1 ? (new CoreZipLibrary(name, url.toString())) : (new CoreTouchZipLibrary(name, url.toString()));
+   				IExtJSCoreLibrary lib = null; 
+   				if (facet == facet1) {
+   					final CoreZipLibrary zip = new CoreZipLibrary(name, url.toString().substring(6));
+   					zip.check();
+   					lib = zip;
+   				}
+   				else {
+   					final CoreTouchZipLibrary zip = new CoreTouchZipLibrary(name, url.toString().substring(6));
+   					zip.check();
+   					lib = zip;
+   				}
    				this.coreLibs.put(name, lib);
    				if (!this.defaultCoreLibs.containsKey(version)) {
    					this.defaultCoreLibs.put(version, lib);

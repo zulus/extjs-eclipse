@@ -20,7 +20,7 @@ public class CoreFileImpl implements ILibrarySource {
 	private IPath fullPath;
 
 	public CoreFileImpl(IPath fullPath) {
-		this.fullPath = fullPath;
+		this.fullPath = fullPath.makeAbsolute();
 	}
 
 	@Override

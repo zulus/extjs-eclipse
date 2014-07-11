@@ -73,12 +73,7 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 	public CoreFolderLibrary(String name, String corePath) throws CoreException {
 		this.name = name;
 		this.mainFolder = new File(corePath);
-		try {
-			this.baseUri = this.mainFolder.toURI().toURL().toString() + "!";
-		}
-		catch (IOException ex) {
-			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, ex.getMessage(), ex));
-		}
+		this.baseUri = this.mainFolder.toString();
 	}
 
 	@Override
@@ -246,7 +241,7 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
 	        if (!propsFile.exists())
 	        {
 	            final String[] main = this.mainDirName.split("-"); //$NON-NLS-1$
-	            if (main.length != 2)
+	            if (main.length < 2)
 	            {
 	                throw new IOException("Invalid archive file; unable to extract version from directory name " + this.mainDirName); //$NON-NLS-1$
 	            }

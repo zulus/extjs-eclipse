@@ -12,6 +12,7 @@ package net.w3des.extjs.internal.core.libs;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
@@ -41,7 +43,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
     /** the underlying archive */
     ZipFile zip;
     
-    String baseUri;
+    URI baseUri;
     
     /** the handler */
     ICoreLibraryHandler handler;
@@ -78,7 +80,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
 		this.name = name;
 		this.corePath = corePath;
 		try {
-			this.baseUri = "jar:" + new File(corePath).toURI().toURL().toString() + "!";
+			this.baseUri = new File(corePath).toURI();
 			this.zip = new ZipFile(corePath);
 		}
 		catch (IOException ex) {
@@ -258,7 +260,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
 	        if (propsFile == null)
 	        {
 	            final String[] main = this.mainDirName.split("-"); //$NON-NLS-1$
-	            if (main.length != 2)
+	            if (main.length < 2)
 	            {
 	                throw new IOException("Invalid archive file; unable to extract version from directory name " + this.mainDirName); //$NON-NLS-1$
 	            }
@@ -333,19 +335,19 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String openExtJs() throws IOException
         {
-        	return baseUri + ext.getName();
+        	return URIUtil.toJarURI(baseUri, new Path(ext.getName())).toString();
         }
 
         @Override
         public String[] openExtAllJs() throws IOException
         {
-            return new String[]{baseUri + extAll.getName()};
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(extAll.getName())).toString()};
         }
 
         @Override
         public String[] openExtAllDebugJs() throws IOException
         {
-            return new String[]{baseUri + extAllDebug.getName()};
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(extAllDebug.getName())).toString()};
         }
     }
     
@@ -377,7 +379,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String[] openLocale(String name) throws IOException
         {
-            return new String[]{baseUri + mainDirName + "/locale/ext-lang-" + name + ".js"};
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(mainDirName + "/locale/ext-lang-" + name + ".js")).toString()};
         }
     }
     
@@ -453,7 +455,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String[] openLocale(String name) throws IOException
         {
-            return new String[]{baseUri + mainDirName + "/packages/ext-locale/overrides/" + name + "/ext-locale-" + name + ".js"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(mainDirName + "/packages/ext-locale/overrides/" + name + "/ext-locale-" + name + ".js")).toString()}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
         
         private void addAllSources(List<String> result) {
@@ -461,7 +463,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         	while (enumEntries.hasMoreElements()) {
         		final ZipEntry entry = enumEntries.nextElement();
         		if (entry.getName().startsWith(mainDirName + "/src/") || entry.getName().startsWith(mainDirName + "/overrides/")) {
-        			result.add(baseUri + entry.getName());
+        			result.add(URIUtil.toJarURI(baseUri, new Path(entry.getName())).toString());
         		}
         	}
         }
@@ -470,7 +472,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         public String[] openExtAllJs() throws IOException
         {
         	final List<String> result = new ArrayList<String>();
-        	result.add(baseUri + extAll.getName());
+        	result.add(URIUtil.toJarURI(baseUri, new Path(extAll.getName())).toString());
         	this.addAllSources(result);
             return result.toArray(new String[result.size()]);
         }
@@ -479,7 +481,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         public String[] openExtAllDebugJs() throws IOException
         {
         	final List<String> result = new ArrayList<String>();
-        	result.add(baseUri + extAllDebug.getName());
+        	result.add(URIUtil.toJarURI(baseUri, new Path(extAllDebug.getName())).toString());
         	this.addAllSources(result);
             return result.toArray(new String[result.size()]);
         }

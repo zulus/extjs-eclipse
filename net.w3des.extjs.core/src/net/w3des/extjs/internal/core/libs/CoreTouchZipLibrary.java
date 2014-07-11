@@ -12,6 +12,7 @@ package net.w3des.extjs.internal.core.libs;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
@@ -41,7 +43,7 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
     /** the underlying archive */
     ZipFile zip;
     
-    String baseUri;
+    URI baseUri;
     
     /** the handler */
     ICoreLibraryHandler handler;
@@ -78,7 +80,7 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
 		this.name = name;
 		this.corePath = corePath;
 		try {
-			this.baseUri = "jar:" + new File(corePath).toURI().toURL().toString() + "!";
+			this.baseUri = new File(corePath).toURI();
 			this.zip = new ZipFile(corePath);
 		}
 		catch (IOException ex) {
@@ -258,7 +260,7 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
 	        if (propsFile == null)
 	        {
 	            final String[] main = this.mainDirName.split("-"); //$NON-NLS-1$
-	            if (main.length != 2)
+	            if (main.length < 2)
 	            {
 	                throw new IOException("Invalid archive file; unable to extract version from directory name " + this.mainDirName); //$NON-NLS-1$
 	            }
@@ -306,19 +308,19 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String openExtJs() throws IOException
         {
-        	return baseUri + touch.getName();
+        	return URIUtil.toJarURI(baseUri, new Path(touch.getName())).toString();
         }
 
         @Override
         public String[] openExtAllJs() throws IOException
         {
-            return new String[]{baseUri + touchAll.getName()};
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(touchAll.getName())).toString()};
         }
 
         @Override
         public String[] openExtAllDebugJs() throws IOException
         {
-            return new String[]{baseUri + touchAllDebug.getName()};
+            return new String[]{URIUtil.toJarURI(baseUri, new Path(touchAllDebug.getName())).toString()};
         }
     }
     
