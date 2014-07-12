@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link net.w3des.extjs.core.model.basic.LibrarySource#getPath <em>Path</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.LibrarySource#getInclusions <em>Inclusions</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.LibrarySource#getExclusions <em>Exclusions</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.LibrarySource#getFiles <em>Files</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,5 +113,21 @@ public interface LibrarySource extends EObject {
 	 * @generated
 	 */
 	EList<String> getExclusions();
+
+	/**
+	 * Returns the value of the '<em><b>Files</b></em>' containment reference list.
+	 * The list contents are of type {@link net.w3des.extjs.core.model.basic.File}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Files</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Files</em>' containment reference list.
+	 * @see net.w3des.extjs.core.model.basic.ExtJSPackage#getLibrarySource_Files()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<File> getFiles();
 
 } // LibrarySource

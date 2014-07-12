@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.model.basic.CoreVersionDefault;
 import net.w3des.extjs.core.model.basic.ExecutionEnvironment;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
@@ -38,11 +39,14 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
     private Map<String, ExecutionEnvironment> environments;
 
     private Map<String, Library> libraries;
+    
+    private List<CoreVersionDefault> versionDefaults;
 
 	@Override
 	public void activate() {
         environments = new HashMap<String, ExecutionEnvironment>();
         libraries = new HashMap<String, Library>();
+        versionDefaults = new ArrayList<CoreVersionDefault>();
         ExtJSPackage.eINSTANCE.eClass();
         try {
             final Resource resource = getResource();
@@ -55,6 +59,10 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
                     else if (o instanceof Library) {
                         final Library lib = (Library) o;
                     	this.libraries.put(lib.getName(), lib);
+                    }
+                    else if (o instanceof CoreVersionDefault) {
+                    	final CoreVersionDefault def = (CoreVersionDefault) o;
+                    	this.versionDefaults.add(def);
                     }
                 }
             }
@@ -157,6 +165,9 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
         for (final Entry<String, Library> entry : libraries.entrySet()) {
             resource.getContents().add(entry.getValue());
         }
+        for (final CoreVersionDefault def : this.versionDefaults) {
+        	resource.getContents().add(def);
+        }
 
         try {
             resource.save(Collections.EMPTY_MAP);
@@ -219,6 +230,31 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 			env.getVersions().clear();
 			env.getVersions().add(versionString);
 		}
+	}
+
+	@Override
+	public void setDefaultCoreLib(String version, String facet, String libName) {
+		for (final CoreVersionDefault def : this.versionDefaults) {
+			if (version.equals(def.getVersion()) && facet.equals(def.getFacet())) {
+				def.setCoreLib(libName);
+				return;
+			}
+		}
+		final CoreVersionDefault def = ExtJSFactory.eINSTANCE.createCoreVersionDefault();
+		def.setCoreLib(libName);
+		def.setFacet(facet);
+		def.setVersion(version);
+		this.versionDefaults.add(def);
+	}
+
+	@Override
+	public String getDefaultCoreLib(String version, String facet) {
+		for (final CoreVersionDefault def : this.versionDefaults) {
+			if (version.equals(def.getVersion()) && facet.equals(def.getFacet())) {
+				return def.getCoreLib();
+			}
+		}
+		return null;
 	}
 
 }

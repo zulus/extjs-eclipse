@@ -46,6 +46,10 @@ public class InferProvider implements InferrenceProvider {
         final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         final IResource member = workspaceRoot.findMember(path);
         if (member == null) {
+        	// check for library
+        	if (ExtJSCore.getLibraryManager().isLibraryFile(path)) {
+                return InferrenceProvider.ONLY_THIS;
+        	}
             return InferrenceProvider.NOT_THIS;
         }
 

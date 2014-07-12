@@ -83,7 +83,7 @@ public class ExtJSCatalogViewer extends CatalogViewer {
 						for (CatalogItem ci : getCatalog().getItems()) {
 							subMon.worked(2);
 
-							if (ci.hasTag(versionTag)) {
+							if (version == null || ci.hasTag(versionTag)) {
 								select(ci);
 								continue;
 							}

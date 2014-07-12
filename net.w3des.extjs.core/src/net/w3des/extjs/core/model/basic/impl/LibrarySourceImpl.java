@@ -5,19 +5,24 @@ package net.w3des.extjs.core.model.basic.impl;
 import java.util.Collection;
 
 import net.w3des.extjs.core.model.basic.ExtJSPackage;
+import net.w3des.extjs.core.model.basic.File;
 import net.w3des.extjs.core.model.basic.LibrarySource;
 import net.w3des.extjs.core.model.basic.LibrarySourceType;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,6 +35,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibrarySourceImpl#getPath <em>Path</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibrarySourceImpl#getInclusions <em>Inclusions</em>}</li>
  *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibrarySourceImpl#getExclusions <em>Exclusions</em>}</li>
+ *   <li>{@link net.w3des.extjs.core.model.basic.impl.LibrarySourceImpl#getFiles <em>Files</em>}</li>
  * </ul>
  * </p>
  *
@@ -95,6 +101,16 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 	 * @ordered
 	 */
 	protected EList<String> exclusions;
+
+	/**
+	 * The cached value of the '{@link #getFiles() <em>Files</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFiles()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<File> files;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -186,6 +202,32 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<File> getFiles() {
+		if (files == null) {
+			files = new EObjectContainmentEList<File>(File.class, this, ExtJSPackage.LIBRARY_SOURCE__FILES);
+		}
+		return files;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ExtJSPackage.LIBRARY_SOURCE__FILES:
+				return ((InternalEList<?>)getFiles()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -197,6 +239,8 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 				return getInclusions();
 			case ExtJSPackage.LIBRARY_SOURCE__EXCLUSIONS:
 				return getExclusions();
+			case ExtJSPackage.LIBRARY_SOURCE__FILES:
+				return getFiles();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -224,6 +268,10 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 				getExclusions().clear();
 				getExclusions().addAll((Collection<? extends String>)newValue);
 				return;
+			case ExtJSPackage.LIBRARY_SOURCE__FILES:
+				getFiles().clear();
+				getFiles().addAll((Collection<? extends File>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -248,6 +296,9 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 			case ExtJSPackage.LIBRARY_SOURCE__EXCLUSIONS:
 				getExclusions().clear();
 				return;
+			case ExtJSPackage.LIBRARY_SOURCE__FILES:
+				getFiles().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -268,6 +319,8 @@ public class LibrarySourceImpl extends MinimalEObjectImpl.Container implements L
 				return inclusions != null && !inclusions.isEmpty();
 			case ExtJSPackage.LIBRARY_SOURCE__EXCLUSIONS:
 				return exclusions != null && !exclusions.isEmpty();
+			case ExtJSPackage.LIBRARY_SOURCE__FILES:
+				return files != null && !files.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

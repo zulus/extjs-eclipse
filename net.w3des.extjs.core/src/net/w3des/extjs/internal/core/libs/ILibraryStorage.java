@@ -96,4 +96,20 @@ public interface ILibraryStorage {
 	 */
 	void save();
 
+	/**
+	 * Sets the default core lib
+	 * @param version
+	 * @param facet
+	 * @param libName
+	 */
+	void setDefaultCoreLib(String version, String facet, String libName);
+	
+	/**
+	 * Returns the default core lib name
+	 * @param version
+	 * @param facet
+	 * @return libName or null if it is not set
+	 */
+	String getDefaultCoreLib(String version, String facet);
+
 }

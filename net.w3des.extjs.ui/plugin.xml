@@ -142,6 +142,12 @@
       </page>
       <page
             category="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
+            class="net.w3des.extjs.ui.preferences.ExtJSCoreDefaultPreferencePage"
+            id="net.w3des.extjs.ui.preferences.ExtJSCoreDefaultPreferencePage"
+            name="Core libraries (SDK)">
+      </page>
+      <page
+            category="net.w3des.extjs.ui.preferences.ExtJSPreferencePage"
             class="net.w3des.extjs.ui.preferences.ExtJSLibraryPreferencePage"
             id="net.w3des.extjs.ui.preferences.ExtJSLibraryPreferencePage"
             name="Libraries">

@@ -3,6 +3,7 @@
 package net.w3des.extjs.core.model.basic.impl;
 
 import net.w3des.extjs.core.model.basic.Alias;
+import net.w3des.extjs.core.model.basic.CoreVersionDefault;
 import net.w3des.extjs.core.model.basic.Event;
 import net.w3des.extjs.core.model.basic.ExecutionEnvironment;
 import net.w3des.extjs.core.model.basic.ExtJSFactory;
@@ -126,6 +127,13 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 	 * @generated
 	 */
 	private EClass librarySourceEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass coreVersionDefaultEClass = null;
 
 				/**
 	 * <!-- begin-user-doc -->
@@ -621,6 +629,51 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getLibrarySource_Files() {
+		return (EReference)librarySourceEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getCoreVersionDefault() {
+		return coreVersionDefaultEClass;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCoreVersionDefault_Version() {
+		return (EAttribute)coreVersionDefaultEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCoreVersionDefault_Facet() {
+		return (EAttribute)coreVersionDefaultEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCoreVersionDefault_CoreLib() {
+		return (EAttribute)coreVersionDefaultEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getLibrarySourceType() {
 		return librarySourceTypeEEnum;
 	}
@@ -720,6 +773,12 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 		createEAttribute(librarySourceEClass, LIBRARY_SOURCE__PATH);
 		createEAttribute(librarySourceEClass, LIBRARY_SOURCE__INCLUSIONS);
 		createEAttribute(librarySourceEClass, LIBRARY_SOURCE__EXCLUSIONS);
+		createEReference(librarySourceEClass, LIBRARY_SOURCE__FILES);
+
+		coreVersionDefaultEClass = createEClass(CORE_VERSION_DEFAULT);
+		createEAttribute(coreVersionDefaultEClass, CORE_VERSION_DEFAULT__VERSION);
+		createEAttribute(coreVersionDefaultEClass, CORE_VERSION_DEFAULT__FACET);
+		createEAttribute(coreVersionDefaultEClass, CORE_VERSION_DEFAULT__CORE_LIB);
 
 		// Create enums
 		librarySourceTypeEEnum = createEEnum(LIBRARY_SOURCE_TYPE);
@@ -828,6 +887,12 @@ public class ExtJSPackageImpl extends EPackageImpl implements ExtJSPackage {
 		initEAttribute(getLibrarySource_Path(), ecorePackage.getEString(), "path", null, 0, 1, LibrarySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLibrarySource_Inclusions(), ecorePackage.getEString(), "inclusions", null, 0, -1, LibrarySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLibrarySource_Exclusions(), ecorePackage.getEString(), "exclusions", null, 0, -1, LibrarySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLibrarySource_Files(), this.getFile(), null, "files", null, 0, -1, LibrarySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(coreVersionDefaultEClass, CoreVersionDefault.class, "CoreVersionDefault", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getCoreVersionDefault_Version(), ecorePackage.getEString(), "version", null, 0, 1, CoreVersionDefault.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCoreVersionDefault_Facet(), ecorePackage.getEString(), "facet", null, 0, 1, CoreVersionDefault.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCoreVersionDefault_CoreLib(), ecorePackage.getEString(), "coreLib", null, 0, 1, CoreVersionDefault.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(librarySourceTypeEEnum, LibrarySourceType.class, "LibrarySourceType");

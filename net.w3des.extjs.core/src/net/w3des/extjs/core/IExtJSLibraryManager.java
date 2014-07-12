@@ -16,6 +16,7 @@ import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
@@ -84,8 +85,9 @@ public interface IExtJSLibraryManager {
 	 * Sets the default core library for given version
 	 * @param version
 	 * @param coreLib
+	 * @throws CoreException
 	 */
-	void setDefaultCoreLib(IProjectFacetVersion version, IExtJSCoreLibrary coreLib);
+	void setDefaultCoreLib(IProjectFacetVersion version, IExtJSCoreLibrary coreLib) throws CoreException;
 	
 	/**
 	 * returns the known environments
@@ -149,5 +151,12 @@ public interface IExtJSLibraryManager {
 	 * @throws CoreException thrown if the library is invalid or builtin
 	 */
 	void removeUserLib(IExtJSLibrary lib) throws CoreException;
+
+	/**
+	 * Checks for a given file to be present on a library
+	 * @param path
+	 * @return true if the file is present on a library
+	 */
+	boolean isLibraryFile(IPath path);
 
 }

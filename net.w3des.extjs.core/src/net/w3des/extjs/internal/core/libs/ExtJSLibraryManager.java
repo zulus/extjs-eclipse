@@ -121,6 +121,20 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
    					this.defaultCoreLibs.put(version, lib);
    				}
     		}
+    		
+    		// try to fetch the default core libs from storage
+    		for (final IProjectFacetVersion version : facet1.getVersions()) {
+    			final String libName = this.storage.getDefaultCoreLib(version.getVersionString(), version.getProjectFacet().getId());
+    			if (this.coreLibs.containsKey(libName)) {
+    				this.defaultCoreLibs.put(version, this.coreLibs.get(libName));
+    			}
+    		}
+    		for (final IProjectFacetVersion version : facet2.getVersions()) {
+    			final String libName = this.storage.getDefaultCoreLib(version.getVersionString(), version.getProjectFacet().getId());
+    			if (this.coreLibs.containsKey(libName)) {
+    				this.defaultCoreLibs.put(version, this.coreLibs.get(libName));
+    			}
+    		}
     	}
     	catch (Exception ex) {
     		ExtJSCore.error(ex);
@@ -330,10 +344,18 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 	}
 
 	@Override
-	public void setDefaultCoreLib(IProjectFacetVersion version,
-			IExtJSCoreLibrary coreLib) {
+	public void setDefaultCoreLib(IProjectFacetVersion version, IExtJSCoreLibrary coreLib) throws CoreException {
+		if (!coreLib.isCompatible(version)) {
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Cannot set default environment: Given library is not compatible to given version"));
+		}
+		this.defaultCoreLibs.put(version, coreLib);
+		this.storage.setDefaultCoreLib(version.getVersionString(), version.getProjectFacet().getId(), coreLib.getName());
+	}
+
+	@Override
+	public boolean isLibraryFile(IPath path) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 }

@@ -120,6 +120,10 @@ public class ExtJSAdapterFactory extends AdapterFactoryImpl {
 				return createLibrarySourceAdapter();
 			}
 			@Override
+			public Adapter caseCoreVersionDefault(CoreVersionDefault object) {
+				return createCoreVersionDefaultAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -318,6 +322,20 @@ public class ExtJSAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLibrarySourceAdapter() {
+		return null;
+	}
+
+				/**
+	 * Creates a new adapter for an object of class '{@link net.w3des.extjs.core.model.basic.CoreVersionDefault <em>Core Version Default</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see net.w3des.extjs.core.model.basic.CoreVersionDefault
+	 * @generated
+	 */
+	public Adapter createCoreVersionDefaultAdapter() {
 		return null;
 	}
 

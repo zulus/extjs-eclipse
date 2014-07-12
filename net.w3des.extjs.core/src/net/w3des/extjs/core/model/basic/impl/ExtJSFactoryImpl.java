@@ -69,6 +69,7 @@ public class ExtJSFactoryImpl extends EFactoryImpl implements ExtJSFactory {
 			case ExtJSPackage.EXECUTION_ENVIRONMENT: return createExecutionEnvironment();
 			case ExtJSPackage.LIBRARY: return createLibrary();
 			case ExtJSPackage.LIBRARY_SOURCE: return createLibrarySource();
+			case ExtJSPackage.CORE_VERSION_DEFAULT: return createCoreVersionDefault();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -226,6 +227,16 @@ public class ExtJSFactoryImpl extends EFactoryImpl implements ExtJSFactory {
 	public LibrarySource createLibrarySource() {
 		LibrarySourceImpl librarySource = new LibrarySourceImpl();
 		return librarySource;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CoreVersionDefault createCoreVersionDefault() {
+		CoreVersionDefaultImpl coreVersionDefault = new CoreVersionDefaultImpl();
+		return coreVersionDefault;
 	}
 
 				/**

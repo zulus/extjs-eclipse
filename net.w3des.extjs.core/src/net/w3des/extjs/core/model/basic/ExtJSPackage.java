@@ -937,13 +937,22 @@ public interface ExtJSPackage extends EPackage {
 	int LIBRARY_SOURCE__EXCLUSIONS = 3;
 
 				/**
+	 * The feature id for the '<em><b>Files</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIBRARY_SOURCE__FILES = 4;
+
+				/**
 	 * The number of structural features of the '<em>Library Source</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_SOURCE_FEATURE_COUNT = 4;
+	int LIBRARY_SOURCE_FEATURE_COUNT = 5;
 
 				/**
 	 * The number of operations of the '<em>Library Source</em>' class.
@@ -955,6 +964,61 @@ public interface ExtJSPackage extends EPackage {
 	int LIBRARY_SOURCE_OPERATION_COUNT = 0;
 
 				/**
+	 * The meta object id for the '{@link net.w3des.extjs.core.model.basic.impl.CoreVersionDefaultImpl <em>Core Version Default</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see net.w3des.extjs.core.model.basic.impl.CoreVersionDefaultImpl
+	 * @see net.w3des.extjs.core.model.basic.impl.ExtJSPackageImpl#getCoreVersionDefault()
+	 * @generated
+	 */
+	int CORE_VERSION_DEFAULT = 13;
+
+				/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CORE_VERSION_DEFAULT__VERSION = 0;
+
+				/**
+	 * The feature id for the '<em><b>Facet</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CORE_VERSION_DEFAULT__FACET = 1;
+
+				/**
+	 * The feature id for the '<em><b>Core Lib</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CORE_VERSION_DEFAULT__CORE_LIB = 2;
+
+				/**
+	 * The number of structural features of the '<em>Core Version Default</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CORE_VERSION_DEFAULT_FEATURE_COUNT = 3;
+
+				/**
+	 * The number of operations of the '<em>Core Version Default</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CORE_VERSION_DEFAULT_OPERATION_COUNT = 0;
+
+				/**
 	 * The meta object id for the '{@link net.w3des.extjs.core.model.basic.LibrarySourceType <em>Library Source Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -962,7 +1026,7 @@ public interface ExtJSPackage extends EPackage {
 	 * @see net.w3des.extjs.core.model.basic.impl.ExtJSPackageImpl#getLibrarySourceType()
 	 * @generated
 	 */
-	int LIBRARY_SOURCE_TYPE = 13;
+	int LIBRARY_SOURCE_TYPE = 14;
 
 				/**
 	 * The meta object id for the '<em>Type Item Array</em>' data type.
@@ -971,7 +1035,7 @@ public interface ExtJSPackage extends EPackage {
 	 * @see net.w3des.extjs.core.model.basic.impl.ExtJSPackageImpl#getTypeItemArray()
 	 * @generated
 	 */
-    int TYPE_ITEM_ARRAY = 14;
+    int TYPE_ITEM_ARRAY = 15;
 
 
     /**
@@ -1466,6 +1530,60 @@ public interface ExtJSPackage extends EPackage {
 	EAttribute getLibrarySource_Exclusions();
 
 				/**
+	 * Returns the meta object for the containment reference list '{@link net.w3des.extjs.core.model.basic.LibrarySource#getFiles <em>Files</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Files</em>'.
+	 * @see net.w3des.extjs.core.model.basic.LibrarySource#getFiles()
+	 * @see #getLibrarySource()
+	 * @generated
+	 */
+	EReference getLibrarySource_Files();
+
+				/**
+	 * Returns the meta object for class '{@link net.w3des.extjs.core.model.basic.CoreVersionDefault <em>Core Version Default</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Core Version Default</em>'.
+	 * @see net.w3des.extjs.core.model.basic.CoreVersionDefault
+	 * @generated
+	 */
+	EClass getCoreVersionDefault();
+
+				/**
+	 * Returns the meta object for the attribute '{@link net.w3des.extjs.core.model.basic.CoreVersionDefault#getVersion <em>Version</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see net.w3des.extjs.core.model.basic.CoreVersionDefault#getVersion()
+	 * @see #getCoreVersionDefault()
+	 * @generated
+	 */
+	EAttribute getCoreVersionDefault_Version();
+
+				/**
+	 * Returns the meta object for the attribute '{@link net.w3des.extjs.core.model.basic.CoreVersionDefault#getFacet <em>Facet</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Facet</em>'.
+	 * @see net.w3des.extjs.core.model.basic.CoreVersionDefault#getFacet()
+	 * @see #getCoreVersionDefault()
+	 * @generated
+	 */
+	EAttribute getCoreVersionDefault_Facet();
+
+				/**
+	 * Returns the meta object for the attribute '{@link net.w3des.extjs.core.model.basic.CoreVersionDefault#getCoreLib <em>Core Lib</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Core Lib</em>'.
+	 * @see net.w3des.extjs.core.model.basic.CoreVersionDefault#getCoreLib()
+	 * @see #getCoreVersionDefault()
+	 * @generated
+	 */
+	EAttribute getCoreVersionDefault_CoreLib();
+
+				/**
 	 * Returns the meta object for enum '{@link net.w3des.extjs.core.model.basic.LibrarySourceType <em>Library Source Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1901,6 +2019,48 @@ public interface ExtJSPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LIBRARY_SOURCE__EXCLUSIONS = eINSTANCE.getLibrarySource_Exclusions();
+
+								/**
+		 * The meta object literal for the '<em><b>Files</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIBRARY_SOURCE__FILES = eINSTANCE.getLibrarySource_Files();
+
+								/**
+		 * The meta object literal for the '{@link net.w3des.extjs.core.model.basic.impl.CoreVersionDefaultImpl <em>Core Version Default</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see net.w3des.extjs.core.model.basic.impl.CoreVersionDefaultImpl
+		 * @see net.w3des.extjs.core.model.basic.impl.ExtJSPackageImpl#getCoreVersionDefault()
+		 * @generated
+		 */
+		EClass CORE_VERSION_DEFAULT = eINSTANCE.getCoreVersionDefault();
+
+								/**
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CORE_VERSION_DEFAULT__VERSION = eINSTANCE.getCoreVersionDefault_Version();
+
+								/**
+		 * The meta object literal for the '<em><b>Facet</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CORE_VERSION_DEFAULT__FACET = eINSTANCE.getCoreVersionDefault_Facet();
+
+								/**
+		 * The meta object literal for the '<em><b>Core Lib</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CORE_VERSION_DEFAULT__CORE_LIB = eINSTANCE.getCoreVersionDefault_CoreLib();
 
 								/**
 		 * The meta object literal for the '{@link net.w3des.extjs.core.model.basic.LibrarySourceType <em>Library Source Type</em>}' enum.
