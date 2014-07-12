@@ -199,4 +199,10 @@ public interface IExtJSEnvironment {
 	 */
 	void setLibraries(IExtJSLibrary[] lib) throws CoreException;
 
+	/**
+	 * Removes core library
+	 * @throws CoreException
+	 */
+	void removeCoreLibrary() throws CoreException;
+
 }

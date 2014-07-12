@@ -93,6 +93,10 @@ public class LibSourceElement implements ILibListElement {
 		return this.getName();
 	}
 	
+	public IPath getPath() {
+		return path;
+	}
+
 	public void setPath(IPath path) {
 		this.path = path;
 		this.pathChanged = true;
@@ -125,6 +129,42 @@ public class LibSourceElement implements ILibListElement {
 	 */
 	public ILibListElement[] getChildren() {
 		return children.toArray(new ILibListElement[this.children.size()]);
+	}
+
+	public String[] getExclusions() {
+		for (final ILibListElement elm : this.getChildren()) {
+			if (elm instanceof LibSourceExclusionsElement) {
+				return ((LibSourceExclusionsElement) elm).getExclusions();
+			}
+		}
+		return new String[0];
+	}
+
+	public String[] getInclusions() {
+		for (final ILibListElement elm : this.getChildren()) {
+			if (elm instanceof LibSourceInclusionsElement) {
+				return ((LibSourceInclusionsElement) elm).getInclusions();
+			}
+		}
+		return new String[0];
+	}
+
+	public boolean isInclusionsChanged() {
+		for (final ILibListElement elm : this.getChildren()) {
+			if (elm instanceof LibSourceInclusionsElement) {
+				return ((LibSourceInclusionsElement) elm).isInclusionsChanged();
+			}
+		}
+		return false;
+	}
+
+	public boolean isExclusionsChanged() {
+		for (final ILibListElement elm : this.getChildren()) {
+			if (elm instanceof LibSourceExclusionsElement) {
+				return ((LibSourceExclusionsElement) elm).isExclusionsChanged();
+			}
+		}
+		return false;
 	}
 
 }

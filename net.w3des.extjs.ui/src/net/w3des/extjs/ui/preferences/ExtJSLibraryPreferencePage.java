@@ -14,6 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
+import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.LibrarySourceType;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -150,7 +152,120 @@ public class ExtJSLibraryPreferencePage extends PreferencePage implements IWorkb
 	}
 	
 	private void updateLibraries(IProgressMonitor monitor) throws CoreException {
-		// TODO
+		final IExtJSLibraryManager manager = ExtJSCore.getLibraryManager();
+		for (final LibElement elm : this.removedLibraries) {
+			manager.removeUserLib(elm.getLibrary());
+		}
+		for (final Object o: this.fLibList.getElements()) {
+			final LibElement elm = (LibElement) o;
+			if (elm.isNew()) {
+				saveNewLib(manager, elm);
+			}
+			else {
+				saveEditedLib(manager, elm);
+			}
+		}
+	}
+	
+	private void saveEditedLib(final IExtJSLibraryManager manager,
+			final LibElement elm) throws CoreException {
+		final IExtJSLibrary lib = elm.getLibrary();
+		if (elm.isNameChanged()) {
+			lib.setName(elm.getName());
+		}
+
+		for (final Object c : elm.getAllChildren()) {
+			if (c instanceof LibVersionElement) {
+				final LibVersionElement ver = (LibVersionElement) c;
+				final String[] spl = ver.getName().split("/");
+				IProjectFacetVersion pfv = null;
+				if (spl[0].equals("extjs")) {
+					pfv = ExtJSNature.getExtjsFacet().getVersion(spl[1]);
+				}
+				else {
+					pfv = ExtJSNature.getSenchaTouchFacet().getVersion(spl[1]);
+				}
+				
+				if (ver.isDeleted()) {
+					lib.removeCompatibleVersion(pfv);
+				}
+				else if (ver.isNew()) {
+					lib.addCompatibleVersion(pfv);
+				}
+			}
+			else if (c instanceof LibSourceElement) {
+				final LibSourceElement source = (LibSourceElement) c;
+				if (source.isDeleted()) {
+					lib.removeSource(source.getSource());
+				}
+				else if (source.isNew()) {
+					switch (source.getType()) {
+					case FOLDER:
+						lib.createFolder(source.getPath(), source.getExclusions(), source.getInclusions());
+						break;
+					case ZIP:
+						lib.createZip(source.getPath(), source.getExclusions(), source.getInclusions());
+						break;
+					case JAVASCRIPT_FILE:
+						lib.createSourceFile(source.getPath());
+						break;
+					}
+				}
+				else {
+					if (source.isNameChanged() || source.isInclusionsChanged() || source.isExclusionsChanged()) {
+						lib.removeSource(source.getSource());
+						switch (source.getType()) {
+						case FOLDER:
+							lib.createFolder(source.getPath(), source.getExclusions(), source.getInclusions());
+							break;
+						case ZIP:
+							lib.createZip(source.getPath(), source.getExclusions(), source.getInclusions());
+							break;
+						case JAVASCRIPT_FILE:
+							lib.createSourceFile(source.getPath());
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void saveNewLib(final IExtJSLibraryManager manager,
+			final LibElement elm) throws CoreException {
+		// fetch versions
+		final List<IProjectFacetVersion> versions = new ArrayList<IProjectFacetVersion>();
+		for (final Object c : elm.getChildren()) {
+			if (c instanceof LibVersionElement) {
+				final LibVersionElement ver = (LibVersionElement) c;
+				final String[] spl = ver.getName().split("/");
+				if (spl[0].equals("extjs")) {
+					versions.add(ExtJSNature.getExtjsFacet().getVersion(spl[1]));
+				}
+				else {
+					versions.add(ExtJSNature.getSenchaTouchFacet().getVersion(spl[1]));
+				}
+			}
+		}
+		
+		final IExtJSLibrary lib = manager.createUserLib(elm.getName(), versions.toArray(new IProjectFacetVersion[versions.size()]));
+		
+		for (final Object c : elm.getChildren()) {
+			if (c instanceof LibSourceElement) {
+				final LibSourceElement source = (LibSourceElement) c;
+				switch (source.getType()) {
+				case FOLDER:
+					lib.createFolder(source.getPath(), source.getExclusions(), source.getInclusions());
+					break;
+				case ZIP:
+					lib.createZip(source.getPath(), source.getExclusions(), source.getInclusions());
+					break;
+				case JAVASCRIPT_FILE:
+					lib.createSourceFile(source.getPath());
+					break;
+				}
+			}
+		}
 	}
 	
 	protected void doSelectionChanged(TreeListDialogField field) {

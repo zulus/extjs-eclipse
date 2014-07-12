@@ -101,5 +101,9 @@ public class LibSourceInclusionsElement implements ILibListElement {
 		this.inclusionsChanged = true;
 		this.setName();
 	}
+	
+	public String[] getInclusions() {
+		return this.inclusions.toArray(new String[this.inclusions.size()]);
+	}
 
 }

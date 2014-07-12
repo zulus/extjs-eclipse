@@ -231,6 +231,12 @@ public class EnvImpl implements IExtJSEnvironment {
 	}
 
 	@Override
+	public void removeCoreLibrary() throws CoreException {
+		this.env.setCoreType(null);
+		this.env.setCorePath(null);
+	}
+
+	@Override
 	public void setCoreLibraryZip(File zipFile) throws CoreException {
 		if (zipFile == null) {
 			this.env.setCoreType(null);

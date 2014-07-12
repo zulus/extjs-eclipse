@@ -101,5 +101,9 @@ public class LibSourceExclusionsElement implements ILibListElement {
 		this.exclusionsChanged = true;
 		this.setName();
 	}
+	
+	public String[] getExclusions() {
+		return this.exclusions.toArray(new String[this.exclusions.size()]);
+	}
 
 }

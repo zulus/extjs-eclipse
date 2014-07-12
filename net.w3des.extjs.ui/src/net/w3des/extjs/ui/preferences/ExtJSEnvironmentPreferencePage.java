@@ -10,11 +10,13 @@
  ******************************************************************************/
 package net.w3des.extjs.ui.preferences;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.w3des.extjs.core.ExtJSNature;
+import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -146,7 +148,112 @@ public class ExtJSEnvironmentPreferencePage extends PreferencePage implements IW
 	}
 	
 	private void updateEnvironments(IProgressMonitor monitor) throws CoreException {
-		// TODO
+		final IExtJSLibraryManager manager = ExtJSCore.getLibraryManager();
+		for (final EnvElement elm : this.removedEnvironments) {
+			manager.removeUserEnv(elm.getEnvironment());
+		}
+		for (final Object o: this.fEnvList.getElements()) {
+			final EnvElement elm = (EnvElement) o;
+			if (elm.isNew()) {
+				saveNewEnv(manager, elm);
+			}
+			else {
+				saveEditedEnv(manager, elm);
+			}
+		}
+	}
+
+	private void saveEditedEnv(final IExtJSLibraryManager manager,
+			final EnvElement elm) throws CoreException {
+		final IExtJSEnvironment env = elm.getEnvironment();
+		if (elm.isNameChanged()) {
+			env.setName(elm.getName());
+		}
+		if (elm.isCoreChanged()) {
+			switch (elm.getCoreType()) {
+			case NONE:
+				env.removeCoreLibrary();
+				break;
+			case ZIP:
+				env.setCoreLibraryZip(new File(elm.getCoreFileOrZip()));
+				break;
+			case FOLDER:
+				env.setCoreLibraryFolder(new File(elm.getCoreFileOrZip()));
+				break;
+			}
+		}
+		for (final Object c : elm.getAllChildren()) {
+			if (c instanceof EnvVersionElement) {
+				final EnvVersionElement ver = (EnvVersionElement) c;
+				final String[] spl = ver.getName().split("/");
+				IProjectFacetVersion pfv = null;
+				if (spl[0].equals("extjs")) {
+					pfv = ExtJSNature.getExtjsFacet().getVersion(spl[1]);
+				}
+				else {
+					pfv = ExtJSNature.getSenchaTouchFacet().getVersion(spl[1]);
+				}
+				
+				if (ver.isDeleted()) {
+					env.removeCompatibleVersion(pfv);
+				}
+				else if (ver.isNew()) {
+					env.addCompatibleVersion(pfv);
+				}
+			}
+			else if (c instanceof EnvLibElement) {
+				final EnvLibElement lib = (EnvLibElement) c;
+				final IExtJSLibrary extjsLib = manager.getLibrary(lib.getName());
+				if (lib.isDeleted()) {
+					env.removeLibrary(extjsLib);
+				}
+				else if (lib.isNew()) {
+					env.addLibrary(extjsLib);
+				}
+			}
+		}
+	}
+
+	private void saveNewEnv(final IExtJSLibraryManager manager,
+			final EnvElement elm) throws CoreException {
+		// fetch versions
+		final List<IProjectFacetVersion> versions = new ArrayList<IProjectFacetVersion>();
+		for (final Object c : elm.getChildren()) {
+			if (c instanceof EnvVersionElement) {
+				final EnvVersionElement ver = (EnvVersionElement) c;
+				final String[] spl = ver.getName().split("/");
+				if (spl[0].equals("extjs")) {
+					versions.add(ExtJSNature.getExtjsFacet().getVersion(spl[1]));
+				}
+				else {
+					versions.add(ExtJSNature.getSenchaTouchFacet().getVersion(spl[1]));
+				}
+			}
+		}
+		
+		// create core lib
+		final IExtJSEnvironment env = manager.createUserEnv(elm.getName(), versions.toArray(new IProjectFacetVersion[versions.size()]));
+		
+		// set core folder/zip
+		switch (elm.getCoreType()) {
+		case NONE:
+			// do nothing;
+			break;
+		case ZIP:
+			env.setCoreLibraryZip(new File(elm.getCoreFileOrZip()));
+			break;
+		case FOLDER:
+			env.setCoreLibraryFolder(new File(elm.getCoreFileOrZip()));
+			break;
+		}
+		
+		// add libraries
+		for (final Object c : elm.getChildren()) {
+			if (c instanceof EnvLibElement) {
+				final EnvLibElement lib = (EnvLibElement) c;
+				env.addLibrary(manager.getLibrary(lib.getName()));
+			}
+		}
 	}
 	
 	protected void doSelectionChanged(TreeListDialogField field) {

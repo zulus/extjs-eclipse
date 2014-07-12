@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.w3des.extjs.core.ExtJSNature;
+import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.ExtJSUI;
@@ -52,7 +53,7 @@ public class ExtJSCoreDefaultPreferencePage extends PreferencePage implements IW
 	private static final int IDX_DOWNLOAD = 0;
 	private static final int IDX_CHANGE = 1;
 	
-	private Map<IProjectFacetVersion, String> newDefaults = new HashMap<IProjectFacetVersion, String>();
+	private Map<IProjectFacetVersion, IExtJSCoreLibrary> newDefaults = new HashMap<IProjectFacetVersion, IExtJSCoreLibrary>();
 	
 	public ExtJSCoreDefaultPreferencePage() {
 		setPreferenceStore(ExtJSUI.getDefault().getPreferenceStore());
@@ -151,7 +152,10 @@ public class ExtJSCoreDefaultPreferencePage extends PreferencePage implements IW
 	}
 	
 	private void updateDefaultLibs(IProgressMonitor monitor) throws CoreException {
-		// TODO
+		final IExtJSLibraryManager manager = ExtJSCore.getLibraryManager();
+		for (final Map.Entry<IProjectFacetVersion, IExtJSCoreLibrary> defEntry : this.newDefaults.entrySet()) {
+			manager.setDefaultCoreLib(defEntry.getKey(), defEntry.getValue());
+		}
 	}
 	
 	protected void doSelectionChanged(TreeListDialogField field) {
@@ -195,7 +199,7 @@ public class ExtJSCoreDefaultPreferencePage extends PreferencePage implements IW
 					}
 				}
 				lib.setDefault(true);
-				this.newDefaults.put(fv, lib.getCoreLib().getName());
+				this.newDefaults.put(fv, lib.getCoreLib());
 				this.fCoreLibList.refresh(lib);
 			}
 			doSelectionChanged(this.fCoreLibList);
