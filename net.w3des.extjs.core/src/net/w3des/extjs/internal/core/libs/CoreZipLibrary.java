@@ -77,9 +77,12 @@ public class CoreZipLibrary extends AbstractCoreZipLibrary {
 
 	private String corePath;
 
-	public CoreZipLibrary(String name, String corePath) throws CoreException {
+	private IExtJSIndex index;
+
+	public CoreZipLibrary(String name, String corePath, IExtJSIndex index) throws CoreException {
 		this.name = name;
 		this.corePath = corePath;
+		this.index = index;
 		try {
 			this.baseUri = new File(corePath).toURI();
 			this.zipLastModified = new File(corePath).lastModified();
@@ -92,8 +95,7 @@ public class CoreZipLibrary extends AbstractCoreZipLibrary {
 
 	@Override
 	public IExtJSIndex getIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.index;
 	}
 
 	@Override

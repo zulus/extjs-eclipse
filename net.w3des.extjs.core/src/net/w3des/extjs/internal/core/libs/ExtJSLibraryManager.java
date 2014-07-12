@@ -112,12 +112,12 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
    				final URL url = FileLocator.resolve(bundle.getEntry(fname));
    				IExtJSCoreLibrary lib = null; 
    				if (facet == facet1) {
-   					final CoreZipLibrary zip = new CoreZipLibrary(name, url.toString().substring(6));
+   					final CoreZipLibrary zip = new CoreZipLibrary(name, url.toString().substring(6), this.storage.getCoreLibIndex(name));
    					zip.check();
    					lib = zip;
    				}
    				else {
-   					final CoreTouchZipLibrary zip = new CoreTouchZipLibrary(name, url.toString().substring(6));
+   					final CoreTouchZipLibrary zip = new CoreTouchZipLibrary(name, url.toString().substring(6), this.storage.getCoreLibIndex(name));
    					zip.check();
    					lib = zip;
    				}
@@ -315,13 +315,13 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 		case FOLDER:
 			if (facet.equals(ExtJSNature.getExtjsFacet()))
 			{
-				final CoreFolderLibrary folderLib = new CoreFolderLibrary("test", path);
+				final CoreFolderLibrary folderLib = new CoreFolderLibrary("test", path, null);
 				folderLib.check();
 				return folderLib;
 			}
 			if (facet.equals(ExtJSNature.getSenchaTouchFacet()))
 			{
-				final CoreTouchFolderLibrary folderLib = new CoreTouchFolderLibrary("test", path);
+				final CoreTouchFolderLibrary folderLib = new CoreTouchFolderLibrary("test", path, null);
 				folderLib.check();
 				return folderLib;
 			}
@@ -329,13 +329,13 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 		case ZIP:
 			if (facet.equals(ExtJSNature.getExtjsFacet()))
 			{
-				final CoreZipLibrary zipLib = new CoreZipLibrary("test", path);
+				final CoreZipLibrary zipLib = new CoreZipLibrary("test", path, null);
 				zipLib.check();
 				return zipLib;
 			}
 			if (facet.equals(ExtJSNature.getSenchaTouchFacet()))
 			{
-				final CoreTouchZipLibrary zipLib = new CoreTouchZipLibrary("test", path);
+				final CoreTouchZipLibrary zipLib = new CoreTouchZipLibrary("test", path, null);
 				zipLib.check();
 				return zipLib;
 			}

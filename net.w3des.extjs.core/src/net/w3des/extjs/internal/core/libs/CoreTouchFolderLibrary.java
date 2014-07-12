@@ -69,16 +69,18 @@ public class CoreTouchFolderLibrary implements IExtJSCoreLibrary {
     
 	private String name;
 
-	public CoreTouchFolderLibrary(String name, String corePath) throws CoreException {
+	private IExtJSIndex index;
+
+	public CoreTouchFolderLibrary(String name, String corePath, IExtJSIndex index) throws CoreException {
 		this.name = name;
 		this.mainFolder = new File(corePath);
 		this.baseUri = this.mainFolder.toString();
+		this.index = index;
 	}
 
 	@Override
 	public IExtJSIndex getIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.index;
 	}
 
 	@Override

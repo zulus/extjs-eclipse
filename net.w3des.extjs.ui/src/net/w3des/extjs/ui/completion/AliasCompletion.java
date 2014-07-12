@@ -41,7 +41,7 @@ public class AliasCompletion extends AbstractCompletion {
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
         final IExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
 
-        for (final IExtJSFile f : project.getIndex().getFiles()) {
+        for (final IExtJSFile f : project.getCumulatedIndex().getFiles()) {
             for (final IAlias a : f.getAliases()) {
 
                 if (a.getRawName().startsWith(start)) {

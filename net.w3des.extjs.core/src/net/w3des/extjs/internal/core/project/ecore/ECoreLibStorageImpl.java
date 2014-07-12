@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.core.model.basic.CoreVersionDefault;
@@ -346,6 +347,22 @@ public class ECoreLibStorageImpl implements ILibraryStorage {
 			return new ExtJSFile(file);
 		}
 		return null;
+	}
+
+	@Override
+	public IExtJSIndex getCoreLibIndex(String libName) {
+		if (!libName.startsWith("core-")) return null;
+		Library lib = this.coreLibraries.get(libName);
+		if (lib == null) {
+			lib = ExtJSFactory.eINSTANCE.createLibrary();
+			lib.setName(libName);
+			final LibrarySource libsrc = ExtJSFactory.eINSTANCE.createLibrarySource();
+			libsrc.setPath("");
+			libsrc.setType(LibrarySourceType.ZIP_FILE);
+			lib.getSources().add(libsrc);
+			this.coreLibraries.put(libName,  lib);
+		}
+		return new LibImpl(this, lib);
 	}
 
 }

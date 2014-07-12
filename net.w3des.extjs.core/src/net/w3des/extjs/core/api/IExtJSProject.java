@@ -28,6 +28,18 @@ public interface IExtJSProject {
 	IExtJSIndex getIndex();
 	
 	/**
+	 * Returns all environment libraries/ core libraries and user defined libraries added to this project
+	 * @return
+	 */
+	IExtJSLibrary[] getLibraries();
+	
+	/**
+	 * gets a cumulated index over the project itself and all libraries
+	 * @return
+	 */
+	IExtJSIndex getCumulatedIndex();
+	
+	/**
 	 * Returns the eclipse project
 	 * @return
 	 */

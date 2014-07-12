@@ -12,8 +12,23 @@ package net.w3des.extjs.internal.core.project.ecore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import net.w3des.extjs.core.ExtJSNature;
+import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSIndex;
+import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.api.IExtJSProject;
+import net.w3des.extjs.core.api.ILibrarySource;
+import net.w3des.extjs.core.model.basic.ExtJSFactory;
+import net.w3des.extjs.core.model.basic.File;
+import net.w3des.extjs.core.model.basic.Library;
+import net.w3des.extjs.core.model.basic.LibrarySource;
+import net.w3des.extjs.core.model.basic.LibrarySourceType;
+import net.w3des.extjs.internal.core.ExtJSCore;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -22,18 +37,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import net.w3des.extjs.core.ExtJSNature;
-import net.w3des.extjs.core.api.IExtJSIndex;
-import net.w3des.extjs.core.api.IExtJSLibrary;
-import net.w3des.extjs.core.api.IExtJSProject;
-import net.w3des.extjs.core.api.ILibrarySource;
-import net.w3des.extjs.core.model.basic.ExtJSFactory;
-import net.w3des.extjs.core.model.basic.Library;
-import net.w3des.extjs.core.model.basic.LibrarySource;
-import net.w3des.extjs.core.model.basic.LibrarySourceType;
-import net.w3des.extjs.internal.core.ExtJSCore;
-
-public class LibImpl implements IExtJSLibrary {
+public class LibImpl implements IExtJSLibrary, IExtJSIndex {
 
 	private Library lib;
 	private ECoreLibStorageImpl storage;
@@ -45,8 +49,7 @@ public class LibImpl implements IExtJSLibrary {
 
 	@Override
 	public IExtJSIndex getIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
@@ -247,6 +250,29 @@ public class LibImpl implements IExtJSLibrary {
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
 		return this.lib.getVersions().contains(version.getVersionString());
+	}
+
+	@Override
+	public Collection<IExtJSFile> getFiles() {
+		final List<IExtJSFile> result = new ArrayList<IExtJSFile>();
+		for (final LibrarySource src : this.lib.getSources()) {
+			for (final File file : src.getFiles()) {
+				result.add(new ExtJSFile(file));
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void clearIndex() {
+		for (final LibrarySource src : this.lib.getSources()) {
+			src.getFiles().clear();
+		}
+	}
+
+	@Override
+	public IProject getProject() {
+		return null;
 	}
 
 }

@@ -31,7 +31,7 @@ public class LayoutCompletion extends AliasCompletion {
     protected void computeCompletionProposals(boolean inString, String start, List<ICompletionProposal> proposals,
             JavaContentAssistInvocationContext context, IProgressMonitor monitor) {
         final IExtJSProject project = ExtJSCore.getProjectManager().createProject(context.getProject().getProject());
-        for (final IExtJSFile f : project.getIndex().getFiles()) {
+        for (final IExtJSFile f : project.getCumulatedIndex().getFiles()) {
             for (final IAlias a : f.getAliases()) {
                 if (a instanceof ILayout && a.getName().startsWith(start)) {
                     proposals.add(createTextProposal(inString, aliasImage(a), a.getName(),

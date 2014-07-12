@@ -15,10 +15,17 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import net.w3des.extjs.core.ExtJSNature;
+import net.w3des.extjs.core.IExtJSLibraryManager;
+import net.w3des.extjs.core.api.IExtJSCoreLibrary;
+import net.w3des.extjs.core.api.IExtJSEnvironment;
+import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.core.api.IExtJSIndex;
+import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.core.api.ProjectType;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -47,7 +54,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
  * 
  * @author mepeisen
  */
-public class ProjectImpl implements IExtJSProject {
+public class ProjectImpl implements IExtJSProject, IExtJSIndex {
 	
 	private IExtJSIndex index;
 	
@@ -287,6 +294,91 @@ public class ProjectImpl implements IExtJSProject {
 			return fProject.hasProjectFacet(facetTouch);
 		}
 		return false;
+	}
+
+	@Override
+	public Collection<IExtJSFile> getFiles() {
+		final List<IExtJSFile> result = new ArrayList<IExtJSFile>();
+		result.addAll(this.getIndex().getFiles());
+		for (final IExtJSLibrary lib : this.getLibraries()) {
+			final IExtJSIndex index = lib.getIndex();
+			if (index != null) {
+				result.addAll(index.getFiles());
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void clearIndex() {
+		this.getIndex().clearIndex();
+		for (final IExtJSLibrary lib : this.getLibraries()) {
+			final IExtJSIndex index = lib.getIndex();
+			if (index != null) {
+				index.clearIndex();
+			}
+		}
+	}
+
+	@Override
+	public IExtJSLibrary[] getLibraries() {
+		final IExtJSLibraryManager manager = ExtJSCore.getLibraryManager();
+		final List<IExtJSLibrary> result = new ArrayList<IExtJSLibrary>();
+		try {
+			// env
+			String envName = this.getEnvironmentName();
+			if (envName == null) {
+				final IProjectFacetVersion extjsVersion = getVersion();
+				final IProjectFacetVersion touchVersion = getTouchVersion();
+				if (extjsVersion != null) {
+					envName = manager.getDefaultEnvName(extjsVersion);
+				}
+				else if (touchVersion != null) {
+					envName = manager.getDefaultEnvName(touchVersion);
+				}
+			}
+			if (envName != null) {
+				final IExtJSEnvironment env = manager.getEnv(envName);
+				if (env != null) {
+					if (env.getCore() == null) {
+						// fall back to default builtin lib
+						for (final IProjectFacetVersion ver : env.getCompatibleVersions(ExtJSNature.getExtjsFacet())) {
+							final IExtJSCoreLibrary lib = manager.getDefaultCoreLib(ver);
+							if (lib != null) {
+								result.add(lib);
+								break;
+							}
+						}
+						for (final IProjectFacetVersion ver : env.getCompatibleVersions(ExtJSNature.getSenchaTouchFacet())) {
+							final IExtJSCoreLibrary lib = manager.getDefaultCoreLib(ver);
+							if (lib != null) {
+								result.add(lib);
+								break;
+							}
+						}
+					}
+					else {
+						result.add(env.getCore());
+					}
+				}
+			}
+			
+			for (final String libName : this.getLibraryNames()) {
+				final IExtJSLibrary lib = manager.getLibrary(libName);
+				if (lib != null) {
+					result.add(lib);
+				}
+			}
+		}
+		catch (CoreException ex) {
+			ExtJSCore.error(ex);
+		}
+		return result.toArray(new IExtJSLibrary[result.size()]);
+	}
+
+	@Override
+	public IExtJSIndex getCumulatedIndex() {
+		return this;
 	}
 
 }

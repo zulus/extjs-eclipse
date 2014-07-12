@@ -70,16 +70,18 @@ public class CoreFolderLibrary implements IExtJSCoreLibrary {
     
 	private String name;
 
-	public CoreFolderLibrary(String name, String corePath) throws CoreException {
+	private IExtJSIndex index;
+
+	public CoreFolderLibrary(String name, String corePath, IExtJSIndex index) throws CoreException {
 		this.name = name;
 		this.mainFolder = new File(corePath);
 		this.baseUri = this.mainFolder.toString();
+		this.index = index;
 	}
 
 	@Override
 	public IExtJSIndex getIndex() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.index;
 	}
 
 	@Override

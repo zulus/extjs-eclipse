@@ -12,6 +12,7 @@ package net.w3des.extjs.internal.core.libs;
 
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSFile;
+import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.ILibrarySource;
 
@@ -123,5 +124,12 @@ public interface ILibraryStorage {
 	 * @return the file or {@code null} if it was not found
 	 */
 	IExtJSFile getFile(String filePath, String libName, ILibrarySource src, boolean forceCreation);
+
+	/**
+	 * Returns the library index for given core library
+	 * @param name
+	 * @return
+	 */
+	IExtJSIndex getCoreLibIndex(String name);
 
 }

@@ -177,14 +177,14 @@ public class EnvImpl implements IExtJSEnvironment {
 		switch (this.env.getCoreType()) {
 		case FOLDER:
 			if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-				return new CoreFolderLibrary(this.getName(), this.env.getCorePath());
+				return new CoreFolderLibrary(this.getName(), this.env.getCorePath(), this.storage.getCoreLibIndex(this.getName()));
 			}
-			return new CoreTouchFolderLibrary(this.getName(), this.env.getCorePath());
+			return new CoreTouchFolderLibrary(this.getName(), this.env.getCorePath(), this.storage.getCoreLibIndex(this.getName()));
 		case ZIP_FILE:
 			if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-				return new CoreZipLibrary(this.getName(), this.env.getCorePath());
+				return new CoreZipLibrary(this.getName(), this.env.getCorePath(), this.storage.getCoreLibIndex(this.getName()));
 			}
-			return new CoreTouchZipLibrary(this.getName(), this.env.getCorePath());
+			return new CoreTouchZipLibrary(this.getName(), this.env.getCorePath(), this.storage.getCoreLibIndex(this.getName()));
 		default:
 			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "Invalid core type"));
 		}
@@ -193,40 +193,40 @@ public class EnvImpl implements IExtJSEnvironment {
 	@Override
 	public void checkCoreZip(File zipFile) throws CoreException {
 		if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-			new CoreZipLibrary(this.getName(), zipFile.getAbsolutePath()).check();
+			new CoreZipLibrary(this.getName(), zipFile.getAbsolutePath(), null).check();
 		}
 		else if (this.isOfType(ExtJSNature.getSenchaTouchFacet())) {
-			new CoreTouchZipLibrary(this.getName(), zipFile.getAbsolutePath()).check();
+			new CoreTouchZipLibrary(this.getName(), zipFile.getAbsolutePath(), null).check();
 		}
 	}
 
 	@Override
 	public void checkCoreZip(IFile zipFile) throws CoreException {
 		if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-			new CoreZipLibrary(this.getName(), zipFile.getLocation().toOSString()).check();
+			new CoreZipLibrary(this.getName(), zipFile.getLocation().toOSString(), null).check();
 		}
 		else if (this.isOfType(ExtJSNature.getSenchaTouchFacet())) {
-			new CoreTouchZipLibrary(this.getName(), zipFile.getLocation().toOSString()).check();
+			new CoreTouchZipLibrary(this.getName(), zipFile.getLocation().toOSString(), null).check();
 		}
 	}
 
 	@Override
 	public void checkCoreFolder(File folder) throws CoreException {
 		if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-			new CoreFolderLibrary(this.getName(), folder.getAbsolutePath()).check();
+			new CoreFolderLibrary(this.getName(), folder.getAbsolutePath(), null).check();
 		}
 		else if (this.isOfType(ExtJSNature.getSenchaTouchFacet())) {
-			new CoreTouchFolderLibrary(this.getName(), folder.getAbsolutePath()).check();
+			new CoreTouchFolderLibrary(this.getName(), folder.getAbsolutePath(), null).check();
 		}
 	}
 
 	@Override
 	public void checkCoreFolder(IFolder folder) throws CoreException {
 		if (this.isOfType(ExtJSNature.getExtjsFacet())) {
-			new CoreFolderLibrary(this.getName(), folder.getLocation().toOSString()).check();
+			new CoreFolderLibrary(this.getName(), folder.getLocation().toOSString(), null).check();
 		}
 		else if (this.isOfType(ExtJSNature.getSenchaTouchFacet())) {
-			new CoreTouchFolderLibrary(this.getName(), folder.getLocation().toOSString()).check();
+			new CoreTouchFolderLibrary(this.getName(), folder.getLocation().toOSString(), null).check();
 		}
 	}
 

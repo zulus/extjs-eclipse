@@ -24,7 +24,7 @@ public interface IExtJSLibrary {
 
 	/**
 	 * Returns the extjs index
-	 * @return extjs index
+	 * @return extjs index; maybe null
 	 */
 	IExtJSIndex getIndex();
 	
