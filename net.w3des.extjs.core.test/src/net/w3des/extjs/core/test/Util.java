@@ -150,7 +150,7 @@ abstract public class Util {
             for (String dir : dirs) {
                 createDir(dir);
                 if (jsproject != null) {
-                    ent.add(JavaScriptCore.newSourceEntry(new Path(project.getLocation().toString() + dir)));
+                    ent.add(JavaScriptCore.newSourceEntry(project.getFullPath().append(dir)));
                 }
             }
             if (jsproject != null) {
