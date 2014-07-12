@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.CoreType;
-import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -38,10 +37,12 @@ import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-public class CoreZipLibrary implements IExtJSCoreLibrary {
+public class CoreZipLibrary extends AbstractCoreZipLibrary {
     
     /** the underlying archive */
     ZipFile zip;
+    
+    long zipLastModified;
     
     URI baseUri;
     
@@ -81,6 +82,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
 		this.corePath = corePath;
 		try {
 			this.baseUri = new File(corePath).toURI();
+			this.zipLastModified = new File(corePath).lastModified();
 			this.zip = new ZipFile(corePath);
 		}
 		catch (IOException ex) {
@@ -335,19 +337,19 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String openExtJs() throws IOException
         {
-        	return URIUtil.toJarURI(baseUri, new Path(ext.getName())).toString();
+        	return getJsFilePath(zip, ext, zipLastModified);
         }
 
         @Override
         public String[] openExtAllJs() throws IOException
         {
-            return new String[]{URIUtil.toJarURI(baseUri, new Path(extAll.getName())).toString()};
+            return new String[]{getJsFilePath(zip, extAll, zipLastModified)};
         }
 
         @Override
         public String[] openExtAllDebugJs() throws IOException
         {
-            return new String[]{URIUtil.toJarURI(baseUri, new Path(extAllDebug.getName())).toString()};
+            return new String[]{getJsFilePath(zip, extAllDebug, zipLastModified)};
         }
     }
     
@@ -379,7 +381,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String[] openLocale(String name) throws IOException
         {
-            return new String[]{URIUtil.toJarURI(baseUri, new Path(mainDirName + "/locale/ext-lang-" + name + ".js")).toString()};
+            return new String[]{getJsFilePath(zip, zip.getEntry(mainDirName + "/locale/ext-lang-" + name + ".js"), zipLastModified)};
         }
     }
     
@@ -458,12 +460,12 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
             return new String[]{URIUtil.toJarURI(baseUri, new Path(mainDirName + "/packages/ext-locale/overrides/" + name + "/ext-locale-" + name + ".js")).toString()}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
         
-        private void addAllSources(List<String> result) {
+        private void addAllSources(List<String> result) throws IOException {
         	final Enumeration<? extends ZipEntry> enumEntries = zip.entries();
         	while (enumEntries.hasMoreElements()) {
         		final ZipEntry entry = enumEntries.nextElement();
         		if (entry.getName().startsWith(mainDirName + "/src/") || entry.getName().startsWith(mainDirName + "/overrides/")) {
-        			result.add(URIUtil.toJarURI(baseUri, new Path(entry.getName())).toString());
+        			result.add(getJsFilePath(zip, entry, zipLastModified));
         		}
         	}
         }
@@ -472,7 +474,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         public String[] openExtAllJs() throws IOException
         {
         	final List<String> result = new ArrayList<String>();
-        	result.add(URIUtil.toJarURI(baseUri, new Path(extAll.getName())).toString());
+        	result.add(getJsFilePath(zip, extAll, zipLastModified));
         	this.addAllSources(result);
             return result.toArray(new String[result.size()]);
         }
@@ -481,7 +483,7 @@ public class CoreZipLibrary implements IExtJSCoreLibrary {
         public String[] openExtAllDebugJs() throws IOException
         {
         	final List<String> result = new ArrayList<String>();
-        	result.add(URIUtil.toJarURI(baseUri, new Path(extAllDebug.getName())).toString());
+        	result.add(getJsFilePath(zip, extAllDebug, zipLastModified));
         	this.addAllSources(result);
             return result.toArray(new String[result.size()]);
         }

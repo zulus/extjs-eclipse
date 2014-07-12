@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.api.CoreType;
-import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSIndex;
 import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.internal.core.ExtJSCore;
@@ -34,14 +33,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
+public class CoreTouchZipLibrary extends AbstractCoreZipLibrary {
     
     /** the underlying archive */
     ZipFile zip;
+    
+    long zipLastModified;
     
     URI baseUri;
     
@@ -81,6 +81,7 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
 		this.corePath = corePath;
 		try {
 			this.baseUri = new File(corePath).toURI();
+			this.zipLastModified = new File(corePath).lastModified();
 			this.zip = new ZipFile(corePath);
 		}
 		catch (IOException ex) {
@@ -308,19 +309,19 @@ public class CoreTouchZipLibrary implements IExtJSCoreLibrary {
         @Override
         public String openExtJs() throws IOException
         {
-        	return URIUtil.toJarURI(baseUri, new Path(touch.getName())).toString();
+        	return getJsFilePath(zip, touch, zipLastModified);
         }
 
         @Override
         public String[] openExtAllJs() throws IOException
         {
-            return new String[]{URIUtil.toJarURI(baseUri, new Path(touchAll.getName())).toString()};
+            return new String[]{getJsFilePath(zip, touchAll, zipLastModified)};
         }
 
         @Override
         public String[] openExtAllDebugJs() throws IOException
         {
-            return new String[]{URIUtil.toJarURI(baseUri, new Path(touchAllDebug.getName())).toString()};
+            return new String[]{getJsFilePath(zip, touchAllDebug, zipLastModified)};
         }
     }
     
