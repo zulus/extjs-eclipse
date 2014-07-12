@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -213,7 +214,12 @@ final public class ExtJSProjectManager implements IExtJSProjectManager, IResourc
 
     @Override
     public IExtJSFile getFile(String filePath) {
-    	return this.storage.getFile(filePath, true);
+        final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        final IResource member = workspaceRoot.findMember(filePath);
+    	if (member != null && this.onBuildPath(member)) {
+        	return this.storage.getFile(filePath, true);
+    	}
+    	return null;
     }
 
     @Override

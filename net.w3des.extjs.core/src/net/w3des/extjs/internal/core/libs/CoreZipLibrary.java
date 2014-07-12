@@ -464,7 +464,7 @@ public class CoreZipLibrary extends AbstractCoreZipLibrary {
         	final Enumeration<? extends ZipEntry> enumEntries = zip.entries();
         	while (enumEntries.hasMoreElements()) {
         		final ZipEntry entry = enumEntries.nextElement();
-        		if (entry.getName().startsWith(mainDirName + "/src/") || entry.getName().startsWith(mainDirName + "/overrides/")) {
+        		if (!entry.isDirectory() && (entry.getName().startsWith(mainDirName + "/src/") || entry.getName().startsWith(mainDirName + "/overrides/"))) {
         			result.add(getJsFilePath(zip, entry, zipLastModified));
         		}
         	}

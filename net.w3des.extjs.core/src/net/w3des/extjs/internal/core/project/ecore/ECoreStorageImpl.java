@@ -236,7 +236,6 @@ public class ECoreStorageImpl implements IIndexStorage {
             } catch (Throwable e) {
                 ExtJSCore.error(e);
             }
-
         }
 
         return new ExtJSFile(file);

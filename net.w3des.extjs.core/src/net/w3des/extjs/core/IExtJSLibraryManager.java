@@ -13,6 +13,7 @@ package net.w3des.extjs.core;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
+import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 
 import org.eclipse.core.runtime.CoreException;
@@ -158,5 +159,7 @@ public interface IExtJSLibraryManager {
 	 * @return true if the file is present on a library
 	 */
 	boolean isLibraryFile(IPath path);
+
+    public IExtJSFile getFile(String file);
 
 }

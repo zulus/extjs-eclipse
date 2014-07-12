@@ -10,7 +10,10 @@
  ******************************************************************************/
 package net.w3des.extjs.internal.core.libs;
 
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +24,9 @@ import net.w3des.extjs.core.IExtJSLibraryManager;
 import net.w3des.extjs.core.api.CoreType;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
+import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.api.ILibrarySource;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.internal.core.project.ecore.ECoreLibStorageImpl;
 
@@ -354,8 +359,147 @@ public class ExtJSLibraryManager implements IExtJSLibraryManager {
 
 	@Override
 	public boolean isLibraryFile(IPath path) {
-		// TODO Auto-generated method stub
+		final IPath extractedCore = ExtJSCore.getDefault().getStateLocation().append(".jscore");
+		final IPath extractedZips = ExtJSCore.getDefault().getStateLocation().append(".jslibs");
+		if (extractedCore.isPrefixOf(path)) {
+			// this is part of a library zip
+			final String libName = path.segment(extractedCore.segmentCount());
+			return this.coreLibs.containsKey(libName);
+		}
+		if (extractedZips.isPrefixOf(path)) {
+			// this is part of a library zip
+			final String libName = path.segment(extractedCore.segmentCount());
+			return this.storage.hasLib(libName);
+		}
+		
+		// iterate all core libraries
+		for (final IExtJSCoreLibrary coreLib : this.coreLibs.values()) {
+			try {
+				for (final ILibrarySource src : coreLib.getSources()) {
+					switch (src.getSourceType()) {
+					case JAVASCRIPT_FILE:
+						if (path.equals(src.getFullPath())) {
+							return true;
+						}
+						break;
+					case FOLDER:
+				        // TODO allow exclude
+						if (src.getFullPath().isPrefixOf(path)) {
+							return true;
+						}
+						break;
+					case ZIP:
+						// ignore; zip files are extracted to <extractedCore> location
+						break;
+					}
+				}
+			} catch (CoreException ex) {
+				ExtJSCore.error(ex);
+			}
+		}
+		
+		// iterate all user libraries
+		for (final IExtJSLibrary lib : this.storage.getLibraries()) {
+			try {
+				for (final ILibrarySource src : lib.getSources()) {
+					switch (src.getSourceType()) {
+					case JAVASCRIPT_FILE:
+						if (path.equals(src.getFullPath())) {
+							return true;
+						}
+						break;
+					case FOLDER:
+				        // TODO allow exclude
+						if (src.getFullPath().isPrefixOf(path)) {
+							return true;
+						}
+						break;
+					case ZIP:
+						// ignore; zip files are extracted to <extractedZips> location
+						break;
+					}
+				}
+			} catch (CoreException ex) {
+				ExtJSCore.error(ex);
+			}
+		}
 		return false;
+	}
+
+	@Override
+	public IExtJSFile getFile(String file) {
+		MessageDigest m;
+		try {
+			m = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException(e);
+		}
+		final IPath path = new Path(file);
+		final IPath extractedCore = ExtJSCore.getDefault().getStateLocation().append(".jscore");
+		final IPath extractedZips = ExtJSCore.getDefault().getStateLocation().append(".jslibs");
+		
+		// iterate all core libraries
+		for (final IExtJSCoreLibrary coreLib : this.coreLibs.values()) {
+			try {
+				for (final ILibrarySource src : coreLib.getSources()) {
+					switch (src.getSourceType()) {
+					case JAVASCRIPT_FILE:
+						if (path.equals(src.getFullPath())) {
+							return this.storage.getFile(file, coreLib.getName(), src, true);
+						}
+						break;
+					case FOLDER:
+				        // TODO allow exclude
+						if (src.getFullPath().isPrefixOf(path)) {
+							return this.storage.getFile(file, coreLib.getName(), src, true);
+						}
+						break;
+					case ZIP:
+						if (extractedCore.isPrefixOf(path) && path.segmentCount() > extractedCore.segmentCount() && path.segment(extractedCore.segmentCount()).equals(coreLib.getName())) {
+							return this.storage.getFile(file, coreLib.getName(), src, true);
+						}
+						break;
+					}
+				}
+			} catch (CoreException ex) {
+				ExtJSCore.error(ex);
+			}
+		}
+		
+		// iterate all user libraries
+		for (final IExtJSLibrary lib : this.storage.getLibraries()) {
+			try {
+				for (final ILibrarySource src : lib.getSources()) {
+					switch (src.getSourceType()) {
+					case JAVASCRIPT_FILE:
+						if (path.equals(src.getFullPath())) {
+							this.storage.getFile(file, lib.getName(), src, true);
+						}
+						break;
+					case FOLDER:
+				        // TODO allow exclude
+						if (src.getFullPath().isPrefixOf(path)) {
+							this.storage.getFile(file, lib.getName(), src, true);
+						}
+						break;
+					case ZIP:
+						m.reset();
+						m.update(src.getFullPath().toOSString().getBytes());
+						final byte[] digest = m.digest();
+						final BigInteger bigInt = new BigInteger(1,digest);
+						final String hashtext = bigInt.toString(16);
+
+						if (extractedZips.isPrefixOf(path) && path.segmentCount() > (extractedZips.segmentCount() + 1) && path.segment(extractedZips.segmentCount()).equals(lib.getName()) && path.segment(extractedZips.segmentCount() + 1).equals(hashtext)) {
+							return this.storage.getFile(file, lib.getName(), src, true);
+						}
+						break;
+					}
+				}
+			} catch (CoreException ex) {
+				ExtJSCore.error(ex);
+			}
+		}
+		return null;
 	}
 
 }

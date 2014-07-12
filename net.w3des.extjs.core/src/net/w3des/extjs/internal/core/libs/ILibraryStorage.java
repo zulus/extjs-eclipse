@@ -11,7 +11,9 @@
 package net.w3des.extjs.internal.core.libs;
 
 import net.w3des.extjs.core.api.IExtJSEnvironment;
+import net.w3des.extjs.core.api.IExtJSFile;
 import net.w3des.extjs.core.api.IExtJSLibrary;
+import net.w3des.extjs.core.api.ILibrarySource;
 
 public interface ILibraryStorage {
 	
@@ -111,5 +113,15 @@ public interface ILibraryStorage {
 	 * @return libName or null if it is not set
 	 */
 	String getDefaultCoreLib(String version, String facet);
+	
+	/**
+	 * Returns the file index; creates it on demand
+	 * @param filePath the full path to the file (file system path)
+	 * @param libName 
+	 * @param src 
+	 * @param forceCreation {@code true} to create the project if it does not exist; {@code false} to return {@code null} instead
+	 * @return the file or {@code null} if it was not found
+	 */
+	IExtJSFile getFile(String filePath, String libName, ILibrarySource src, boolean forceCreation);
 
 }

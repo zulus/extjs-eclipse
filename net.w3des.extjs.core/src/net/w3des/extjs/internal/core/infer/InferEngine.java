@@ -68,9 +68,15 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
     @Override
     public void doInfer() {
     	try {
-	        file = ExtJSCore.getProjectManager().getFile(String.valueOf(getScriptFileDeclaration().getFileName()));
-	        file.cleanAliases();
-	        super.doInfer();
+    		final String fnam = String.valueOf(getScriptFileDeclaration().getFileName());
+	        file = ExtJSCore.getProjectManager().getFile(fnam);
+	        if (file == null) {
+	        	file = ExtJSCore.getLibraryManager().getFile(fnam);
+	        }
+	        if (file != null) {
+	        	file.cleanAliases();
+	        	super.doInfer();
+	        }
     	} finally {
     		file = null;
     	}
