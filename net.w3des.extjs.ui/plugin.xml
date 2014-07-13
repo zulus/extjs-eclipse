@@ -166,4 +166,17 @@
             markerType="net.w3des.extjs.validation.problem">
       </markerResolutionGenerator>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="net.w3des.extjs.ui.properties.ExtJSProjectProperties"
+            id="net.w3des.extjs.ui.properties.ExtJSProjectProperties"
+            name="ExtJS">
+         <enabledWhen>
+		     <adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="net.w3des.extjs.core.extjsNature"/>
+		     </adapt>         
+         </enabledWhen>
+      </page>
+   </extension>
 </plugin>
