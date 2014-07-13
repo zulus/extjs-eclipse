@@ -46,6 +46,29 @@ public class Utils {
     public static boolean isExtProject(IJavaScriptProject project) {
         return isExtProject(project.getProject());
     }
+    
+    public static IType[] findTypeByName(String fullyQualifiedName, IJavaScriptProject project) {
+    	try {
+            IPackageFragmentRoot[] fragments = project.getPackageFragmentRoots();
+
+            List<IType> list = new LinkedList<IType>();
+            for (IPackageFragmentRoot fragment : fragments) {
+                IJavaScriptElement[] children = fragment.getChildren();
+                for (IJavaScriptElement el : children) {
+                    for (IType type : seekTypes(el)) {
+                        if (type != null && type.getTypeQualifiedName() != null && type.getTypeQualifiedName().equals(fullyQualifiedName)) {
+                            list.add(type);
+                        }
+                    }
+                }
+            }
+
+            return list.toArray(new IType[list.size()]);
+        } catch (JavaScriptModelException e) {
+            ExtJSCore.error(e);
+            return new IType[0];
+        }
+    }
 
     public static IType[] findTypes(String startWith, IJavaScriptProject project) {
         try {
@@ -55,7 +78,7 @@ public class Utils {
             for (IPackageFragmentRoot fragment : fragments) {
                 IJavaScriptElement[] children = fragment.getChildren();
                 for (IJavaScriptElement el : children) {
-                    for (IType type : seekTypes(startWith, el)) {
+                    for (IType type : seekTypes(el)) {
                         if (type != null && type.getTypeQualifiedName() != null && type.getTypeQualifiedName().startsWith(startWith)) {
                             list.add(type);
                         }
@@ -70,7 +93,7 @@ public class Utils {
         }
     }
 
-    private static IType[] seekTypes(String startWith, IJavaScriptElement el) {
+    private static IType[] seekTypes(IJavaScriptElement el) {
 
         List<IType> list = new LinkedList<IType>();
         if (el instanceof IJavaScriptUnit) {
@@ -90,7 +113,7 @@ public class Utils {
         } else if (el instanceof IPackageFragment) {
             try {
                 for (IJavaScriptElement item : ((IPackageFragment) el).getChildren()) {
-                    list.addAll(Arrays.asList(seekTypes(startWith, item)));
+                    list.addAll(Arrays.asList(seekTypes(item)));
                 }
             } catch (JavaScriptModelException e) {
                 ExtJSCore.error(e);
