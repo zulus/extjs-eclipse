@@ -493,6 +493,7 @@ public class CoreZipLibrary extends AbstractCoreZipLibrary {
 
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
+		if (version == null) return false;
 		return Arrays.asList(this.getCompatibleVersionNames(version.getProjectFacet())).contains(version.getVersionString());
 	}
 

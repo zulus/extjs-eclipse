@@ -249,6 +249,7 @@ public class LibImpl implements IExtJSLibrary, IExtJSIndex {
 
 	@Override
 	public boolean isCompatible(IProjectFacetVersion version) {
+		if (version == null) return false;
 		return this.lib.getVersions().contains(version.getVersionString());
 	}
 
