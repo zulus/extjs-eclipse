@@ -22,33 +22,48 @@
         </project-facet>
         <project-facet-version facet="wst.jsdt.extjs.core" version="3.4">
           <constraint>
-              <requires facet="wst.jsdt.web" />
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.touch" />
+              </and>
           </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
         <project-facet-version facet="wst.jsdt.extjs.core" version="4.0">
           <constraint>
-              <requires facet="wst.jsdt.web" />
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.touch" />
+              </and>
           </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
         <project-facet-version facet="wst.jsdt.extjs.core" version="4.1">
           <constraint>
-              <requires facet="wst.jsdt.web" />
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.touch" />
+              </and>
           </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
         <project-facet-version facet="wst.jsdt.extjs.core" version="4.2">
            <constraint>
-                <requires facet="wst.jsdt.web" version="1.0" />
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.touch" />
+              </and>
            </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
-        <project-facet-version
-              facet="wst.jsdt.extjs.core"
-              version="5.0">
+        <project-facet-version facet="wst.jsdt.extjs.core" version="5.0">
            <constraint>
-              <requires
-                    facet="wst.jsdt.web"
-                    version="1.0">
-              </requires>
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.touch" />
+              </and>
            </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
 
         <project-facet id="wst.jsdt.extjs.cmd">
@@ -85,14 +100,14 @@
                  category="wst.jsdt.extjs.category">
            </member>
         </project-facet>
-        <project-facet-version
-              facet="wst.jsdt.extjs.touch"
-              version="2.3">
+        <project-facet-version facet="wst.jsdt.extjs.touch" version="2.3">
            <constraint>
-              <requires
-                    facet="wst.jsdt.web">
-              </requires>
+              <and>
+                  <requires facet="wst.jsdt.web" />
+                  <conflicts facet="wst.jsdt.extjs.core" />
+              </and>
            </constraint>
+          <group-member id="wst.jsdt.extjs" />
         </project-facet-version>
     </extension>
     <extension point="org.eclipse.wst.common.project.facet.core.presets">
