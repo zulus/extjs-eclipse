@@ -14,12 +14,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.w3des.extjs.core.Utils;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSLibrary;
 import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.internal.core.ExtJSCore;
 import net.w3des.extjs.ui.common.DialogField;
+import net.w3des.extjs.ui.common.IDialogFieldListener;
 import net.w3des.extjs.ui.common.IStringButtonAdapter;
 import net.w3des.extjs.ui.common.ITreeListAdapter;
 import net.w3des.extjs.ui.common.LayoutUtil;
@@ -31,12 +33,14 @@ import net.w3des.extjs.ui.preferences.ChooseLibraryDialog;
 import net.w3des.extjs.ui.preferences.LibElement;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -55,7 +59,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * 
  * @author mepeisen
  */
-public class ExtJSProjectProperties extends PropertyPage implements IWorkbenchPropertyPage {
+public class ExtJSProjectProperties extends PropertyPage implements IWorkbenchPropertyPage, IDialogFieldListener {
 
 	private TreeListDialogField fList;
 
@@ -96,11 +100,13 @@ public class ExtJSProjectProperties extends PropertyPage implements IWorkbenchPr
 		this.fNamespace = new StringDialogField();
 		this.fNamespace.setLabelText("Application namespace");
 		this.fNamespace.setText("");
+		this.fNamespace.setDialogFieldListener(this);
 		
 		this.fSourceFolder = new StringButtonDialogField(new SourceFolderAdapter());
 		this.fSourceFolder.setLabelText("Application class folder");
 		this.fSourceFolder.setText("");
 		this.fSourceFolder.setButtonLabel("Browse");
+		this.fSourceFolder.setDialogFieldListener(this);
 	}
 	
 	@Override
@@ -325,10 +331,63 @@ public class ExtJSProjectProperties extends PropertyPage implements IWorkbenchPr
 	}
 	
 	private void update(IProgressMonitor monitor) throws CoreException {
-		// TODO
+		final IExtJSProject project = getExtJSProject();
+		final String folder = this.fSourceFolder.getText();
+		if (folder != null && folder.length() > 0) {
+			final IPath path = new Path(folder).removeFirstSegments(1);
+			final IContainer f = path.toString().length() == 0 ? project.getProject() : project.getProject().getFolder(path);
+			project.setSourceFolder(f);
+		}
+		final String ns = this.fNamespace.getText();
+		if (ns != null && ns.length() > 0) {
+			project.setExtjsNamespace(ns);
+		}
+		if (this.newEnv != null) {
+			project.setEnvironmentName(this.newEnv);
+		}
+		for (final IExtJSLibrary lib : this.removedLibs) {
+			project.removeLibrary(lib.getName());
+		}
+		for (final IExtJSLibrary lib : this.newLibs) {
+			project.addLibrary(lib.getName());
+		}
+		project.refreshLibContainer();
 	}
 
 	
+	@Override
+	public boolean isValid() {
+		final IExtJSProject project = getExtJSProject();
+		final String folder = this.fSourceFolder.getText();
+		if (folder != null && folder.length() > 0) {
+			final IPath path = new Path(folder).removeFirstSegments(1);
+			final IContainer f = path.toString().length() == 0 ? project.getProject() : project.getProject().getFolder(path);
+			if (!f.exists()) {
+				setErrorMessage("Invalid source folder selected");
+				return false;
+			}
+		}
+		else {
+			setErrorMessage("Select a source folder to place your extjs classes");
+			return false;
+		}
+		
+		final String ns = this.fNamespace.getText();
+		if (ns != null && ns.length() > 0) {
+			if (!Utils.PATTERN_JAVASCRIPT_NAMESPACE.matcher(ns).matches()) {
+				setErrorMessage("The namespace contains invalid characters");
+				return false;
+			}
+		}
+		else {
+			setErrorMessage("Enter your javascript namespace");
+			return false;
+		}
+		
+		return true;
+	}
+
+
 	private class ListAdapter implements ITreeListAdapter {
 		
 		private final Object[] EMPTY= new Object[0];
@@ -370,6 +429,12 @@ public class ExtJSProjectProperties extends PropertyPage implements IWorkbenchPr
 			browseFolderPressed(field);
 		}
 
+	}
+
+	@Override
+	public void dialogFieldChanged(DialogField field) {
+		this.setErrorMessage(null);
+		setValid(isValid());
 	}
 
 }

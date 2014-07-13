@@ -31,6 +31,7 @@ import net.w3des.extjs.core.api.IExtJSProject;
 import net.w3des.extjs.core.api.ProjectType;
 import net.w3des.extjs.internal.core.ExtJSCore;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -403,17 +404,20 @@ public class ProjectImpl implements IExtJSProject, IExtJSIndex {
 	}
 
 	@Override
-	public IFolder getSourceFolder() throws CoreException {
+	public IContainer getSourceFolder() throws CoreException {
 		this.initProps();
 		final String folder = this.projectProps.getProperty(KEY_CLASS_FOLDER);
 		if (folder != null) {
+			if (folder.length() == 0) {
+				return this.index.getProject();
+			}
 			return this.index.getProject().getFolder(folder);
 		}
 		return null;
 	}
 
 	@Override
-	public void setSourceFolder(IFolder folder) throws CoreException {
+	public void setSourceFolder(IContainer folder) throws CoreException {
 		this.initProps();
 		if (!folder.getProject().equals(this.getIndex().getProject())) {
 			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "invalid folder"));

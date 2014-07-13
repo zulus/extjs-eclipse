@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.core.api;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -147,13 +148,13 @@ public interface IExtJSProject {
 	 * @return
 	 * @throws CoreException
 	 */
-	IFolder getSourceFolder() throws CoreException;
+	IContainer getSourceFolder() throws CoreException;
 	
 	/**
 	 * Sets the primary source folder
 	 * @param folder
 	 * @throws CoreException
 	 */
-	void setSourceFolder(IFolder folder) throws CoreException;
+	void setSourceFolder(IContainer folder) throws CoreException;
 	
 }
