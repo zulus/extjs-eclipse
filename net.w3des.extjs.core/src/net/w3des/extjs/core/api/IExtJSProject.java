@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.w3des.extjs.core.api;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -124,5 +125,35 @@ public interface IExtJSProject {
 	 * @throws CoreException thrown if the one of the libraries is not known or if it is not compatible to used extjs version
 	 */
 	void setLibraries(String[] libraries) throws CoreException;
+	
+	// *** extjs options
+	
+	/**
+	 * Returns the extjs namespace to be used within the project
+	 * @return javascript namespace
+	 * @throws CoreException
+	 */
+	String getExtjsNamespace() throws CoreException;
+	
+	/**
+	 * Sets the extjs namespace
+	 * @param namespace
+	 * @throws CoreException
+	 */
+	void setExtjsNamespace(String namespace) throws CoreException;
+	
+	/**
+	 * Returns the primary source folder where the extjs classes will be placed into
+	 * @return
+	 * @throws CoreException
+	 */
+	IFolder getSourceFolder() throws CoreException;
+	
+	/**
+	 * Sets the primary source folder
+	 * @param folder
+	 * @throws CoreException
+	 */
+	void setSourceFolder(IFolder folder) throws CoreException;
 	
 }

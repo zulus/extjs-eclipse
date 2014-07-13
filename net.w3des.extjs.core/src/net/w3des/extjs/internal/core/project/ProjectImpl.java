@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import net.w3des.extjs.core.ExtJSNature;
 import net.w3des.extjs.core.IExtJSLibraryManager;
+import net.w3des.extjs.core.Utils;
 import net.w3des.extjs.core.api.IExtJSCoreLibrary;
 import net.w3des.extjs.core.api.IExtJSEnvironment;
 import net.w3des.extjs.core.api.IExtJSFile;
@@ -67,6 +68,10 @@ public class ProjectImpl implements IExtJSProject, IExtJSIndex {
 	private static final String KEY_ENVNAME = "env.name";
 	
 	private static final String KEY_LIBS = "libraries";
+	
+	private static final String KEY_EXTJS_NAMESPACE = "class.namespace";
+	
+	private static final String KEY_CLASS_FOLDER = "class.folder";
 
 	/**
 	 * @param index
@@ -379,6 +384,42 @@ public class ProjectImpl implements IExtJSProject, IExtJSIndex {
 	@Override
 	public IExtJSIndex getCumulatedIndex() {
 		return this;
+	}
+
+	@Override
+	public String getExtjsNamespace() throws CoreException {
+		this.initProps();
+		return this.projectProps.getProperty(KEY_EXTJS_NAMESPACE);
+	}
+
+	@Override
+	public void setExtjsNamespace(String namespace) throws CoreException {
+		this.initProps();
+		if (namespace == null || !Utils.PATTERN_JAVASCRIPT_NAMESPACE.matcher(namespace).matches()) {
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "invalid namespace"));
+		}
+		this.projectProps.put(KEY_EXTJS_NAMESPACE, namespace);
+		this.save();
+	}
+
+	@Override
+	public IFolder getSourceFolder() throws CoreException {
+		this.initProps();
+		final String folder = this.projectProps.getProperty(KEY_CLASS_FOLDER);
+		if (folder != null) {
+			return this.index.getProject().getFolder(folder);
+		}
+		return null;
+	}
+
+	@Override
+	public void setSourceFolder(IFolder folder) throws CoreException {
+		this.initProps();
+		if (!folder.getProject().equals(this.getIndex().getProject())) {
+			throw new CoreException(new Status(IStatus.ERROR, ExtJSCore.PLUGIN_ID, "invalid folder"));
+		}
+		this.projectProps.put(KEY_CLASS_FOLDER, folder.getProjectRelativePath().toString());
+		this.save();
 	}
 
 }
