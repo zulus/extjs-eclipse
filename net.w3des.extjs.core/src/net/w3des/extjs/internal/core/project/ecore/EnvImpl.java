@@ -333,4 +333,19 @@ public class EnvImpl implements IExtJSEnvironment {
 		this.refreshLibContainer();
 	}
 
+	@Override
+	public boolean isCompatible(IProjectFacetVersion version) throws CoreException {
+		for (final IProjectFacetVersion ver : this.getCompatibleVersions(version.getProjectFacet())) {
+			if (ver.equals(version)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return this.getName();
+	}
+
 }

@@ -56,6 +56,14 @@ public interface IExtJSEnvironment {
 	boolean isOfType(IProjectFacet facet);
 	
 	/**
+	 * Checks for version compatibility
+	 * @param version
+	 * @return
+	 * @throws CoreException 
+	 */
+	boolean isCompatible(IProjectFacetVersion version) throws CoreException;
+	
+	/**
 	 * Returns the extjs versions being compatible to this build environment; should only be used to analyze problems on {@link #getCompatibleVersions()}
 	 * @param facet extjs or senchatouch
 	 * @return version names (only major and minor version number, f.e. "4.1")
