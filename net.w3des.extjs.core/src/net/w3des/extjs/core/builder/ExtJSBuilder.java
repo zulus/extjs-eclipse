@@ -184,7 +184,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 		final IJavaScriptProject jsProject = JavaScriptCore.create(getProject());
 		boolean found = false;
 		for (final IIncludePathEntry entry : jsProject.getRawIncludepath()) {
-			if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE && entry.getPath() != null) {
+			if (entry != null && entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
 				if (entry.getPath().isPrefixOf(source.getFullPath())) {
 					found = true;
 				}
