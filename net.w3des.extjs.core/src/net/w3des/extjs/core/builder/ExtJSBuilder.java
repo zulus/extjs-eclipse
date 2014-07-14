@@ -84,7 +84,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 
 		final IExtJSProject prj = ExtJSCore.getProjectManager().createProject(getProject());
 		final IJavaScriptProject jsPrj = JavaScriptCore.create(getProject());
-		if (prj != null) {
+		if (prj != null && prj.getSourceFolder() != null) {
 			delta.accept(new DeltaVisitor(prj.getSourceFolder().getFullPath(), prj, jsPrj));
 		}
 	}
@@ -94,7 +94,7 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 
 		final IExtJSProject prj = ExtJSCore.getProjectManager().createProject(getProject());
 		final IJavaScriptProject jsPrj = JavaScriptCore.create(getProject());
-		if (prj != null) {
+		if (prj != null && prj.getSourceFolder() != null) {
 			getProject().accept(new ResourceVisitor(prj.getSourceFolder().getFullPath(), prj, jsPrj));
 		}
     }
@@ -181,6 +181,20 @@ public class ExtJSBuilder extends IncrementalProjectBuilder {
 	private void checkProjectLevelExtjsSource(final IExtJSProject prj)
 			throws CoreException, JavaScriptModelException {
 		final IContainer source = prj.getSourceFolder();
+		
+		if (source == null) {
+			addProblem(getProject(), new ValidationProblem(
+					ProblemIdentifier.EXTJS_SOURCE_NOT_A_SOURCE,
+					ValidationProblem.CAT_BUILDPATH,
+					ProblemSeverity.ERROR,
+					"Extjs source folder is not set",
+					null,
+					null,
+					null,
+					null, -1, -1, -1));
+			return;
+		}
+		
 		final IJavaScriptProject jsProject = JavaScriptCore.create(getProject());
 		boolean found = false;
 		for (final IIncludePathEntry entry : jsProject.getRawIncludepath()) {
