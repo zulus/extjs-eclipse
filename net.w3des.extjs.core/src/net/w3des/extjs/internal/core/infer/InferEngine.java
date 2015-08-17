@@ -901,9 +901,11 @@ public class InferEngine extends org.eclipse.wst.jsdt.core.infer.InferEngine {
             ExtJSCore.info(String.valueOf(val));
             newType.addMixin(val);
         } else if (mixin instanceof IArrayInitializer) {
-            for (final Expression e : ((ArrayInitializer) mixin).expressions) {
-                if (e != null && getArgValue(e) != null) {
-                    newType.addMixin(getArgValue(e));
+            if (((ArrayInitializer) mixin).expressions != null) {
+                for (final Expression e : ((ArrayInitializer) mixin).expressions) {
+                    if (e != null && getArgValue(e) != null) {
+                        newType.addMixin(getArgValue(e));
+                    }
                 }
             }
         } else if (mixin instanceof IObjectLiteral) {
